@@ -67,7 +67,7 @@ public class SimpleLogo extends JFrame implements ActionListener {
 		addButton(toolBar, "Gauche", "Gauche 45", null);
 		addButton(toolBar, "Lever", "Lever Crayon", null);
 		addButton(toolBar, "Baisser", "Baisser Crayon", null);
-		addButton(toolBar, "Ajouter", "Ajouter Tortue", null);
+		//addButton(toolBar, "Ajouter", "Ajouter Tortue", null);
 
 		String[] colorStrings = {"noir", "bleu", "cyan","gris fonce","rouge",
 								 "vert", "gris clair", "magenta", "orange",
@@ -105,7 +105,7 @@ public class SimpleLogo extends JFrame implements ActionListener {
 		addMenuItem(menuCommandes, "Gauche", "Gauche", -1);
 		addMenuItem(menuCommandes, "Lever Crayon", "Lever", -1);
 		addMenuItem(menuCommandes, "Baisser Crayon", "Baisser", -1);
-		addMenuItem(menuCommandes, "Ajouter Tortue", "Ajouter", -1);
+		//addMenuItem(menuCommandes, "Ajouter Tortue", "Ajouter", -1);
 
 		JMenu menuHelp=new JMenu("Aide"); // on installe le premier menu
 		menubar.add(menuHelp);
@@ -194,8 +194,8 @@ public class SimpleLogo extends JFrame implements ActionListener {
 			courante.leverCrayon();
 		else if (c.equals("Baisser"))
 			courante.baisserCrayon();
-		else if (c.equals("Ajouter"))
-			ajouterTortueA();
+		/*else if (c.equals("Ajouter"))
+			ajouterTortueA();*/
 		// actions des boutons du bas
 		else if (c.equals("Proc1"))
 			proc1();
@@ -216,33 +216,37 @@ public class SimpleLogo extends JFrame implements ActionListener {
 	}
 	
 	//Méthode d'ajout d'une tortue améliorée sur la feuille
-	public void ajouterTortueA(){
+	public void ajouterTortueA(String s){
 		
 		int x;
 		int y;
 		TortueAmelioree t;
-		String s;
 		
-		System.out.println("Choisissez le nom de la Tortue : ");
-		Scanner sc = new Scanner(System.in);
-		s = new String(sc.nextLine());
 		if (s.length() < 1)
 			 t = new TortueAmelioree();
 		else 
 			t = new TortueAmelioree(s);
 		
-		t.setPosition((int)Math.random() * 499, (int)Math.random() * 399);
-		t.setColor((int)Math.random() * 11);
+		t.setPosition((int)(Math.round(Math.random() * 499)), (int)(Math.round(Math.random() * 399)));
+		//System.out.println("x : " + t.getX() + " et Y : " + t.getY());
+		t.setColor((int)(Math.round(Math.random() * 11)));
+		//System.out.println("La couleur est : " + t.getColor());
 
 		Iterator it = liste.iterator();
 		TortueAmelioree to;
 
 		while(it.hasNext()){
+			
+			//System.out.println("Test d'entrée dans la boucle\n");
 
 			to = (TortueAmelioree)it.next();
 			to.ajouterTortue(t);
+			t.ajouterTortue(to);
+			//System.out.println(to.getNom() + " connait " + t.getNom());
 		}
-
+		
+		//System.out.println("On ajoute la nouvelle tortue à la liste du jeu, qui en comptait " + liste.size());
+		liste.add(t);
 		feuille.addTortue(t);
 		courante = t;
 		
@@ -266,7 +270,8 @@ public class SimpleLogo extends JFrame implements ActionListener {
 	}
 	
 	public void proc5() {
-		courante.etoile(18, 50);
+		this.ajouterTortueA("");
+		
 	}
 
 	// efface tout et reinitialise la feuille

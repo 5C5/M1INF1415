@@ -56,19 +56,18 @@ public class TortueAmelioree extends Tortue {
 		listeTortue.remove(t);
 	}
 	
-	public double distance(TortueAmelioree t){
+	public int distance(TortueAmelioree t){
 		
-		double distance = 0;
+		int distance = 0;
 		if(!listeTortue.contains(t)){
 			System.out.println("Erreur : tortue " + t.getNom() + "inconnue");
 		}
 		else {
-			double i = this.getX();
-			double j = this.getY();
-			double k = t.getX();
-			double l = t.getY();
-			distance = Math.sqrt(Math.pow(i - j, 2) + Math.pow(k - l, 2));
-			//System.out.println("La distance entre les deux tortues est " + distance);
+			int i = this.getX();
+			int j = this.getY();
+			int k = t.getX();
+			int l = t.getY();
+			distance = (int)Math.round(Math.sqrt(Math.pow(i - k, 2) + Math.pow(j - l, 2)));
 		}
 		return distance;
 	}
@@ -78,15 +77,20 @@ public class TortueAmelioree extends Tortue {
 		super.avancer(dist);
 		
 		Iterator it = listeTortue.iterator();
+		TortueAmelioree t;
 		
 		while(it.hasNext()){
 			
-			TortueAmelioree t = (TortueAmelioree)it.next();
+			//System.out.println("Nombre de tortue connue par " + this.getNom() + " : " + listeTortue.size());
 			
+			//System.out.println("Test d'entre dans la boucle de la tortue "+ this.getNom());
+			t = (TortueAmelioree)it.next();
+			//System.out.println("Distance à " + t.getNom() + " est de " + this.distance(t));
 			if(this.distance(t) < 15){
 				
 				System.out.println("Salut, " + t.getNom());
-				t.reculer(50);
+				t.droite(180);
+				t.avancer(50);
 			}
 		}
 	}

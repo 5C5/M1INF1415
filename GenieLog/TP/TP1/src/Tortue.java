@@ -66,7 +66,7 @@ public class Tortue
 		x = 0;
 		y = 0;
 		dir = -90;
-		coul = 0;
+		coul = 5;
 		crayon = true;
 		listSegments.clear();
   	}
@@ -75,6 +75,7 @@ public class Tortue
 		x = newX;
 		y = newY;
 	}
+	
 	
 	public void drawTurtle (Graphics graph) {
 		if (graph==null)
@@ -112,7 +113,7 @@ public class Tortue
 		  (int) Math.round( p2.y+r*Math.sin(theta - alpha) ));
 
 		arrow.addPoint(p2.x,p2.y);
-		graph.setColor(Color.green);
+		graph.setColor(this.decodeColor(coul));
 		graph.fillPolygon(arrow);
     }
 
