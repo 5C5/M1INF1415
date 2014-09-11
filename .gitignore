@@ -1,0 +1,28 @@
+#Fichiers compilés
+
+*.exe
+*.o
+*.class
+*.elf
+
+#Fichiers temporaires Latex
+
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+
+#Fichiers crées par les SE
+
+*.DS_Store
+*._.DS_Store
+*~
+*._*
+
+#Fichiers générés par Eclipse
+*.classpath
+*.project
+*./settings
