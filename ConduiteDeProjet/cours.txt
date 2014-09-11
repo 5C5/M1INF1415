@@ -1,0 +1,72 @@
+Cours de conduite de Projet
+
+cours du 11/09/2014
+
+Cahier des Charges (encore)
+Le cahier des charges est une description des besoins d'un client, des solutions à apporter, du coût, des délais imposés, des risques.
+
+Il est rédigé en collaboration avec le client.
+Les besoins sont exprimés une première fois par l'appel (d'offre) du client. Il est nécessaire de discuter avec ce dernier pour préciser ses besoins, discuter des priorités de ses besoins, du vocabulaire utilisé, des utilisateurs du produit (qui sont-ils?).
+Découle de ces discussions des entretiens (individuels) avec les utilisateurs. Cela permet de définir les fonctionnalités (priorité, façon de faire, cas d'utilisations).
+Des attentes du client doit être créé un produit. Il faut dégager un calendrier des différentes tâches et livrables à réaliser, en incluant les notions de précédences des tâches(ordre).
+On détermine ensuite des taches critiques (en terme de temps, de réalisations, de risques, de ressources). Ce calendrier est décidé en interne avec les developpeurs. On en sort un diagramme de Gantt.
+L'une des difficultés vient d'estimer les marges de temps nécessaires à chaque tâche.
+Du diagramme de Gantt on dégage la qté de ressources nécessaires (humaines, matérielles), le cout horaire de chaque ressource (dont découle le cout du projet).
+On estime les risques (techniques) et les solutions aux risques.
+
+Plan de base d'un cahier des Charges :
+->L'explication du contexte (qui demande/situation).
+->L'objectif attendu.
+->Les contraintes
+->Des définitions
+->Les utilisateurs potentiels du produit fini, les différentes classes d'utilisateur/leur rôles.
+->Les descriptions des tâches (attention, penser à être stricte sur ces parties en raison du grd nbre de référence).La plupart du temps, les tâches sont liés aux fonctionnalités/livrables.
+->Les clauses contractuelles.
+-> Annexes :
+	->Diagrammes de Gantt
+	->Cas d'utilisations
+	->Mock-up d'écran( modèle, maquette)
+
+
+Ensuite (à faire en pratique en parallèle pour déterminer la faisabilité du projet, le cout et le timing) vient le dégrossissage architectural :
+-entités utilisées
+-méthodologie
+
+
+Gestion de Version (encore)
+Pourquoi
+-parce plusieurs peronnes sur un même code.
+-pour gérer un historique du projet.
+-Pour pouvoir travailler en parallèle
+-pour fusionner les codes des différents developpeurs.
+-pour gérer les conflicts de codage
+
+·Version simpliste : 
+->Un disque partagé (dépot du code). Chaque developpeur à une copie du code -> copie son code sur le disque partagé.
+
+·Gestion de version centralisée :
+->Un dépôt de code sur un serveur; des copies locales sur les machines des developpeurs. Ils mettent à jours leurs copies par rapport au dépôt, et quand un truc est fonctionnel, il le dépose sur le serveur.
+Ex :CVS; Subversion; SourceSafe;Perforce;
+
+·Gestion de version décentralisée :
+->Chaque développeur à un dépôt duquel il sort une copie de travail. Il est possible de faire les mises à jour d'une copie à la version d'un developpeur ou de la version d'un developpeur à celle d'un autre. En pratique, il existe un dépot maitre, d'ou tous peuvent être mis à jour.
+ex : git; mercurial; bazar
+
+La différence vient de ce à quoi est associé le numéro de version, c'est à dire soit au commit (git, bazar ) soit au fichier.
+
+->Versionnage des répertoires.
+->Travail déconnecté : 
+	-accès dépôt /historique en étant déconnecté? Git : oui!
+	-Force l'accès au dépôt pour travailler sur la copie de travail? Git : Non!
+
+-Création des branches :
+	->Soit une copie intégrale du projet
+	->Soit une copie intelligente comprenant uniquement les fichiers (à) modifier/modifiés.
+
+Les branches correspondent à une "copie" du projet, pour :
+-developper des nouvelles fonctionnalités entrainant beaucoup de modif dans le code.
+-un changement d'architecture dans le projet.
+-Corriger des bugs sur des versions antérieures
+-Définir une version livrable.
+
+

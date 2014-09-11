@@ -1,0 +1,88 @@
+Cours sur les compilateurs
+(Erwan Guillou)
+
+Cours du 11/09/2014
+
+-> Compilateur
+	[Langage type Pascal] -> [représentation intermédiaire -> Robot Logo]
+
+On part d'un langage source, qu'on passe à un compilateur, qui renvoie normalement un code binaire éxécutable.
+
+Cela se fait en deux étapes :
+-Génération d'un code intermédiaire (code trois adresses)
+-Génération du code binaire à partir de ce code 3 @
+
+Le code binaire dépend du OS et de la machine utilisé. Le code 3@, proche de se code binaire, va pouvoir être optimisé.
+
+Dans la génération du code 3@, il y a trois étapes
+-analyse lexicale (découpe le code en unité lexicale (lèxeme). On a défini au préalable tous les expressions régulières.
+-analyse syntaxique : vérification de l'adéquation entre les suites de lèxemes et le langage.
+-analyse sémantique : on va essayer de donner un sens (et vérifier qu'il y en a un). Elle fait la vérification d'erreur plus génération de code 3@. Elle peut également faire un certain nombre d'optimisations (simples)
+
+Dans le passage du code 3@ au code binaire, également trois étapes :
+-Optimisation par rapport à la machine.
+-Allocation de registre (limiter les accès mémoire)
+-Génération du code assembleur => utilisation d'instruction liées au processeur.
+
+Prg source -> analyse lexicale -> fournit des lèxèmes -> analyse syntaxique (correspondance avec les règles du langages) -> à chaque correspondance, on fait l'analyse sémantique associée à la règle.
+
+Langage à générer : du NBC (langage du robot)
+
+Dans l'analyse lexicale, il nous faut une liste des identificateurs -> la table des symboles; dans un contexte donné : identificateur --> signification dans le programme.
+
+La table des symboles peut se présenter sous la forme d'un tableau de symbole, chacun possédant une liste chainée de signfication (selon le contexte).
+Une autre solution plus simple consiste à faire une table des symboles par contexte. Il devient ensuite simple de lier un contexte à un contexte parent (englobant).
+
+/!\ En Pascal, pas de distinction entre minuscules et majuscule.
+
+On associe à la table des symboles une table des identificateurs, qui fait le lien entre un identificateur sous la forme d'une chaîne de caractère et un numéro unique.
+
+Analyse lexicale : 
+-découpe le code en lèxème.
+-Remplit la table des identificateurs si besoin (Dico)
+-Calcule la valeur des constantes numériques.
+
+On donne une description des lexèmes (et quelques action en C) à un prog appelé flesc qui donne le code C de l'analyseur lexical.
+
+Le remplissage de la table des symboles va être un couplage l'analyse syntaxique et l'analyse sémantique.
+
+Le langage source peut être décrit sous la forme d'une GramR.
+
+(J'ai déjà fait tout les trucs sur les GramR, l'analyse lexicale et syntaxique, je ne prends pas la peine d'écrire l'exemple du prof. Surtout que dessiner des piles en ASCII, c'est chiant. Même si c'est de l'UTF-8. Mais libre à vous de compléter cette partie du cours).
+
+Pile contient des couples : <Symbole, attribut>
+
+Définitir pour chaque symbole les attributs.
+Pour chaque règle, test à réaliser; calculer les nouveaux attributs.
+
+On passe une description du langage avec attributs et règles de caluls à un outil nommé bison qui donne le code C des analysateurs syntaxiques et sémantiques.
+
+
+Objectifs des TPs : définir les attributs/actions pour générer du code.
+
+Étapes : 
+-gestion des déclarations : remplir les tables des symboles -> essentiellement les variables.
+-Calcul des expression constantes (tout ce qui est calculable (sauf ceux implicants des vairables, même intialisées) à la compilation doit être calculé!)
+
+-Gestion des déclarations (constantes)
+-génération de code pour expressions/intructions.
+-gestion des déclarations (types).
+-Optimisation
+-Affectation de registres.
+
+
+La gestion des déclarations : associer une signification à chaque identificateur.
+
+->Programme : décrit par la TS principale; code 3@
+->Fonction : décrite par un nbre d'argumment, la TS de son contexte, type de retour; code 3@
+->Procédure (Fonction void en C) : nbre d'argumment; TS contextuelle, code3@.
+->variable : définie par leur type;
+->constante : définie par un type et une valeur.
+->Argumment : défini par un mode de passage (adresse) et le type associé
+->type utilisateur : déscription du type(quelqu'il soit)
+->temporaires : (les petis trucs utilisés pour stocker les résultats des calcules intermédiaires) décrit par le type associé.
+->étiquette de branchement : utilisées pour les boucles
+
+Dans la table des symboles : n°unique identification --> signification (descripteurs)
+
+->décrire un type

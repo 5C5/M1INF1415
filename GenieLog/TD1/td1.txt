@@ -1,0 +1,191 @@
+Exo 1
+
+[Compagnie] <--propose--> [Vol]
+
+[Vol | ouvert; jour d'arrivée, jour de départ, heure d'arrivée, heure de départ](1) <--est faite sur-->  <--fait--> (1)[Client]
+
+[Vol](1) <--décolle de--> (1..*)[Aéroport]
+
+[Vol](1) <--atterris à--> (1..*)[Aéroport]
+
+[Vol](0..*) <--[Escale | heure d'arrivée, heure de départ]--> (0..*)[Aéroport]
+
+[Aéroport](0..*) <--dessert--> (0..*)[Ville]
+
+_____________
+Correction
+
+
+[Compagnie](1..*) --propose-- (1..*)[Vol]
+
+[Vol]<|>----- départ(1)[Horaire | heure :Integer ; minute : Integer; jour : Integer €[1, 31]; mois : Integer €[1, 12]; année :Integer]
+[Vol]<|>----- arrivée(1)[Horaire | heure :Integer ; minute : Integer; jour : Integer €[1, 31]; mois : Integer €[1, 12]; année :Integer]
+[Vol](1..*) --décolle de-- départ(1)[Aéroport]
+[Vol](1..*) --atterris à-- arrivée(1)[Aéroport]
+
+[Vol](0..*) --[Escale | horaire d'arrivée, horaire de départ]-- escale(0..*){ordered}[Aéroport]
+
+[Vol](0..*) ---------- \			   /---- (0..*)[Client]
+					   	-<Réservation>-
+[Compagnie](0..*) -----/			   \--(1..*)[Passager]
+
+[Aéroport](0..*) --dessert-- (1..*)[Ville]
+
+Possibilité de factoriser Client et Passager; de remplacer l'association n-aire réservation par une classe réservation;de découper les vols en deux classes filles Vol Direct et Vol Composé
+
+___________
+Exercice 2 
+1°
+Class A {
+
+	private B roleB;
+
+	public A (B b){
+		roleB = b;
+	}
+
+	public void modifierRoleB(B b){
+
+		roleB = b;
+	}
+	public B getRoleB(){
+		return roleB;
+	}
+
+	public void nom_association(B b){
+		roleB = b;
+		roleB.nom_association(this);}
+}
+
+Class B {
+
+	private A roleA;
+
+	public B (){
+		roleA = null;
+	}
+	public B (A a){
+		rolaA = a;
+	}
+
+	public void modifierRoleA(A a){
+
+		roleA = a;
+	}
+	public A getRoleA(){
+		return roleA;
+	}
+
+	public void nom_association(A a){
+		roleA = a;
+		roleA.nom_association(this);}
+}
+
+
+//-------------
+
+
+Class C {
+
+	private D roleD;
+
+	public C (D d){
+		roleD = d;
+	}
+
+	public void modifierRoleD(D d){
+
+		roleD = d;
+	}
+	public D getRoleD(){
+		return roleD;
+	}
+
+	public void nom_association(D d){
+		roleD = d;
+		roleD.nom_association(this);}
+}
+
+Class D {
+	private ArrayList<C> listeC;
+
+	public D() {
+
+		listeC = new ArrayList<C>();
+	}
+
+	public void associerC(C c){
+
+		listeC.add(C);
+	}
+	//Accesseur sur listeC plus methode pour retirer des C de la liste.
+}
+
+//--------
+
+Class E {
+	private ArrayList<F> listeF;
+
+	public D() {
+
+		listeF = new ArrayList<F>();
+	}
+
+	public void associerF(F f){
+
+		listeF.add(f);
+	}
+	//Accesseur sur listeF plus methode pour retirer des F de la liste.
+}
+
+
+class F{
+	//F ne connait pas E
+	public F(){	
+		//...
+	}
+}
+
+//-------------
+
+class H {
+
+	//H connait son composite
+	private G compG;
+
+	public H (G g){
+		compG = g;
+	}
+
+}
+
+class G {
+
+	private H tabH[];
+
+	public G(){
+
+		tabH = new H[4];
+
+		for(int i = 0; i < 4; i ++)
+			tabH[i] = new H(this);
+	}
+}
+
+
+
+Exercice 3
+
+[Expression{abstract}| | +évaluer() : Real{Abstract}]
+|												 /|\ /|\      /|\
+|->[Constante|-valeur : Real]|+évaluer() : Real] \|/ \|/	  \|/
+|												  |	  |		   |
+|->[Variable|-nom: String|+évaluer():Real]		  |	  |		   |
+|												  |   |        |
+|->[Fonction| -nom : String|+évaluer():Real]------|   |		   |  {ordered}(1..*)
+|												  |   |        |
+|->[OpérateurNaire|-op :{'+', '*'}|+évaluer():Real]---|		   |  (opérande){ordered}(2..*)
+|															   |
+|->[OpérateurBinaire | -op : {'-', '/', '^'} |+évaluer():Real]-|  (opérande){ordered}2
+
+Possibilité d'utiliser une classe mère opérateur

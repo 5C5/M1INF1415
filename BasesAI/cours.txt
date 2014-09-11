@@ -1,0 +1,208 @@
+Cours de Bases de l'Intelligence Artificielle
+
+Marie LEFEVRE	marie.lefevre@liris.cnrs.fr
+
+Cours du 09/09/2014
+
+************
+Introduction
+************
+
+Marvin Minsky (50s) : la construction de programme informatique de haut niveau.
+John McCarthy : étude structural de l'information.
+Newell : Plus orienté mathématique
+
+IA (selon Rich et Knight) : discipline étudiant la possibiliter de faire executer à un ordi des taches plus faciles pour l'homme que pour la machine.
+
+BellMan : Automatisation des activités associés au raisonnement humain
+Nilson : étude des entités ayant une structure intelligente.
+
+
+Quatre façons de voir l'IA.
+
+				-Fidélité aux performances humaines		|	Conception idéalisé de l'intelligence
+--------------------------------------------------------------------------------------------------
+Pensée		   |
+et raisonnement|  	Système qui pense comme les humains | Système qui pense rationnellement
+			   |
+Comportement   |	Système qui agit comme les humains	| Système qui agit rationnellement
+
+
+_________________________________________________________
+-Agir comme un humain : définition opérationnelle de l'IA
+
+Test de Turing : une machine est considérée comme intelligente si elle peut converser de telle manière que les interrogateurs (humains) ne peuvent la distinguer d'un être humain.
+
+Récompensé par le Loebner Prize
+
+Le test de Turing a produit deux thèses sur l'IA.
+
+-Thèse de l'IA faible : possible de faire des machines qui se comportent comme si elles étaient intelligentes
+	->ne pense pas, éxécute.
+
+-Thèse Forte : Les machines ayant un comportement intelligent ont des états cognitifs.
+
+______________________________________________
+-Penser comme un humain
+
+repose sur une modélisation cognitive
+
+
+___________________________
+-Penser rationnellement
+
+repose sur la pensée logique :
+	-Aristote : processus de raisonnement correct.
+
+	19eme : logique formelle : lien entre math et philo
+
+Grace à cette logique, on peut décrire ce que l'on voit
+problème : certaines capacités liées à l'intelligence (la perception) sont indescriptibles
+
+La réflexion n'est pas forcément lié à l'intelligence.
+
+Autre problème : complexité des calculs : différence entre résoudre un problème en principe et le résoudre réellement
+
+_______________________________
+-agir rationnellement
+
+agir selon ses croyances pour atteindre des objectifs
+
+pas nécessairement de raisonnement
+
+-> Agent rationnel : entité perceptrice et agissant dans un environnement
+
+
+
+Fin de l'intro
+
+Pour aller plus loin : Artifical Intelligence : A modern Approach
+	http://aima.cd.berkeley.edu/
+
+____________________________________________________
+Cours 2 : Résolution de problème
+
+Qu'est ce qu'un problème en IA :
+
+Principe général :
+Il existe des méthodes générales qui permettent de résoudre n'importe quel type de problème
+-L'algorithme doit donc être neutre sur le domaine concerné
+-Les connaissances de description doivent être séparés de l'algorithme
+
+Modéliser quoi?
+La résolution de nbreux problèmes peut être décrite comme
+-une séquence d'opérateurs
+-d'un état intial (état de base) à un état final (impossible d'appliquer un opérateur)  du monde(il peut y en avoir plusieurs)
+
+
+Pour résoudre :
+-on considère l'état initial
+-""	les opérateurs permettant de changer l'état du monde
+-Tenter ces opérateurs de manière systématique (ou pas)
+-Tester si on arrive à un état final
+
+Modélisation d'un prb
+Il faut donc :
+-décrire un état (def)
+-décrire l'état initial
+-décrire les opérateur permettant de passer d'un état à l'autre
+-construire l'espace des etats (etats atteignables depuis l'etat initial)
+-disposer d'un test de verif de presence de l'etat final
+-construire un chemin de l'etat initial à l'etat final
+-connaitre le cout du chemin
+
+Solution d'un prb
+
+-Un ou plusieurs chemins d'opérateur conduisant de l'etat initial aux etats qui satisfassent le test d'atteinte du but
+
+-Espace des solution : ensemble des chemins de solutions.
+
+
+·Types de prb/solution :
+-Prb de satisfaction de contraintes :
+	-on connait l'etat initial
+	-peu importe le chemin
+	-on cherche un etat final respectant les constraintes
+->On recherche l'etat final
+
+-Prb de plannification :
+	-On connait l'état initial
+	-on connait l'etat final
+	-on cherche un chemin selon certains objectifs
+->On recherche une suite d'opé
+
+
+·Problèmes des N Reines
+Placer N reines tel qu'aucune reine attaque une autre reine.
+
+-Modélisation
+	-Etat : tte configuration de 0 à N reines sur la grille
+	-Etat initial : grille vide
+	-Operateur : 
+		Ajouter une reine sur n'importe quelle case vide de la grille
+		Etat successeur : la config qui en résulte
+	-Test de but : N reines sur le plateau
+
+Pour 8 Reines : 3 * 10¹⁴ etats
+
+Modélisation n°3 : 
+Autre possibilité : commencer avec les huits reines (une par colonne); puis changer une reine par tour
+
+Pour un problème donné, il existe plusieurs modélisation.
+
+Problème des grandes villes : 
+-On souhaite partir d'une ville et parcourir toutes les grandes villes du pays.
+
+	-Etat : un état est composé d'un aéroport, de la date et de l'heure actuelle.
+	-Etat inital : L'aéroport d'ou part le client, la date et l'heure de départ souhaitée
+	-Opérateurs : Les vols d'un aéroport à l'autre
+
+
+Problème de jeu :
+	-Jeu à plusieurs joueurs : plus compliqué, car impossible de savoir ce que l'autre(s) joueur(s) va faire.
+	Au lieu de chercher un chemin à l'état final, on cherche une stratégie, c-a-d un choix d'action pour chaque étét où pourrait se trouver le joueur (ex des échecs ou des jeux vidéos)
+
+
+·Résolution d'un problème
+Une fois qu'on a l'espece des etats, il faut pouvoir le parcourir :
+Structure général de l'algo :
+si plus d'etat à traiter 
+ 	alors envoyer echec
+sinon choisir un etat à traiter
+	renvoyer l'etat traiter
+
+Deux grandes familles de résolution :
+-Augmentation des solutions partielles : on commence à résoudre en utilisant un opérateur valide pour l'état final; on continue à le faire jusqu'a soit impossible de constinuer, soit réussite, soit aucune solution.
+
+-Application récursive : on décompose le problème
+
+Évaluation des algorithmes
+
+Pour rechercher le successeur : on fait une recherche exhaustive
+	Parcours en largeur : complexité en temps O(s^P+1) ou s est le nombre de succresseur et p le nbre d'action minimale) trèc couteux.
+	Parcours en profondeur : Limite, pac complet, pas optimal, pas plus efficace en temps : mais meme quand s et m sont grands, la mémoire nécessaire par le parcours en profondeur reste raisonnable.
+
+	->Parcours en profndeur limité : restreint la profondeur du parcours.
+	->Parcours en pronfondeur itéré : on teste les bornes de profondeur les unes après les autres.
+
+Recherche informée : 
+uen heuristique : un moyen d'ordonner dynamiquement la liste des successeurs selon leur promesse de se rapprocher d'un but. L'expression d'une connaissance spécifique au problème à résoudre
+
+Plusieurs algorithmes :
+-Best First search (le premier d'abord) : utiliser la fonction heuristique comme fonction d'évaluation.
+	Complexité en temps :  O(s^m) ou s le nbre de successeur et m la profondeur maximum.
+	Complexité en espcace O(s^m)
+
+-A star : le cout d'un chemin passant par un noeud n est la somme du cout du chemin entre l'etat initial et n et le cout du chemin reliant n à un état but (estimé). On ne garde que le 1er chemin amenant à un etat. Il faut que la fonction heuristique soit consistante.
+
+Recherche locale : le chemin n'est pas impportant.
+
+Recherche locale gloutonne : très rapide, peu de consommation mémoire, mais faible taux de réussite.
+
+·Par décomposition de problème : plus de graphe de solution, mais un graphe de problème avec un problème à résoudre et des problèmes terminaux (qu'on sait résoudre). On décompose ainsi les problèmes.
+
+
+·Résolution par satisfaction de contraintes
+Avantage : représentation explicite des connaissances; peut etre appliquée à de nbreux problèmes;
+Principe : identifier les variables du problèmes; définir les contraintes
+

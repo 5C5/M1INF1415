@@ -1,0 +1,252 @@
+Cours de Génie Logiciel
+
+page web : http://liris.cnrs.fr/~jmille/MIF17
+
+
+cours du 08/09/2014
+
+
+Rappels de programmation obj.
+
+Différence entre Java et C++
+-C++ "Write Onc Compile Anywhere" -> code source portable; code objet dépendant de l'architecture système.
+-Java "Write Once, run anywhere" -> code source et byte-code portable.
+
+Notion d'objet : entité ayant une existence propre, regroupant des caracs sur laquelle on peut effectuer des opérations. (Attribut => carac; Méthode => opérations)
+
+Classe : regroupement d'objet ayant le même comportement.
+ en C++, déclaration des classes dans le fichier d'entete .hpp, sinon similaire à Java
+
+ En cpp, on factorise le "public", "private" et "protected" par lot.
+
+ Dans l'en-tete, on définie les petite méthodes, et on ne fait que déclarer les méthodes courantes.
+
+ Objet this, existant aussi en C++ (meme utilisation, avec this->attribut pour accéder au champ de l'objet pointé)
+
+
+- Instanciation en C++ :
+
+ Class instance; -> crréation d'une nouvelle instance
+ Class *pinstance = &instance; -> définition d'un pointeur sur une instance existante
+ Class &instance1ref = instance;  -> définition d'une référence sur une instance existante
+ Class *pinstance2 = new Class();
+
+
+-Appel de méthode
+
+ Class in1;
+ Class *pin2 = new Class();
+
+ in1.method();
+ pin2->method();
+
+
+-Constructeur en C++
+//par défaut 
+Classe(){
+	attribut = 0;
+	carc = "Autre";
+}
+
+Pour recopier les attributs, on surcharge le =
+Il est possible de de redéfinir tous les opérateurs (en respectant leur sémantique). Il faut surcharger = dès lors qu'il y a des attributs dynamique (str, tableau);
+
+Syntaxe de la surcharge de = pour un tableau
+Classe &operator =();
+
+
+-Destructeur : en C++, appelé automtiquement en fin de fonction, pour les instances déclarées sur le pile, ou dans le destructeur de la classe contenante.
+A écrire juste après avoir écrit le constructeur.
+
+~Classe  -> nom de la méthode destructeur en C++.
+
+
+Accesseur/Mutateur en C++ :
+class Classe {
+
+	private :
+		std::string nom;
+
+	public:
+		void Setnom(const std::String s){
+		...
+		}
+}
+
+Variable statique de classe : déclaré dans la classe et défini en dehors.
+
+En dehors de la classe, éviter d'accéder à un membre statique de la classe via une instance.
+
+
+Héritage : faire hériter une classe d'une autre en Cpp se fait sous la forme
+
+classB: public A
+lors de la déclaration de la classe B (en-tete)
+En Cpp, on accède aux membres de la classe mère avec :: précédé du nom de la classe mère.
+
+Possibilité d'allouer à un pointeur ou une référence une instance d'une classe et de ses sous classes.
+
+Méthode virtuelle : une méthode est virtuelle si, redéfinie dans une sous classe, le type de d'instance détermine la méthode (celle de la classe mère ou celle de la fille) à appeler
+-En Java, toutes les méthodes sont virtuelles par défaut.
+-En Cpp, il faut préciser quand on souhaite qu'une méthode soit virtuelle avec virtual.
+
+Une classe est implictement abstraite en cpp quand une méthode virtuelle utilise =0;
+
+Héritage multiple en Cpp possible : 
+
+__________________________________________________
+Cours du 09/09/2014
+
+UML : Unified Modeling Language
+
+->Langage de modélisation visuel, formalisme graphique
+
+Ce n'est pas une méthode de conception : ne contient pas de processus de developpement étape par étape.
+
+Nous étudierons UML 2
+
+Plusieurs sous ensembles !
+-vues (descriptions du système dépendante d'un pt de vue)
+-diagrammes (éléments graphiques)
+-éléments (briques de base des diagrammes)
+
+En tout, treize diagrammes, divisé en trois types principaux :
+-structurels, statiques (classes, objet, composants, déploiement, [paquetage, structure composite])
+-comportementaux (cas d'utilisation, états-transitions, activités)
+-d'interactions ou dynamiques (séquence, [communication, global d'interaction, de temps])
+
+Éléments :
+-de modèlisation : définissent le modèle lui même
+-de visualisation : représentation graphique
+	-conteneur de classe : rectangle à 3 parties (noms, attributs méthodes)
+
+Généralités sur les diagrammes :
+-Mots-clés : objectif, relier des éléments similaires d'un modèle afin de limiter le nbre d'éléments différents. Se note {mot-clé}, et certains sont prédéfinis.
+-stéréotype : objectif : permettre la def d'élément, dérivés d'éléments existants, avec des propriétés spécifique à un usage.
+-Contrainte : relation sémantique impliquant un ou plusieurs éléments; doivent être vérifiées pour garantir la validité du modèle
+-Dépendance : relation d'utilisation (unidirectionnelle) d'un élément par un autre; noté avec une pointe avec trait en pointillé dans le sens W -----utilise ---> Y
+
+
+Diagramme de classe (plus utilisé)
+-représentation graphique des classes (pas des objets) et les relations entre ces classes
+-proche du modèle entité-relation
+
+-Le classeur (représentation de la classe) en trois section :
+	-Le nom, qui doit etre significatif et commencer par une majuscule
+	-La liste des attributs avec mode d'accès (visibilté) sous la forme d'un + ou d'un -
+	-La liste des méthodes avec les modes d'accès.
+
+attributs et méthodes = propriétés (membres)
+
+Paquetage : regroupement logique de classe.
+La dépendance entre deux packages se représente avec une pointe avec trait en pointillé dans le sens X ----- <<import>>---> Y
+
+Visibilité :
+- = privé
++ = publique
+# = protégé
+(rien) = package
+
+Syntaxe de déclaration :
+	-Nom de classe : [<<<<Stéréotype>>>>>>][<<<<<interface<<<<<] [NomPaquetage1::NomPaquetage2:: .... ::NomPaquetageN::] NomClasse[{[abstract]}]
+	
+	-attribut : [+,-,#][/] NomAttribut : NomClasse | EnsembleValeur ['[multiplicité']' [=valeur(s) initiale(s)][propriété]
+
+	-méthode : [+,-,#] NomMéthode([Paramètres]) : [ClasseRetour]{propriété}
+
+Attributs et méthodes de classe : (statique en Java), est dite de la classe en UML, et sont soulignés.
+
+Une méthode est abstraite si son en-tete est connue mais pas la manière dont elle peut-être réalisée : elles sont suivie de {Abstract}; Pareille pour les classes.
+
+On note les interfaces comme les classes, mais il est possible de représenter la réalistion d'une interface par une classe sous la forme [Classe] ----->(Interface)
+
+Classe paramétrable : objectif regrouper les comportement associés à la structure de la classe indépendemment des objets qu'elle peut contenir. se note avec un rectangle en pointillé avec T à l'intérieur, en haut du classeur.
+
+Héritage : utilisation d'une flèche avec traits pleins dans le sens  B ______hérite de _____>A
+
+Association : 
+-Nom = forme Verbale
+-Sens de lecture indiqué par une flèche pleine (éventuellement)
+-Multiplicité : nombre (ou intervalle de nombre) d'instance que l'assocication peut impliquer. Attention à l'endroit ou placer les multiplicités
+
+Les contraintes entre deux associations concernant deux mêmes classes se font sous la forme de pointe avec trait en pointillé avec la relation logique entre {}
+
+
+Agrégation 
+-inclusion structurelle ou comportementale
+-elle fait intervenir une classe agrégat et une classe élément
+-Non nommée, structure d'arbre sous jacente.
+-Elle est intéressante pour sa différence avec la composition.
+
+La composition est un cas particulier de l'agrégation.
+La composition se représente avec un losange plein. L'agrégation se représente par un losange vide.
+
+La composition peut être remplacée par l'ajout d'un attribut.
+
+Classe-association (ou entité association  en MR)
+-une association peut avoir ses propres propriétes, qui ne sont pas disponiles dans aucune des classes qu'elle lie. Elle devient alors une classe association, représentée comme une classe reliée à l'association par des pointillés. Elle est valide si elle peut être remplacée par plusieurs entreprises.
+
+Association n aire : association entre plus de deux classes, marquée par un losange vide à la croisée de traits.
+Il est possible de remplacer cette association n-aire par une classe.
+
+En pratique, on est amené à faire plusieurs diagramme de classe aus fur et à mesure de l'avancée du projet :
+-le 1er diagrammme des classes (dit initial) ne fait intervenir que les classes métiers (du domaine)
+-indépendant de toute implémentation.
+-Seuls les attributs apparaissent.
+
+Le second diagramme, dit des classe participantes ou techniques
+-réalisé durant l'analyse
+-ajout des classes techniques liés aux chois de conception
+
+Le dernier, le diagramme de classes d'implémentation, réalisé durant la conception. Il peut etre plus ou moins détaillé.
+
+
+Diagramme objets : 
+-Objectif : permet de représenter un instantané du système; utilisé pour illustrer une structure complète, difficile à comprendre avec le diagramme de classe.
+
+Diagramme de composants
+-un composant est une entité logicielle (ex : plugin, codec, pilote, BDD, etc)
+-Interet : permet la réutilisabilité de tout ou partie de l'application; indépendance de son évolution vis à vis.
+
+
+_________________________________
+Cours du 10/09/2014
+
+Diagrammme de séquences : principal diagramme dynamiquea
+
+Ds le diagramme de séquence, on ne s'intéresses pas à la durée des étapes, justes à leur séquencement.
+
+Composants :
+-Boite : étiquettée en haut à droite avec sd (séquence diagramme) suivi du nom de l'interraction/du scénario
+-Axe Vertical : représentation implicite du temps
+-Acteur : utilisateur (petit bonhomme)/Object (petit rectangle)
+
+-Emplacement des acteurs dépend de son apparition : si dès le début : en haut, sinon, à l'extrémité du msg donnant lieu à sa création.
+-Fin de l'acteur : si il est détruit, une croix marque le moment de sa destruction.
+
+-Durant sa vie un acteur peut être actif (effectuant une opération, attendant un retour) ou inactif. 
+
+Les msg
+-matérialisation d'une communication, avec trsmsion d'infos entre une émeteur et un récepteur.
+-le msg peut : déclencher une opération; représenter l'émission d'un signal (déclenchant une récation chez le récepteur de façon asynchrone : pas de réponse attendue)
+Représentation des différents types de msgs
+-Flèche standard = msg stantdard(synchrone)
+-Flèche à extrémité ouverte : message asynchrone
+-Réponse : flèche avec trait en pointillé
+-création d'objet : flèche avec trait en pointillé et rectangle de l'objet créé.
+
+ 
+Diagramme états-transitions :
+-Description sous la forme d'AEF, du comportment d'un des composants du système (un obj)
+-Les noeuds sont les états d'une classe, les changements d'états des interractions.
+
+Interraction -> Change l'état /=/ une activité -> accomplie dans un état (sur la durée).
+
+Transistion : considérée comme instantanée :
+-passage d'un état src vers un état cible.
+-déclenchée par un evenement, mais peut etre automatique (fin de l'activité de l'etat source)
+-possible de conditionner un transition à l'aide d'une garde : condit booleenne entre []
+
+Evenement : ce qui déclenche les transitions
+
+

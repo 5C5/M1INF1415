@@ -1,0 +1,279 @@
+cours de réseaux
+
+08/09
+
+Généralités
+
+
+Distribué : application s'éxécutant sur plusieurs noeuds; géographiquement éparpillé
+
+
+Périphérie du réseau : tout ce qu'il y a autour : machines et utilisateurs
+
+Réseau de coeur : ce qu'il y a au centre (opérateurs)
+
+Réseau d'accès : lien intermédiaire entre le coeur et la périphérique (cable, fibre, etc)
+
+
+Multiplexage  : inconvénient nécessité d'utiliser une intelligence supérieur
+-Mauvaise utilisation des ressources (période d'inactivité)
+-Etablissement connexion compliqué/couteux
+
+Temps de transfert : 640 000 bits à envoyer
+
+1536 000 bps / 24 = 64 000
+
+640 000 bit / 64 000 bps= 10 s
++ 500 ms
+10,5 s au total
+
+
+Commuter : Paquet ou circuit ?
+-Pour les appli en temps réels, avec contrainte fortes, privilégier CIRCUIT
+-Pour la simplicté et le coup de mise en place, privilégier PAQUET
+-Pour le partage des ressources, privilégier PAQUET( pour l'opérateur) et CIRCUIT (pour l'utilisateur)
+
+
+Fragmentation des paquets :
+
+Sans Frag : 15 s (3 x 7.5 / 1.5)
+Avec fragmentation :7 s (3 x 7.5 / 5 / 1.5 + 4 x 7.5 /5 / 1.5)
+
+Avantage : réduction du temps de transmission; perte uniquement du fragment perdu et non pas du message entier
+Inconvénient : utilsation de davantage de ressource (multiplication des informations de transmission) rapport entete/donnée utile augmente; Désegmentation possible
+
+
+Acheminement à la source :
+Avantage : chemin emprunté connu
+Inconvénient : Solution peu résistante aux changements de topologie; la taille de l'entete est variable et non bornée;
+
+
+Circuit Virtuel
+On change le numéro /D à chaque lien car : taille du champ réduite; gestion indépendante des commutateurs
+
+Avantage : moins de place; Qualité de Service QoS; Cout de l'entete bas; Acheminement rapide; chemin emprunté connu
+Inconvénient : Attente avant établissement de la communication; si un lien tombe, besoin d'une nouvelle connexion.
+
+Datagramme : 
+Avantage : pas d'attente avant la connexion; les paquets sont envoyés indépendemment de ceux des autres noeuds; Résistant aux changements de topologie;
+Inconvénient : Sans connexion (pas de garantie sur la QoS; pas de garantie de livraison); les paquets sont envoyés indépendemment de ceux des autres noeux.
+
+
+Réseau d'accès
+
+
+Types de délais :
+1 - Déali de traitement ~ns; délai constant (il est toujours présent)
+2 - Délai d'attente (routeur) [0; ms]
+3 - Délai de transmission [µs - ms] L/C si taille L sur un lien de bande passante C
+4 - Délai de propagation ~[µs - ms] d/y si taille d du lien et vitesse de propagation y
+
+
+Délai de bout en bout  = (N + 1) x (Dtrait + Dtrans + Dprop) + Dattente
+
+
+Calcul numérique : Sans fragmentation = 15,3 s
+				   Avec fragmentation = 7,3 s
+
+Architecture en couche :
+Avantages : Très modulable (possibilité d'évolution); Un protocole appartien à une couche (une seulement, normalement)
+Inconvénient : Perte d'information liée à la communication aux couches adjacentes seulement.
+
+
+_________________________________________
+Cours du 10/09/2014
+
+La couche transport
+
+Services de la couche Transport
+
+-Les protocoles de transport : communication logique entre applis transport. Elle apparait uniquement sur les terminaux.
+-Emetteur : divise les messages de taille variable (généralement gros) délivrés par des applis en segments( nom des paquets dans la couche transport), et les transmets à la couche transfert
+
+(Récepteur : réassemble les segments en messages et les transmets à la couche Appli.
+
+Plusieurs protocoles trsprts : UDP et TCP
+
+Couche Appli & couche Trsprt :
+-Faire communiquer plsieurs processus
+-Via la socket (interface de connexion en fr)
+	-API dominante sur les réseaux
+	-modèle client serveur
+	-au dessus de la couche trsprt
+
+
+Couche réseau :
+-de proche en proche, comm logique entre les noeuds (de saut en saut)
+
+Couche Trsprt :
+-comm logique entre les processus, opère de bout en bout.
+
+La couche trsprt connait l'existence de la couche réseau : elle emet l'hypothèse qu'il existe un chemin (aucune garantie de performance)
+
+Les protocoles de transport
+-TCP : Livraison fiable (ordonnées, intactes) des données; controle de congestion; controle de flux;
+-UDP : rien de tout ça.
+-Truc commun : multiplexage et détection d'erreur.
+
+Fiabilité /=/ détection d'erreur. Dire qu'il y a une erreur est différent de s'assurer du transfert des données.
+
+TCP est utilisé en large majorité
+
+Multiplexage : 
+-Un chemin, plusieurs applications le parcourant => multiplexage logique.
+
+Comment savoir à quelle appli appartiennent tels segments.
+-Le multiplexage à l'emetteur rassemble les données des différentes sockets, les encapsuler, et les remets à la couche réseau. Le démultiplexage ouvre les messages et les transmets à la bonne socket.
+
+Pour identifier à quelle appli correspond un segment TCP/UDP, on utilise les champs "port".
+Un datagramme IP comporte une @IP Src et une @IP dest.
+Les segments de la couche tsprt contiennent un #port src et un #port dest.
+
+une socket UDP est identifiée par @IP dest et un #port src.
+
+Plusieurs noeuds peuvent émettre vers une même socket (exemple d'un serveur multi client).
+
+Les sockets TCP sont identifiés par les @IP src et dest et les #port src et dest.
+
+UDP (RFC 768)
+-service minimum de la couche trsprt
+-sans connexion (pas d'échange, de négociation avec les couches tsprt du recepteur)
+
+Avantages :plus rapide, car pas d'etablissement de connexion; Pas de connexion à maintenir; En-tête plus petite donc besoin en mémoire plus faible (8 octet contre 20 pour TCP);Meilleur contrôle de l'appli  sur l'émission : choix de la tille et de l'instant d'émission des segments.
+
+Utilisé par des applications nécessitants une grande réactivité, comme DNS, SNMP, RIP, ou des applis multimédia tolérantes aux pertes (téléphonie par internet)
+
+Somme de controle UDP : détecte les erreurs (bits altérés) dans les segments transmis
+
+
+Principes d'un transfert de données fiable :
+Comment construire un protocole de couche transport fiable sans pouvoir connaitre la fiabilité de la couche réseau, ou en la présumant non fiable.
+
+rdt : reliable data transfert : données fiables, avec fnction receive et send
+udt : unreliable data transfert : données non fiables, avec fonction receive et send
+
+On va construire un protocole de trsfrt de donnée fiable, rdt xx (version)
+
+Première version : on émet l'hypothèse que le canal est parfait : ni erreur ni perte.
+-Coté expéditeur, on attend l'appel de l'appli, et on construit un packet (make paquet), qu'on envoie avec la fonction UDP. Une fois envoyé, on se remet en attente.
+-Coté destinataire, on attend un appel de l'éméteur, on reçoit un paquet qu'on transmet à l'appli.
+
+RDT 2.0, deuxième version : canal avec erreurs binaires -> le canal inférieur introduit des erreurs bits dans les paquets.
+Pour rétablir ces erreurs :
+-on les détecte
+-on utilise un accusé de réception (ACK) qu'on attend pour s'assurer que le destinataire a bien reçu le paquet intact.NAK signifgie que le cpaquet reçu comporte une erreur.
+-On retransmet les paquets corrompus/erronés.
+->Send and Wait
+
+-Coté émetteur : On attend les données de l'appli. On envoit un paquet, et on attend la réception de l'accusé de réception du destinataire. Si celles si étaient érronés, on les retransmet et on attend encore ACK ou NAK.
+-Coté recepteur : On attend l'arrivée du paquet. Si il arrive corrompu, on envoie un NAK signifiant l'existence d'une erreur, sinon on envoie ACK à l'expéditeur. On transmet les paquets intacts à l'appli. Retour à l'attente.
+
+rdt2.0 : si l'acquittement comporte une erreur : que faire?
+On ne peut pas simplement ré-émettre, car une application réseau peut renvoyer plusieurs fois la même information, et le destinataire ne pourrait savoir s'il s'agit d'une retransmission ou d'un nouvel envoi.
+
+Parades Possibles :
+-Avertir d'une répétition, puis renvoyer (chiant à mettre en oeuvre, car nouveaux types de paquets)
+-Ajouter un numéro de séquence dans le segment (solution adoptée par TCP)
+->rdt2.1
+
+On ajoute un numéro, si le numéro à déjà été reçu, on supprime le paquet.
+
+Pour un protocole Send And Wait, on a besoin d'un seul bit. (pas dans ACK ni dans ACK)
+
+Ce protocole est lourd : émetteur et récepteur doivent chacun vérifier ACK et NACK
+
+-> On utilise un ACK au lieu d'un NACK : on renvoie l'ACK du dernier paquet bien reçu (le précédent si erreur dans le paquet courant) : deux fois le même ACK indique une erreur sur le dernier paque envoyé pour l'émetteur.
+
+rdt 3.0 : canal avec erreur ET pertes
+Erreur : paquet corrompu mais arrivé à destination
+Perte : paquet jamais arrivé à destination.
+
+On pourrait utiliser un temporisateur, mis en route après l'envoi du paquet : si il expire sans reception d'un ACK, on retransmet.
+On va ajouter le numéro de séquence du paquet à acquitter.
+
+
+Pièces maîtresses d'un protocole de trsprt de données fiables (rdt)
+-Somme de contrôle (détection des erreurs)
+-Accusés de réception (ACK & NACK), boucle de contrôle
+-#séquence : détection des duplicata et des erreurs sur les ACK et pipeline
+-"time"/temporisateur : pertes de paquets.
+
+Performance de rdt 3.0
+ 1 Gbps -> C
+ délai de propa : 15ms
+ 1 Ko -> L
+ Ttransmiss : L/C : 8kb/1000 000Kbps : 8µs
+ U :Utilisation du lien (pourcentage) = Transmiss/(Ttransmiss + 2 x dpropag) = 2.7 *10⁻⁴ ~= 30 ms
+ Débit Utile : U * C = 266 596 bps = 267 Kbps.
+
+ Inefficace.
+
+ RTT : du premier bit transmis jusqu'a la réception du ACK (valeur temporelle)
+ U = Ttransmiss/ RTT
+
+ Protocoles pipelinés (à anticipation) : expéditeur peut transmettre plusieurs paquets à la suite, sans attendre d'accusés de réceptions.
+ Fenêtre d'anticipation (YY): nbre de paquet possible à envoyer à la suite avant d'attendre les ack.
+ Cela simule une parallélisation. Cela augmente l'utilisation., en multipliant ce dernier par la fenetre d'anticipation. La taille de la fenêtre se calcule aisni E [RTT/ Ttransmiss] + 1 . E étant la partie entière.
+
+Le Pipeline, c'est très bien (meilleur utilisation des ressources réseaux), mais :
+-L'ordre des paquets n'est plus garanti (désenquecement possible)
+-Davantage de mémoire tampon utilisée
+-Augmente la gamme de mémoire tampon.
+
+Tampon de reséquencement : deux façons de faire :
+-Répétition sélective : on garde les paquets arrivés dans le désordre et on attend d'avoir les paquets manquants pour transmettre dans l'ordre à la couche Appli.
+-Go-Back N(Rejet simple) : On supprime le paquet arrivé dans le désordre et on attend de recevoir les paquets dans le bonne ordre
+
+Le choix entre ces deux algos est guidés par la rareté des ressources bande passante(Répétition sélective) ou mémoire(Go Back N).
+
+
+_ _ _ _ _ _ _ _ _ 
+TCP : [RFC 793, 1122, 1323, 2018, 2581]
+-Orienté connexion : échange d'information (handshaking); expéditeur et des fixent les params du trsfrt
+-mode duplex :communicat° ds les deux sens
+-Point-à-point : entre un expéditeur et un dest; 
+-délivre des flux avec fiabilité et séquencement (tampons d'envois et de réception); MSS Maximum Segment Size (hors en tete)
+-Pipeliné
+-Contrôle de flux
+
+Notion de Flux :
+ensemble de données partant d'un emetteur vers un destinataire.
+
+Flux TCP : Une connexion TCP entre deux noeuds
+-Numéros de séquence exprimée en octet
+
+Un segment de donnée comporte deux numéros :
+-num de séquence : indique à la destination le positionnement du (premier octet du) paquet à l'intérieur du flux.
+-#ACK numéro du prochain octet attendu
+
+Le segment ACK comporte uniquement un numéro #ACK indiquand le prochain octet attendu.
+
+Les acquttement (des segments et des acks) sont cumulatifs.
+
+Exemple : pour un flux de 500 Ko avec un MSS de 1 Ko
+On aura besoin de 500 segments
+#séquence du 1er segment : 0 #ACK du ACK associé : 1000
+#séquence du 2eme segment : 1000 #ack du ACK associé : 2000
+
+
+RTT & RTO
+RTT : round trip Time (temps de transmission aller retour.)
+
+Comment fixer le RTO (Retransmission Time OUT)? en fonction du RTT. Mais si trop coourt, retransmission superflue, si trop long, réaction lente si segment perdu.
+
+Comment estimer le RTT : sample RTT, tps mesuré entre la trsmssion du paquet et la réception du ack. On ignire les retransmissions : on lisse les valeurs des samplesRTT.
+
+Génération des ACKs TCP :
+Les ACKs sont des datagrammes : consomation de ressources.
+
+Comment réduire leur impact.
+
+Le traffic TCP se fait en raffale (un certain nombre de paquet à la suite) => Bursty, très actif un moment puis plus rien.
+
+On retarde l'émission d'un acquittement d'un paquet pour voir si on ne reçoit pas un autre paquet ensuite, auquel cas on n'envoit un seul ACK qui remplace les deux.
+
+Retransmission rapide : en cas de réception de trois ACKs identiques, alors on retransmet (sans que le timer n'ai expiré).
+
+Contrôle de Flux : permet au destinataire de demander à l'expéditeur de ralentir sa vitesse d'émission/ de réduire son débit en réduisant sa fenetre d'anticipation.
+
+
