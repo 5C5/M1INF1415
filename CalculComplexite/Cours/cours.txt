@@ -1,3 +1,39 @@
 Cours de Calucl et Complexité
 
 Cours du 11/09/2014
+
+JFLAP : plateforme de test d'automate, de gramR, etc (cg Google).
+
+
+Classifier des langages (rationnels, algébriques et récursifs), des automates associés et des gramR les engendrant.
+Le décidabilité et la complexité en dépendent.
+
+
+Automate finis déterministes :
+-Simulation d'une machine très simple :
+	-mémorisation d'un état
+	-programme sous forme de graphe étiquetté indiquant les transitions possibles
+-Cette machine lit un mot en entrée
+-ce mot décrit une suite d'action et progresse d'état en état, jusqu'a lecture du mot.
+-Et dit s'il fait partir d'un langage donné, après avoir atteint un état final.
+
+Un automate déterministe fini est le quintuplet :
+-K ensemble fini non vide d'état
+-Epsilon : alphabet (ensemble non vide de lettres)
+-delta : fonction de transistion K x Epsilon -> K
+	ð(q, sigma) =q'
+
+
+Machines de Turing :
+Une machine de Turing est constituée 
+-d'un contrôle (ensemble finis d'état et de transitions
+-d'un ruban infini à droite
+-d'une tête sur le riban qui peut lire et écrire et qui peut se déplacer dans les deux directions d'un caractère à la fois.
+
+A chque étape, en fonction de l'état courant et du symbole courant, la machine :
+-change d'état,
+-écrit un symbole à l'emplacement courant,
+-déplace le tête d'une position à droite ou à gauche.
+
+Initialement la machine est dans un état initial (sic)
+
