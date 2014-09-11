@@ -50,7 +50,7 @@ git config --global credential.helper 'cache --timeout=3600' #garde le mot de pa
 ###Ajouter le repo et rediriger les push sur le repo commun
 
 ```Bash
-git remote add upstream 
+git remote add upstream https://github.com/5C5/M1INF1415.git
 git fetch upstream
 ```
 
