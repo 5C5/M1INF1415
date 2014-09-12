@@ -135,3 +135,10 @@ gcc -MM -MD -c main.c -o main.d
 main.d contiendra "main.o : main.c hello.h" -> gcc génère la liste des dépendance d'un fichier c.
 
 Ainsi, le Makefile ressemblera au Makefile joint
+
+
+Mais, il nous est demandé d'organiser nos projet sous la forme d'un dossier contenant les répertoires suivants
+-src/ qui contient tous les .
+-bin/ qui contient le ou les éxécutables
+-/tmp/projet/obj/ qui contient tous les .o
+-/tmp/projet/deps/ qui contient tous les .d

@@ -1,29 +1,45 @@
-#Makefile marchant dans tous les cas où les sources .c et .h sont dans le répertoire courant
+# Makefile pour dans le cas ou les reprtoires
+# src/ contient les .c
+#
 
-#Macros
-SRC = $(wildcard *.c)
-OBJ = $(SRC : %.c = %.o)
-DEPS = $(SRC : %.c = %.d)
+# Macros
+SRCD = src/
+INCD = include/
+BIND = bin/
+# Cette macro contient le nom du répertoire principal
+PROJD = $(shell pwd | sed -e "./wV(.*)$/$1/")
+OBJD = /tmp/$(PROJD)/obj
+DEPD = /tmp/$(PROJD)/deps
+BIN = $(BIND)main
 
-#Options
+SRC = $(wildcard $(SRCD)/*.c)
+OBJ = $(SRC : $(SRCD)/%.c = $(OBJD)/%.o)
+DEPS = $(SRC : $(SRCD)/%.c = $(DEPD)%.d)
+
+# Options
 FLAGS = -W -Wall -ansi
 .PHONY : clean distclean
 default : main
 
-#Génération de l'éxécutable
-main : $(OBJ)
+$(OBJD) :
+	mkdir -f $@
+$(DEPD) :
+	mkdir -f $@
+
+# Génération de l'éxécutable
+$(BIN) : $(OBJ)
 	gcc -o $@ $+
 
-#Génération des fichiers objets avec dépendances
-%.d : %.c
+# Génération des fichiers objets avec dépendances
+$(OBJSD)%.d : $(SRC)%.c
 	gcc -MM -MD -c $< -o $@
 
-%.o : %.c 
-	gcc -c $< -o $@ $(FLAGS)
+$(DEPD)/%.o : $(SRCD)/%.c
+	gcc -c $< -o $@ $(FLAGS) -I $(INCD)
 
 -include $(DEPS)
 
-#Nettoyage
+# Nettoyage
 clean :
 	rm -f $(OBJ)
 
