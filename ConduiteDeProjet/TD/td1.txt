@@ -1,0 +1,137 @@
+TD sur les MAKEFILES
+
+hello.c :
+	#include <stdio.h>
+	#include <stdlib.h>
+
+	void hello() {
+		printf("hllo");
+	}
+
+hello.h
+	#ifndef HELLO
+	#define HELLO
+
+	void hello();
+	#endif
+
+main.c
+	#include "Hello.h"
+
+	int main(int argc, char **argv){
+		Hello();
+	}
+
+-> commandes correspondant
+
+gcc - c hello.c - o hello.o -W -Wall -ansi
+gcc -c main.c -o main.o -W -Wall -ansi
+gcc - hello hello.o main.o
+
+outils make -> Fichier nommé Makefile.
+desc des traitements à réaliser.
+
+sous le format 
+cible : dépendance
+	<action à réaliser>
+
+exemple
+a : b c
+b : d
+
+make s'utilise ainsi : make <cible><options>
+
+options disponibles
+-f <fichier>	: si le fichier ne s'appelle pas Makefile
+-n <cible>	: renvoie la liste des cmds à réaliser pour générer la cible.
+-k	:	continue la compilation même si une des actions ne peut être terminée
+-s 	: mode silence, pas d'affichage lors de la compilation
+-p	: affiche le contenu du Makefile en tenant compte des inclusions.
+-c <répertoire>	: indique le répertoire dans lequel créer les sources.
+
+pour le code écrit si dessus, le Makefile ressemblerait à ceci.
+
+main : main.o hello.o hello.h
+	gcc -o main main.o hello.o
+
+main.o : main.c
+	gcc -c main.c -o main.o -W -Wall -ansi
+
+hello.o : hello.c
+	gcc -c hello.c -o hello.o -W -Wall -ansi
+
+clean :
+	rm -f *.o
+distclean : clean
+	rm -f main
+
+Utilisation de macros dans les règles :
+Nom : action
+$@	: définit la cible courante
+@^	: la chaîne qui contient toutes les dépendances
+@?	: la chaîne qui contient ttes les dépendances plus récentes que la cible.
+@<	: La 1ère dépendance
+@*	: préfixe partagé entre la cible et la première dépendance
+$+	: la chaînes de ttes les dépendances sans doublons.
+
+Ainsi, si on réécrit le Makefile précédent :
+
+main : main.o hello.o
+	gcc - o $@ $+
+#Possible d'utiliser $^ mais risque si double inclusion d'un fichier
+
+main.o : main.c hello.h
+	gcc -c $< -o $@ -W -Wall -ansi
+
+hello.o hello.c
+	gcc -c $< -o $@ -W -Wall -ansi
+
+
+Il existe aussi des macros utilisateurs, sous la forme
+<NOM> = <valeur>
+qui s'utilise$(<nom>)
+
+On pourrait rassembler les options de compilations par
+FLAGS = -W -Wall -ansi
+et ainsi remplacerchaque occurence.
+
+Les règles génériques :
+	présence d'un "%" dans le nom de la cible.
+
+Pour générer un fichier .o
+%.o : %o.c
+	gcc -c $< -o $@ $(FLAGS)
+
+Cela remplace, par exemlpe les deux ensembles pour générer hello.o et main.o. Mais du coup, on perdrait le hello.h. Il suffit de préciser la dépendance sans avoir à indiquer d'action (main.o : hello.h)
+
+Il est possible de supprimer la liste des .o nécessaire à l'éxécutable.
+On utilise une macro utilisateur 
+SRC = $(wildcard *.c)
+	  $(wildcard **.c)	-> à utiliser quand certains fichiers .c utilisés sont dans des sous-répertoires.
+OBJ = $(SRC : %.c %.o)
+	= $(SRC : src/%.c = obj/%.o)	->dans le cas où des fichers sont dans des répertoires.
+
+Dans le cas ou plusieurs langages sont utilisés, il est nécessaire de créer plusieurs macros avant de les rassembler
+
+On peut donc réécrire le Makefile sous la forme
+main : $(OBJ)
+	gcc -o $@ $+
+
+et
+clean :
+	rm $(OBJ)
+
+S'il existe un répertoire dont le nom est le même que l'une des cibles, ont utilise
+.PHONY <cible1> <cible2> ...
+où cible1 et 2 sont des commandes où make ne doit pas prendre en compte les dépendances.
+
+on précise ensuite la cible à générer par défault :
+default : main
+
+Il ne reste qu'a s'occuper qu'au problème des .h
+
+gcc -MM -MD -c main.c -o main.d
+
+main.d contiendra "main.o : main.c hello.h" -> gcc génère la liste des dépendance d'un fichier c.
+
+Ainsi, le Makefile ressemblera au Makefile joint
