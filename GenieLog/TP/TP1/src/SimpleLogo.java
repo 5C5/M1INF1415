@@ -228,10 +228,8 @@ public class SimpleLogo extends JFrame implements ActionListener {
 			t = new TortueAmelioree(s);
 		
 		t.setPosition((int)(Math.round(Math.random() * 499)), (int)(Math.round(Math.random() * 399)));
-		//System.out.println("x : " + t.getX() + " et Y : " + t.getY());
 		t.setColor((int)(Math.round(Math.random() * 11)));
-		//System.out.println("La couleur est : " + t.getColor());
-
+		
 		Iterator it = liste.iterator();
 		TortueAmelioree to;
 
