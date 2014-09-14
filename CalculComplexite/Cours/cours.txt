@@ -37,3 +37,34 @@ A chque étape, en fonction de l'état courant et du symbole courant, la machine
 
 Initialement la machine est dans un état initial (sic)
 
+Le symbole qui désigne le blanc (#) n'appartient pas à l'alphabet, mais peut être lu.
+Pour simplifier l'écriture des configurations, on introduit une notation abbréviée sous la forme : (état courant, contenu du ruban où le symbole courant est souligné)
+
+Ainsi, la config (q, e, a, bcdf) s'écrit (q, _a_ bcdf)  oui, le a est souligné (je peut pas le faire en ascii).
+
+/!\ Je passe en notation latex pour la suite
+
+Soit une machine de Turinf M=(K, \Sigma, \Gamma, \delta, q_0) et deux configurations (q_1, w_1, a_1, u_1) et (q_2, w_2, a_2, u_2). On dit que (q_1, w_1, a_1, u_1) conduit à (q_2, w_2, a_2, u_2) en une étape ssi voir démonstration.
+On note cela (q_1, w_1, a_1, u_1) \Tcouché_M (q_2, w_2, a_2, u_2)
+
+\delta : une fonction partielle : pour chaque doublet (etat, caractère) de la fonction, on a une ou zéro image (etat, caractère, direction D|G). Si elle n'était pas partielle, cela signifierai que pour chaque duet (etat, caractère), il y aurait un traitement, et la machine ne s'arreterait jamais.
+
+Une machine augmentée avec des états finaux devient un sextuplet M = (K, \Sigma, \Gamma, \delta, q_0, F). On y rajoute F, l'ensemble de états finaux.
+Contrairement aux AEF, il n'est pas obligatoire de lire entièrement le ruban. Quand la machine s'arrete, on regarde lé réponse.
+
+Pour savoir si un mot est validé, on regarde dans quel état on est quand le symbole s'arrete.
+
+Le langage accepté par une machine de Turing est Turing-Acceptable ou récursivement énumérable.
+
+Si la machine de Turing s'arrête sur toutes les entrées possibles (c'est à dire pour tous les mots w, w \appartien L ou \n'appartient pas L), alors le langage est dit Turing-décidable ou récursif. On dit que M semi-décide L, ou encore M accepte L.
+
+Les fonctions pouvant être calculés par une machine de Turing sont dites Turing-calculables.
+
+Les fonctions de N dans N. f(I^n) = I^f(n) pour tout n \appartenant à N
+
+Pour des machines + complexes, on utilise des machines de Turing comme des modules ou des sous-routines.
+
+Exemple de combinaison de machine de Turing.
+Les machines qui remplacent un symbole.
+·Une machine pour chaque symbole de l'alphabet \Gamma.
+
