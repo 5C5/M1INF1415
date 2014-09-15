@@ -9,4 +9,5 @@ Compte rendu du tp1 de réseau :
  
  Exercice 2
  
- 
+ 3) 1 Ko.
+ 4) 14 ms. 

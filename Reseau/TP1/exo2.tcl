@@ -1,3 +1,5 @@
+#Script des exos 2 et trois
+
 # instantiation du simulateur
 set ns [new Simulator]
 
@@ -7,11 +9,11 @@ $ns color 2 red
 $ns color 3 blue
 
 # instantiation du fichier de traces
-set file1 [open out.tr w]
+set file1 [open out2.tr w]
 $ns trace-all $file1
 
 # instantiation du fichier de traces pour NAM
-set file2 [open out.nam w]
+set file2 [open out2.nam w]
 $ns namtrace-all $file2
 
 # procédure pour lancer automatiquement le visualisateur NAM à la fin de la simulation
@@ -35,7 +37,9 @@ $ns duplex-link $n0 $n2 2Mb 10ms DropTail
 $ns duplex-link $n1 $n2 2Mb 10ms DropTail
 $ns duplex-link $n2 $n3 1.5Mb 20ms DropTail
 
-# instantiation d'une connexion UDP entre n1 et n3
+$ns queue-limit $n2 $n3 10
+
+# instanciation d'une connexion UDP entre n1 et n3
 set udp [new Agent/UDP]
 $ns attach-agent $n1 $udp
 set null [new Agent/Null]
@@ -56,10 +60,12 @@ $cbr0 set packetSize_ 1000
 $cbr0 set interval_ 0.005
 
 # instantiation d'un trafic FTP composé de paquets de 1000 octets, générés toutes les 5 ms
-set tcp0 [new Application/Traffic/CBR]
+set tcp0 [new Application/Traffic/FTP]
 $tcp0 attach-agent $tcp
-$tcp0 set packetSize_ 1000
-$tcp0 set interval_ 0.005
+# $tcp0 set packetSize_ 1000
+# $tcp0 set interval_ 0.005
+
+$ns duplex-link-op $n2 $n3 queuePos 0.5
 
 $udp set fid_ 3
 $tcp set fid_ 2
