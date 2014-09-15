@@ -264,7 +264,11 @@ public class SimpleLogo extends JFrame implements ActionListener {
 	}
 	
 	public void proc4() {
-		courante.maison();
+		//courante.maison();
+		TortueBalle t = new TortueBalle();
+		t.setPosition(400/2, 300/2);
+		t.setColor((int)(Math.round(Math.random() * 11)));
+		feuille.addTortue(t);
 	}
 	
 	public void proc5() {

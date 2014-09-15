@@ -17,7 +17,7 @@ public class TortueBalle extends Tortue {
 			Segment seg = (Segment) it.next();
 			seg.drawSegment(graph);
 		}
-		graph.fillOval(this.x -2, this.y -2, 4, 4);
+		graph.fillOval(this.x -5, this.y -5, 10, 10);
 		
 		
 	}
