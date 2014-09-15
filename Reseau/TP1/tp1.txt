@@ -9,5 +9,11 @@ Compte rendu du tp1 de réseau :
  
  Exercice 2
  
- 3) 1 Ko.
- 4) 14 ms. 
+ 3) 1040 o. 
+ 4) 14 ms. Oui, il est possible de lire les temps de transmissions et de propagation
+ 5) grep
+ 6) 3.019653 - 3.005493 = 0.014260 s d'attente dans le noeud 2
+ 
+ 
+ Exercice 3
+  

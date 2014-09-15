@@ -9,11 +9,11 @@ $ns color 2 red
 $ns color 3 blue
 
 # instantiation du fichier de traces
-set file1 [open out2.tr w]
+set file1 [open out3.tr w]
 $ns trace-all $file1
 
 # instantiation du fichier de traces pour NAM
-set file2 [open out2.nam w]
+set file2 [open out3.nam w]
 $ns namtrace-all $file2
 
 # procédure pour lancer automatiquement le visualisateur NAM à la fin de la simulation
@@ -22,7 +22,7 @@ global ns file1 file2
 $ns flush-trace
 close $file1
 close $file2
-exec nam out.nam &
+exec nam out3.nam &
 exit 0
 }
 
@@ -36,8 +36,8 @@ set n3 [$ns node]
 $ns duplex-link $n0 $n2 2Mb 10ms DropTail
 $ns duplex-link $n1 $n2 2Mb 10ms DropTail
 $ns duplex-link $n2 $n3 1.5Mb 20ms DropTail
-
-$ns queue-limit $n2 $n3 10
+$ns queue-limit $n2 $n3 15
+$ns duplex-link-op $n2 $n3 queuePos 0.5
 
 # instanciation d'une connexion UDP entre n1 et n3
 set udp [new Agent/UDP]
@@ -60,12 +60,10 @@ $cbr0 set packetSize_ 1000
 $cbr0 set interval_ 0.005
 
 # instantiation d'un trafic FTP composé de paquets de 1000 octets, générés toutes les 5 ms
-set tcp0 [new Application/Traffic/FTP]
+set tcp0 [new Application/FTP]
 $tcp0 attach-agent $tcp
 # $tcp0 set packetSize_ 1000
 # $tcp0 set interval_ 0.005
-
-$ns duplex-link-op $n2 $n3 queuePos 0.5
 
 $udp set fid_ 3
 $tcp set fid_ 2
