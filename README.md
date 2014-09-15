@@ -4,6 +4,11 @@ M1INF1415
 Bienvenue sur le Dépôt de la promo 2014-2015 du Master 1 Informatique
 
 
+Trois petites règles :
+-Pas de copie de code : on peut regarder, réutiliser les algos... mais c'est tout.
+-Tout abus sera puni. Et Je saurais qui c'est, de toute façon...
+-Dans le doute, faite une branche, forkez le dépôt.. mais évitez les problèmes
+
 # Utiliser GIT (facilement)
 
 ##Installation
