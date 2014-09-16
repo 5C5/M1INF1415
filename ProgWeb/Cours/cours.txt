@@ -1,0 +1,137 @@
+Cours de Programmation Web (MIF 13)
+Lionel Médini
+
+Voir LIF18
+
+cours du 16/09/2014
+
+Introduction : 
+
+-> Conception et developpement d'applications.
+-> Web : Tout ce qui peut etre taité dans un navigateur web.
+
+Application web : Application dont l'interface se situe dans un navigateur.
+
+Large eventail : 
+-solutions techniques (sockets, serveurs web, services web)
+-de paradigmes de prog (POO, archi distribuées ou orientées services)
+-De niveau de complexité (échange de donnée, de document, d'apppels, etc)
+
+Technologies coté serveur :
+-Utilisation d'un serveur Web (HTTP, config d'un serveur)
+-programmation coté serveur : génération dynamique de page à l'aide de scripts et de classes Java
+
+Techno client :
+-JavaScript et scripting coté client
+-méchanismes de requetes asynchrones(DOM, JSON, AJAX)
+
+Utilisation d'outils externes JQuery, GoogleWebToolkit, Spring
+
+paradigme de programmation :
+-déclarative
+-évenementielle
+-scripting
+
+
+Web : 
+-principe d'origine : accéder à des documents textuels
+-Actuellement : se servir de ressources (de différentes natures, Hypermédia, Interactives))
+
+-Un réseau de réseaux interconnectés.
+-Un ensemble de services (application)
+
+Hypertexte : texte avec des liens (permettant de passer entre les différentes parties d'un document)
+
+Web au départ : HTML (description) HTTP (protocol de requete de récupération du document à un serveur) URL, les trois technologies de bases.
+
+W3C World Wild Web Consortium.
+
+URL : accéder à une ressource, quelque soit son type. Fait souvent appel au DNS
+HTTP : protocole de niveau applicatif, client serveur, sans état(pas de mémoire des transactions précédentes)
+HTML : Langage de description des pages web, programmation déclarative. On décrit ce que l'on veut et non pas comment on le veut.
+
+Les forces en présences :
+-coté client, le navigateur (client HTTP), interpete les pages Web
+-coté serveur, attend les requetes HTTP et y répond, en renvoyant ce dont il dispose, en interrogeant des modules, ou en demandant à quelqu'un d'autre la réponse.
+
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+Technologies coté Serveur :
+
+HTTP et Serveur Web.
+
+-URI -> Uniform Ressource Identifier -> identifier de façon unique une ressource sur le web, en disant où elle se trouve (URL), ou en disant comment elle s'appelle (URN, au format "URN:"NID(namespace identifier) ": NSS (namespace specific string) (choix plus libre, et correspondant mieux à la définition d'un espace de noms). On parle maintenant aussi d'IRI, Internationalized Ressources Identifier, correspond à URI en acceptant les caractères Unicodes
+-URL ->
+-URN - > Uniform Ressource Name
+
+
+HTTP :Hyper Text Transfer Protocol, dédié au Web, port standard 80, protocole sans état.
+Syntaxe : 
+
+Commandes HTTP :GET, POST, HEAD, PUT, DELETE, TRACE? OPTIONS, CONNECT
+Version HTTP
+URL à partir de la racine du serveur
+En-tete : Nom de l'en-tete, deux point, Valeur de l'en-tete
+Une ligne vide
+
+remarque -> ttes les données sont transmises en clair et visibles dans l'URL lors d'un GET
+
+l'URL a une taille limitée
+
+POST est fait pour envoyer des données.
+Même syntaxe que GET, en transmettant les données dans le corps de la requete
+
+Identification du client :
+-From : adresse du client (obsolète)
+-Host : serveur, obligatoire en HTTP1.1
+-Referer : URL d'où l'on vient
+-User-Agent : perment normalement d'identifier le navigateur utilisé.
+
+Préférences du client :
+-Accept : liste des types MIME acceptés
+-Accept-Encoding : compress, gzip
+-Accept-Langage
+-Accept-Charset
+
+Informations pour le serveur :
+-Authorization(username:passwd encodé en base 64)
+-Cookies
+
+Les codes de réponses HTTP : indiquent le résultat de la requete, succès, échec, et dans ce cas, la description de la raison (fichier non présent, problème de droit)
+
+Cookies :
+-gérer les sessions
+-fichier texte url-encodée de 4Ko max, stockée sur le disque dur du client
+-information associées à un ensemble d'URL utilisées lors de tte requetes vers l'une de ces URL
+-permettent de propager un code d'accès : évite une authentification à chaque requete
+-identification ds une bdd
+-frnit des élément statiques au serveur
+
+Trsfrt par morceaux
+
+Encodage des ressourcess : MIME
+
+Encodage des caractères :
+-différents jeux de carac, différentes normes d'encodage
+-le mieux est d'utiliser de l'Unicode (de pref 8)
+
+L'encodage des caracs utilisés dans une ressource est cosidéré comme une sous-partie de l'encodage des ressources (lié au type MIME de la ressource, lié à la langue de la ressource)
+
+Format URL-encoded
+
+Prog coté serveur :
+-Exec sur le serveur.
+
+Serveur Side Inludes
+-intégrer des directives simple dans du code HTML...(assemblage de contenus statiques, insertion d'en-tête, etc)
+
+Common Gateway Interface : interface normalisé entre un serveur HTTP et un programme d'application
+->s'éxécute sur le serveur Web
+->Peut-être compilé (binaire) ou interprété (script)
+
+Sécurité :
+-limiter le nbre de :
+	-personne autorisés à créer des cripts
+	-reprtoire pouvant accueillir des cripts
+Attention aux CGI récupérés sur le web
+
+
