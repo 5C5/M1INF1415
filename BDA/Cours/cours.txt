@@ -1,0 +1,45 @@
+Cours de Gestion Web
+
+E Coquery
+
+Cours du 16/09/2014
+
+(pas convaincu...)
+
+Mappings Objet Relationnel/XML
+
+Pour ceux qui n'ont pas fait de xml, il y a un cours sur l'espace du prof : http://liris.cnrs.fr/~ecoquery
+
+
+JPA Java Persitence API.
+Correspondance objet/relationnel :
+une classe<=>une table
+un objet <=> un n-uplet dans une table
+Un champ <=> un attribut
+
+Pour un type SQL <-> un type Java.
+
+Important : définir une clé primaire en selectionnant un attribut ou un groupe d'attibut servant d'indetifiant. Possibilité de laisser la gestion de l'identifiant au cadre applicatif (autoincrement, sequences)
+
+Les champs desstinés à ne pas être sauvegarder sont marqués transcient
+
+En java, on charge les bibs javax.persitence.*
+
+On signale le passage de l'un à l'autre dans le code avec @ (@Entity, @ID)
+Le contructeur est toujours vide.
+
+Entitymanager => truc qui s'occupe de la base de donnée (gestion, connexion, récupération de données).
+On appelle la méthode persist sur une intance de classe marquée (avec @ et tout) et le gestionnaire la prend en charge.
+
+Champ contenant une collection de valeur  => ajout d'une table pour ce champ
+
+
+Plsrs stratégies pour représenter une classe qui hérite d'une autre :
+-une table par hiérarchie
+-une table par classe avec jointure
+-une table par classe concrète
+
+
+-Association de type 1-1 (OneToOne) -> clé étrangère correspodant au champ indiquant l'objet associé
+
+

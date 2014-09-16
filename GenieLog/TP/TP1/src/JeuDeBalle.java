@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class JeuDeBalle {
@@ -9,12 +10,23 @@ public class JeuDeBalle {
 	public JeuDeBalle() {
 		
 		equipe = new ArrayList<TortueAmelioree>();
+		TortueAmelioree t;
 		Iterator<TortueAmelioree> it;
+		
 		for(int i = 0; i < 6; i++){
 			
-			equipe.add(new TortueAmelioree());
+			t = new TortueAmelioree();
 			it = equipe.iterator();
+			
+			while(it.hasNext()){
+				
+				it.next().ajouterTortue(t);
+				t.ajouterTortue(it.next());
+			}
+			equipe.add(t);
 		}
+		balle = new TortueBalle();
 	}
+	
 
 }
