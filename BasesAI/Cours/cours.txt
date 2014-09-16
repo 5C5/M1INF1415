@@ -206,3 +206,73 @@ Recherche locale gloutonne : très rapide, peu de consommation mémoire, mais fa
 Avantage : représentation explicite des connaissances; peut etre appliquée à de nbreux problèmes;
 Principe : identifier les variables du problèmes; définir les contraintes
 
+
+_____________________________________________________________
+Cours du 16/09/2014
+
+La logique :
+plusieurs logiques
+-logique des propositions( logique d'ordre 0)
+-logique des prédicats (logique d'ordre 1)
+-D'autres
+
+Logique des propositions
+-très simple, à la base de presque toutes les logiques
+
+Aspects syntaxiques : 
+-comment écrire des formules ? À l'aide d'un alphabet, un ensemble de symbole -> possibilité d'écrire des mots avec cet alphabet
+
+Notions de proposition :
+Une proposition : enoncé du langage ordinaire
+
+Notion de valeur de vérité : une proposition est vraie si elle est en adéquation avec les faits du monde réel
+
+Formule statisfiable : il existe une interprétation de la formule qui est vraie (on dit qu'elle est consistante)
+
+Formule insatisfiable : quelque soit l'interprétation, la formule est toujours fausse (inconsistente)
+
+Tautologie : pour toutes les interprétations, la formule est vraie (valide)
+
+G conséquence logique de A (A ensemble de formule) se note A |- G
+Pour que A |- G soit vrai, il faut que A^-G soit tout le temps faux -> principe de réputation.
+
+
+Tout ce qui est démontrable en logique est vrai. Et tout ce qui est vrai est démontrable
+
+Un ensemble S de clause est insatisfiable ssi S mène par résolution à la clause vide. On note <\latex> S|- _{reso}<\latex>
+
+
+Logique des prédicats : plus expressive que la logique des propositions, mais basée sur cette meme logique d'ordre 0
+
+Un terme est :
+-soit une constante
+-soit une variable
+-soit une Fonction
+
+Un atome est :
+-soit une proposition
+-soit un prédicat
+
+Exercice de cours :
+
+"Tous les lions sont féroces"
+-> prédicat F(x) : x est féroce
+			L(x) : x est un lion
+			Pour tout (symbole adéquat du A retourné) Lion(x) -> Féroce(x)
+
+"Quelques Lions ne boivent pas de café"
+C(x) : x boit du café.
+
+Il existe (E à l'envers) (Lion(x) ^-C(x))
+
+"Aucun singe n'est soldat"
+
+Singe(x) : x est singe
+Soldat(x) : x est soldat
+
+(A renversé) (Singe(x) -> -Soldat(x))
+
+"Tous les singes sont malicieux"
+(A renversé) (Singe(x) -> Malicieux(x))
+
+
