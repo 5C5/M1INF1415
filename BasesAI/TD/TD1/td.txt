@@ -1,0 +1,71 @@
+TD1 Représentation et Résolution de problèmes
+
+Theoreme des 4 couleurs :
+22 régions
+quatre couleurs
+
+Etat initial : carte non coloriée (vierge)
+Etat : carte découpée en 22 régions coloriées ou non.
+Etat final : 22 régions coloriées de manières à respecter le théorème des 4 couleurs
+Opérations : colorier une région avec une des quatre couleur
+Etat successeur : m^ carte avec une région de + de coloriée
+Cout : 1 (cout final de 22) pas de solutions meilleures qu'une autre
+Fonction de but : cout de 22 et respect de l'état but.
+
+Amélioration des opération : colorier une région voisine avec 1 des quatres couleurs non présentes dans une région limitrophe.
+
+Heuristique : Utiliser une couleur déjà utilisée en majoritée.
+
+-----------------------------------------------------------------
+Sudoku : 
+-Ma version
+Etat : Grille 9x9 cases remplies ou non
+Etat initial : Grille avec N cases remplies de chifres (1-9) respectant les règles
+Etat but : Grille entièrement remplie de chiffres (1-9) respectant les règles
+
+Opération : poser un chiffre (1-9) n'apparaissant ni dans la colonne, ni dans la ligne, ni dans la sous-grille(3x3)
+Etat sucesseur : m^ grille avec une case de + de remplie
+Cout : 1...
+Fonction de but : cout de 81 et respect de l'état but.
+
+heuristique : 
+
+-Version Collective
+Etat : grille de 9x9 cases composées de 9 sous grilles (3x3) 
+Etat initial : grille partiellement remplie de chiffres de 1 à 9 ou de cases vide sans conflit
+Etat Final :Grille entièrement remplie sans conflits dans les colonnes, lignes et sous grilles
+Opérations : insérer un chiffre entre 1 et 9 dans une case vide de sorte qu'il ne soit pas déjà présent dans la ligne, la colonne ou la sous grille de la case
+cout : +1
+
+heuristique  :
+1 - On cherche les chiffres déjà placés huit fois et on complète
+1bis - compléter les lignes/colonnes/sous-grilles avec 1 seule case vide
+2 - choix de la case la plus contrainte puis du chiffre
+3 - choix du chiffre le plus utilisé puis d'une case
+
+les heuristiques 1 et 1bis sont des spécialisations de 2 et 3.
+---------------------------------------------------------------------------
+Problèmes de planification : Taquin
+
+Etat : grille de NxN ou sont placés N-1 marqués de 1 à N-1 et une case vide.
+Etat initial : grille avec disposition au hasard des cases
+Etat final : grille avec cases disposés dans l'ordre numérique et case vide au centre
+Etat sucesseur : m^ grille avec les deux cases inversées.
+Opérateur : déplacer une case adjacente vers l'emplacement vide
+Cout : 1
+Fonction but :
+
+heuristique : 
+-déplacer en priorité les cases les plus loin de leur position finale.
+
+Possibilité d'avoir quatre opérateur, chacun correspondant à chacun des déplacements de la case vide (heu, bas, droite gauche).
+
+
+Tour de Hanoi : 
+Etat : deux plateux de trois piquets ayant chacun un nombre de de disque (total égal à quatre) ou les disques sont placés sur des disques supérieurs ou tout seul et un sens pour passer d'un plateau de l'un à l'autre.
+Etat initial : tous les diques dans l'ordre croissant en partant du haut sur le piquet de droite.
+Etat final : tous les diques dans l'ordre croissant en partant du haut sur le piquet de gauche.
+
+Opérateur : Pour passer d'un état qui est un problème à trois sous états, il faut isoler le plus grand bloc
+
+Décomposition du problème : chaque état est un sous problème : une configuration et aller dans une autre configuration.
