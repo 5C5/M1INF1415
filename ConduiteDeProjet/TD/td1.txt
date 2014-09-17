@@ -24,9 +24,9 @@ main.c
 
 -> commandes correspondant
 
-gcc - c hello.c - o hello.o -W -Wall -ansi
+gcc -c hello.c - o hello.o -W -Wall -ansi
 gcc -c main.c -o main.o -W -Wall -ansi
-gcc - hello hello.o main.o
+gcc -o hello hello.o main.o
 
 outils make -> Fichier nommé Makefile.
 desc des traitements à réaliser.
@@ -68,10 +68,10 @@ distclean : clean
 Utilisation de macros dans les règles :
 Nom : action
 $@	: définit la cible courante
-@^	: la chaîne qui contient toutes les dépendances
-@?	: la chaîne qui contient ttes les dépendances plus récentes que la cible.
-@<	: La 1ère dépendance
-@*	: préfixe partagé entre la cible et la première dépendance
+$^	: la chaîne qui contient toutes les dépendances
+$?	: la chaîne qui contient ttes les dépendances plus récentes que la cible.
+$<	: La 1ère dépendance
+$*	: préfixe partagé entre la cible et la première dépendance
 $+	: la chaînes de ttes les dépendances sans doublons.
 
 Ainsi, si on réécrit le Makefile précédent :
