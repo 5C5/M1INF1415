@@ -4,8 +4,10 @@ import java.util.Iterator;
 
 public class JeuDeBalle {
 
-	public ArrayList<TortueAmelioree> equipe;
-	public TortueBalle balle;
+	private boolean actif = false;
+	
+	private ArrayList<TortueAmelioree> equipe;
+	private TortueBalle balle;
 	
 	public JeuDeBalle() {
 		
@@ -26,6 +28,38 @@ public class JeuDeBalle {
 			equipe.add(t);
 		}
 		balle = new TortueBalle();
+		equipe.get(-1).setBalle(balle);
+	}
+	
+	public void lancer(){
+		
+		if (!actif){
+			
+			int nbre;
+			for(TortueAmelioree t : equipe){
+				
+				nbre = (int)(Math.random() * 5);
+				switch(nbre){
+					case 0 :
+						t.avancer(50);
+						
+					case 1 :
+						t.reculer(50);
+						t.droite(180);
+						
+					case 2 :
+						t.droite((int)Math.random() * 90);
+						t.avancer(50);
+						
+					case 3 : 
+						t.gauche((int)Math.random() * 90);
+						t.avancer(50);
+					
+					case 4 :
+					
+				}
+			}
+		}
 	}
 	
 

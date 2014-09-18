@@ -6,6 +6,8 @@ import java.util.Iterator;
 
 
 public class TortueBalle extends Tortue {
+	
+	private TortueAmelioree possesseur;
 
 	public TortueBalle() {
 		// TODO Stub du constructeur généré automatiquement
@@ -20,6 +22,10 @@ public class TortueBalle extends Tortue {
 		graph.fillOval(this.x -5, this.y -5, 10, 10);
 		
 		
+	}
+	public void setPossesseur(TortueAmelioree t){
+		
+		possesseur = t;
 	}
 
 }
