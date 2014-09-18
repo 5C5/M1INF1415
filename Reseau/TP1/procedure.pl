@@ -84,9 +84,7 @@ sub delaiBeB {
 		   # printf "on entre entre les bornes définies\n";
 
 # On vérifie que ce soit un paquet UDP
-#		   if($line =~ m/udp/){
-
-		   #printf "on reconnait un paquet UDP\n";
+		   if($liste[4] == "udp"){
 
 # On parcours la liste des paquets reçus, en cherchant le numéro de paquet courant
 			   for($i = 0; $i < @paquets; $i++){
@@ -100,7 +98,7 @@ sub delaiBeB {
 						
 						   $paquets[$i][2] = $liste[1] - $paquets[$i][1];
 
-						   printf "delai de bout en bout 1  = $paquets[$i][1] - $liste[1], soit $paquets[$i][2]\n";
+						   #printf "delai de bout en bout 1  = $paquets[$i][1] - $liste[1], soit $paquets[$i][2]\n";
 					   }
 					   # On quitte le boucle quand on l'a trouvé
 					   last;
@@ -116,25 +114,24 @@ sub delaiBeB {
 			   }
 			   $trouve = 0;
 		   }
-#	   }
+	   }
 	   elsif($liste[1] > $t2){
 		   $stop = 0;
 	   }
 	
 	}
 	$som = 0;
-# On fait la somme de tous les délais de bout en bout de paquets arrivés
+	
 	for($i = 0; $i < @paquets; $i++){
 
-						   printf "delai de bout en bout = $paquets[$i][2]\n";
+		#printf "delai de bout en bout = $paquets[$i][2]\n";
 		if($paquets[$i][2] > 0){
 
 			$som += $paquets[$i][2];
 			$nbrePaquet ++;
 		}
 	}
-	#$moy = 0;
-	$moy = $som/$nbrePaquet;
+	$moy = sprintf("%0.5f",$som/$nbrePaquet);
 
 	printf "Le délai moyen de bout en bout entre $t1 et $t2 est de $moy, pour un total de $nbrePaquet paquets arrivés\n";
 
