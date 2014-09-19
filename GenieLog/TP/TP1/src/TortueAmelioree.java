@@ -23,9 +23,17 @@ public class TortueAmelioree extends Tortue {
 		
 	}
 	
+	public TortueAmelioree (){
+		
+		numero ++;
+		nom = new String("Franklin n°" + numero);
+		listeTortue = new ArrayList<TortueAmelioree>();
+	}
+
 	public void setBalle(TortueBalle b){
 		
 		balle = b;
+		balle.setPosition(this.getX(), this.getY());
 	}
 	
 	public void passer(TortueAmelioree t){
@@ -34,18 +42,11 @@ public class TortueAmelioree extends Tortue {
 		t.setBalle(balle);
 		balle = null;
 	}
-	
-	public TortueAmelioree (){
-		
-		numero ++;
-		nom = new String("Franklin n°" + numero);
-		listeTortue = new ArrayList<TortueAmelioree>();
-	}
-	
 	public int getX(){
 		
 		return this.x;
 	}
+	
 	public int getY(){
 		
 		return this.y;
@@ -106,8 +107,15 @@ public class TortueAmelioree extends Tortue {
 				if(balle != null){
 					
 					this.passer(t);
+					System.out.println(this.getNom() + " passe à " + t.getNom() +"!");
+					balle = null;
 				}
 			}
 		}
+		if(balle != null){
+			
+			balle.setPosition(this.getX(), this.getY());
+		}
+		
 	}
 }
