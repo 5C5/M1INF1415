@@ -1,0 +1,72 @@
+TD1 de calcul et complexité
+
+Exercice 1
+A-A
+|X|
+A-A
+
+
+
+A-A-A
+|\|/|
+| *	|
+|/|\|
+A-A-A
+
+
+
+|-----------|
+A - A - A - A
+|	|	|	|
+A - A - A - A
+|-----------|
+
+
+
+Si on part de quatre sommets disposés en carré, et qu'on ajoute les deux sommets sipplémentaires à chaque fois à droite, il suffit de relier les extrémités (les sommets n'ayant naturellement deux arretes, une vers le sommet voisin horizontalement et une vers le sommet voisin verticalement) entre eux (diagonales, par exemple)
+
+Correction 
+L'arrete a_{ij} € l'ensemble des Arretes ssi
+{ 	j = i+1 %n
+	j = i-1 %n
+	j = i+ (n/2) % n
+}
+i et j etant les numéros des sommets reliés.
+
+
+
+Exercice B
+Preuve : Si \sqrt{2} est rationnel, donc il existe deux entiers m et n tel que \sqrt{2} = m/n
+m et n premiers entre eux, et l'un est pair et l'autre impar.
+m = 2, n = 1, m/n = 2 > \sqrt{2}
+m = 3, n = 2, m/n = 1,5 > \sqrt{2}
+m = 4, n = 3, m/n = 1, 3333 < \sqrt{2}
+m = 5, n = 4, m/n = 1, 25 < \sqrt{2}
+il n'existe pas deux entiers m et n tel que m/n = \sqrt{2}. Donc \sqrt{2} n'est pas rationnel
+
+Correction : 
+m/n = \sqrt{2}
+m²/n² = 2
+m² = 2q²
+Donc p est pair, p = 2k
+4k² = 2 q² => q² = 2k²
+q est pair contradiction car on présumait que l'un était par et l'autre impair (sinon \sqrt{2} aurait été un entier)
+
+
+Exercice C
+Initialisation : n= 0 donc n⁴- 4n² = 0 et 0/3 = 0 donc divisible
+
+Récurence = 
+
+(n+1)⁴ - 4(n+1)² = (n+1)²(n+1)² - 4(n² + 2n + 1) = (n² + 2n + 1)(n²+ 2n +1) - 4n² - 8n - 4
+
+
+<=> n⁴ + 4n³ + n² + 4n² + 2n + n² + 2n + 1 - 4n² - 8n - 4
+<=> n⁴ + 4n³ + 2n² - 4n - 3
+<=> (n⁴ - 4k²) + 6k² + 4k³ - 4k - 3
+<=> (bon) + 3(2k² + k³ + k - 1) + k³ - k
+<=> (bon) + (un truc divisble par 3) + k(k² -1)
+<=>	(bon) + "						" + k((k+ 1)(k-1))
+-> la dernière partie est le produit de trois chiffres consécutibles, donc au moins l'un des trois est divisible par trois.
+
+Donc le théroème est vrai pour n+1, donc le théorème est vrai pour tout n.
