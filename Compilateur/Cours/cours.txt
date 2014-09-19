@@ -86,3 +86,209 @@ La gestion des déclarations : associer une signification à chaque identificate
 Dans la table des symboles : n°unique identification --> signification (descripteurs)
 
 ->décrire un type
+
+_ _ _ _ _ _ _ _ _ _ _ _ _ _
+Cours du 18/09
+
+Description d'un type
+
+base -> entier, reel, booleen, char
+tableau -> n dimensions, type d'let, intervalles
+pointeur -> types des elt pointés.
+structure -> n champs(nom + type)
+enumeration -> liste des valeurs
+intervalles -> bornes min et max + type borne
++ types utilisateurs
+
+TS des symboles :
+une valeur | type symbole | une description du type
+
+
+pas de notion d'ordre dans la table des symboles, donc nécessité de rajouter des données pour ordonner : un décalage mémoire.
+
+ex : 
+var a : integer -> 16 bits
+	b : array[1 5n -3 3] of real -> 32 bits
+	c : boolean -> 8 bits
+
+dans la table des symboles, on aura :
+a | var | int \0
+b | var | [1 5, -3 3] real \2
+c | var | bool \142
+
+Dv -> var listDecl
+listDecl -> decl listDecl
+		 |  decl
+decl -> listid : type;
+
+a, b : integer;
+
+		D
+	  / | \
+	 /  |  \
+Listid	|   Type
+   /|\  :	  |
+  / | \		  |
+id  |  \	 integer
+ |  ,  listid
+ b		|
+		id
+		|
+		b
+
+Type ↑description
+Listeid↑ liste des n° uniques
+
+descl -> listid : Type;
+	qqce id € Listeid↑liste
+		ajouter ds TS une ligne |id|var|Type↑desc|
+
+Listeid -> id, listeid_3
+	Listeid↑id = {id↑numero} U Listeid_3↑liste
+
+| id
+	listeid↑liste = {id↑numero}
+
+Type -> integer			Type↑desc = creerTypeEntier()
+	 |  real
+	 |	boolean
+	 |	char
+	 |	^type		Type↑desc = creerptr(Type↑desc)
+	 ·
+	 ·
+	 ·
+	 ·
+
+ex : 
+type jour = {lundi, mardi, .... , mercredi};
+				↓
+			constante
+			type jour
+			valeur 1
+
+var t : jour;
+t = lundi;
+
+type date = record
+				nom : jour;
+				mois, annee : integer;
+			end
+
+var d = date
+d.nom		-> accès au champ nom de la structure Date
+[@id+decalage(date, nom)] = lundi
+
+structure stockée dans une autre table des symboles, sous la forme
+| nom | champ | jour|
+| mois| champ | int |
+|annee| champ | int |
+
+struct DescType {
+	int code;
+	DescType * elts;
+	TS * champs;
+}
+
+_ _ _ _ _ _ _ _
+génération de code
+
+code pascal --> code 3@
+				|-> code simple, instructions proches de l'assembleur, non typé, jeu d'instructions réduit (une vingtaine):
+
+-reserver n -> reserver n octets en mémoires pour les données/variables/temporaire.
+
+-retourner n -> fin d'un sous prog retour à l'apellant.
+
+-renvoyer x -> affecte le résultat d'une fnct° /!\ cette instruction ne termine pas la fnct°;
+
+-fin --> fin du programme;
+
+-nop --> ne fait rien.
+
+Le nom du code vient de la, les instruct° ayant max trois adresses.
+instruction :
+x = y op z	calcul y op z stocke le résultt dans x
+	  |
+	  |-> + - * / && || < <= > >= == !=
+
+x = op y
+	|
+	|-> - !
+
+x = y
+x = &y
+x = *y
+*x = y
+aller à x
+si y aller à x
+appeller x		--> appeler un sous programme
+empiler x
+empiler &x	--> stocke &x dans le sommet de pile
+empiler *x	--> stocke *x dans le sommet de pile
+depiler x	--> destocke le sommet de pile dans x
+depiler *x	--> destocke le sommet de pile dans la case de x
+
+
+program test :
+type to = array[1....5] of integer;
+var b: ^ real;
+function f (arg1 : real) : real;
+var a : integer;
+begin
+	f = arg1* a;
+end
+procedure p(arg1 : integer)
+begin
+end
+begin
+	p(f(b^));
+end
+
+
+Table des identificateurs
+test| O
+to	| 1
+b	| 2
+f	| 3
+arg1| 4
+a	| 5
+p	|6
+
+Table des symboles
+0	prg
+1 	type	tab[1..5]/int
+2	var		ptr(real)
+3	fct°	arite 1, res, real
+6	proc	arite 1
+
+TS de f
+4	arg	real
+5	var	int
+
+TS de P
+4	arg	int
+
+Code 3@ de f
+	f : nop
+		reserver 6
+		to = arg1 * a			to est ecrit __tmps___ pour éviter d'être confondu avec les variables utilisateurs
+		renvoyer to
+		retourner &
+
+code 3@ p
+	p : nop
+		reserver 0				on réserve 0 car pas d'affect ds la procedure
+		retourner 2
+
+code 3@ test
+	test : nop
+		   reserver 12
+		   empiler &t1
+		   to = *b
+		   empiler to
+		   appeller f
+		   empiler t1
+		   appeler p
+		   fin
+
+
