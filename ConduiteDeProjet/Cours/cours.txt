@@ -69,4 +69,81 @@ Les branches correspondent à une "copie" du projet, pour :
 -Corriger des bugs sur des versions antérieures
 -Définir une version livrable.
 
+______________________________________________________
+Cours du 18/09/2014
+
+MAVEN - FORGE - INTEGRATION
+
+Au dela du code :
+-tests (unitaires, intégration, fonctionnels)
+-Documentation
+-Partage des sources (Git, Mercurial)
+-Suivi de bugs / évolutions -> maintenance, gestionaire de ticket
+-Qualité du code (standard de programmation, standrads d'écritures)
+-Distribution
+
+Possibilité d'automatiser, d'industrialiser ces cycles
+
+Outils pour y répondre :
+-Framework de test ->
+-Générateur de documentation -> Javadoc, Rubydoc
+-Gestionnaire de version
+-Gestionnaire de ticket
+-Outils d'audit de code
+-Scripts, builers
+
+MAVEN : 
+utilisation industrielle pour les projets en Java
+Automatisation du traitement du cycle de vie :
+-peut être vu comme un "super Makefile", java comme lgge de script
+-lance l'éxécut° d'outils : Compilation, test automatisés, archives, Déploiement, génération de documentation
+
+Basée sur un système de plugins :
+-un plugin <=> un script java : une classe avec une méthode particulière, paramétrable via du XML
+-une éxécution de maven  <-> suite d'éxécution de plugin
+Nbreux plugin disponibles
+-pas ts installés au départ
+-Système au départ
+-Système de téléchargement de plugin à la demande.
+
+Une phase regroupe un ensemble de tâches (une tâche -> un plugin)
+
+Un cycle de vie est une suite de phases, le déclenchement de l'une d'elle déclenche les phases précédentes
+
+Un cycle de vue dépend du packaging (jar, war, ...)
+-packaging = type de projet
+-Format d'archive
+-Ordre des phases
+-Affectation tâches -> phases
+-Préconfiguration des taches
+-peut etre reconfiguré.
+
+Maven -> extrement souple avec des bons défauts.
+
+pom.xml -> config du projet
+src/ -> sources
+	-main/ (à distribuer)
+		-java/ -> à distribuer
+		-ressources/ -> fichiers à distribuer
+		-webapp/ -> ressources web
+		-javacc/
+	-test/ -> uniquement pour les tests
+-target/ ->tt ce qui est généré, est supprimé par clean.
+
+Repository maven : dépot contenant des plugins, des bibliothèques (en général java)
+Sur le web : téléchargement autoatique à la demande
+
+_ _ _ _ _ _ _ _ _ _ _ 
+Forge logicielle : 
+ensemble d'ouutils collaboratif pour le developpement
+-espace collaboratif (partage de document, wiki, depot, SVN, Mercurial, Git, etc)
+-gestion des tâches (Calendrier , Gantt, bug tracking, support, tache diverses)
+Systèmes d'annonces
+
+forge.univ-lyon1.fr
+Forge Redmine
+
+__ _ _ _ _ __ __ __ 
+Mercurial
+-> Dispose d'une interface graphique
 
