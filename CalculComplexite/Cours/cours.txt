@@ -68,3 +68,104 @@ Exemple de combinaison de machine de Turing.
 Les machines qui remplacent un symbole.
 ·Une machine pour chaque symbole de l'alphabet \Gamma.
 
+
+___________________________________________________________
+Cours du 18/09/2014
+
+Notes to self:
+configuration : (q, w, a, u)
+-q est le symbole utilisé pour les etats de l'automate.
+-a le symbole courant de \Sigma
+-w la partie a gauche du symbole courant
+-u la partie à droite
+
+--> possibilité de remplacer cette écriture par (q, w_a_u)
+-q l'etat courant
+-w_a_u le ruban ou le symbole courant est souligné.
+
+les transitions s'écrivent \delta(q_1, a) = (q_2, b, D|G)
+-q_1 l'etat courant
+-a le symbole lu
+-q_2 l'etat après transition
+-b le symbole lu après transition
+-D|G droite ou gauche, la direction dans laquelle s'est déplacée la tete de lecture
+
+
+
+
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+Machine de Turing a ruban infini dans les deux sens
+->Au lieu d'avoir un seul blanc à gauche, on a un nbre infini de blanc à gauche.
+
+Pour simuler une machine à ruban infini dans les deux sens M, on utilise un ruban à deux pistes (on coupe en deux de manière arbitraire le ruban de M)
+
+on ajoute du coup le symbole $ pour signifier que on est tout à gauche.
+M':
+|$|i|j|k|
+| |h|g|f|
+
+M' simule M (M1'), puis on redéplie au bout (Mf), et on vérifie que le comportement est le même
+
+M1' qque soit q € K (de M), on a 2 copies des M1' :
+	<q, 1> et <q, 2> --> M1' piste du bas
+	  |
+	  V
+M1' piste du haut
+
+Quand M1' prime s'arrête, la tete est placée sur un symbole caractérisé (par une barre horizontale?)
+
+M = (K, \Sigma, \Theta, \delte, F)
+M1'= (K_1', \Sigma, \Theta', \delta_1', F_1')
+où K_1'= (K U {qf}) * {1, 2}, qf n'appartenant pas à K
+et F_1' = {qf} * {1, 2}
+Le symbole $ symbolise un changement de piste (virtuel)
+
+(a) piste du haut
+si \delta(q, a_1) = (p, b, D)	(M)
+alors \delta_1'(<q, 1>, \alpha_1, \alpha_2) = (<p, 1>, (b,\alpha_2), D)
+
+et si \delta(q, \alpha_1) = (p, b, G)
+alors \delta_1'(<q, (\alpha_1, \alpha_2)) = (<q, 1>, (\alpha_1, \alpha_2)) = (<p, 1>, (b, \alpha_2), G)
+
+(b) piste du bas
+si \delta(q, \alpha_1) = (p, b, D)
+alors \delta_1 '(<q, 2>, (\alpha_1, \alpha_2)) = (<p, 2>, (\alpha_1, b), G)
+
+et si on remplace D par Gauche dans la ligne de M, alors on remplace G par Droite dans la ligne de M1'
+
+(c)Changement de piste :
+Quelque soit q € K
+\delta_1 (<q, 1>, $) = (<q, 2>, $, D)
+et inversement :
+\delta_1'(<q, 2>, $) = (<q, 1>, $, D)
+(on va toujurs vers la droite quand sort du $)
+
+(d) extension à droite : si on lit un blanc (sur deux lignes), on remplace par deux blanc (un par ligne)
+qque soit q € K
+\delta_1'(<q, 1>, #) = (<q, 1>, (#, #), S)		S pour Stag
+\delta_1'(<q, 2>, #) = (<q, 2>, (#, #), S)
+
+(e) Mémorisation de la tête à la fin de M1'
+qque soit q € F
+\delta_1'(<q, A>, (\alpha_1, \alpha_2)) = (<qf, 1>, (\alpha_1^_, \alpha_2), S)
+\delta_1'(<q, 2>, (\alpha_1, \alpha_2)) = (<qf, 2>, (\alpha_1, \alpha_2^_), S)
+
+à l'arret de M1'
+
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+Machine à copier à 2 rubans
+
+(\sigma minuscule symbole courant pour les automates dessinés)
+
+M' Simule M à k rubans
+(standard)
+M', 1 ruban, 2k pistes  ->k rubans
+						->positions des k tetes
+M' : (1) mettre $ à gauche
+	 (2) diviser en 2k pistes
+	 (3) #w# sur la 1ere piste
+	 (4) positionner les tetes
+	 (5) simulat° de M sur w
+	 (6> 2k pistes -> 1 piste, place la tete, s'arrete
+
+Possible de simuler une machine multi-dimensionnelle en linéarisant le plan.
