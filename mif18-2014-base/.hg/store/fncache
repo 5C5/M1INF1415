@@ -1,0 +1,7 @@
+data/orm-2014/initialisation-pg.sql.i
+data/orm-2014/src/main/java/mif18/orm/Cinema.java.i
+data/orm-2014/initialisation-h2.sql.i
+data/.hgignore.i
+data/orm-2014/pom.xml.i
+data/orm-2014/src/main/resources/META-INF/persistence.xml.i
+data/orm-2014/src/test/java/mif18/orm/MappingTest.java.i
