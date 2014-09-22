@@ -1,4 +1,4 @@
-cours de réseaux
+cours de réseaux MIF11
 
 08/09
 
@@ -276,4 +276,130 @@ Retransmission rapide : en cas de réception de trois ACKs identiques, alors on 
 
 Contrôle de Flux : permet au destinataire de demander à l'expéditeur de ralentir sa vitesse d'émission/ de réduire son débit en réduisant sa fenetre d'anticipation.
 
+_______________________________________________________________
+Cours du 22/09/2014
 
+Couche liaison de données :
+
+CC le mercredi 8/10 de 11H45 à 12h15
+
+Couche liaison de donnée, couche de niveau 2
+
+Services et principes associés à cette couche
+
+Vocabulaire : 
+-noeud (tt élément du réseau),
+-lien de communicaion (reliant des noeuds voisins), canal/medium de communication
+-Trame -> paquet de donnée au niveau 2
+
+Objectif du niveau 2 : assurer le trfrt de données entre deux ou plsrs voisins
+
+Protocoles de liaison de données :
+-Ethernet, PPP, FrameRelay, IEE 802.11(WiFi)
+-Token (bus & Ring), HDLC
+
+Ces différents protocoles peuvent fournir des services différents -> Certains services sont obligatoires pour tt protocole de la couche 2, d'autres sont facultatifs.
+
+Ces protocoles sont implémentés dans un adaptateur (Network Interface Card) -> indépendantes, séparés des autres couches -> Mode semi-autonome.
+
+Service de la couche 2 :
+-Tramage : 
+	-Encapsulation du datagramme ds une trame + champs supplémentaires (en-tête de niveau 2, informations sur la couche 2 , adresses MAC)
+	-Assurer la communication entre deux noeuds voisins, réaliser les services de niveau 2.
+	-Délimitation d'une trame  : fanion(bit), marqueur de de début et de fin (caractères)
+
+-Détection d'erreur :
+	-Erreurs possibles su le lien de communication (atténuation, bruits, collisions /interférences, Echo, Diaphonie)
+	-Mécanisme réalisé au niveau hardware en général (optionnel)
+
+Principe de la détection d'erreur : 
+-Ajout de données de contrôle dans la trame par le noeud source (champs de détection d'erreur, checksum)
+-Test de validité du paquet par le récepteur (utilisation du champs détection d'erreur par le récepteur : réponse soit positive, sans erreur, soit négative, avec erreur)
+-Pas fiable à 100%, compromission sur la taille du champs détection d'erreur. Fiabilité dépendant aussi de la puissance du mécanisme de détection d'erreur.
+
+Possibilité de faux positifs (erreurs s'annulant) et de faux négatifs
+
+Premier mécanisme de détection d'erreur : bit de parité
+-Avec un seul bit :
+	-parité paire
+	-parité impaire - Nbre de bit 1, bit de parité inclus, doit être impaire
+	-détection simple
+-Parité à deux dimensions
+	-Détection de deux erreurs simultanées possible
+	-Correction d'une erreur possible
+
+Dans le monde IP, correction d'erreur dans la couche 3
+-Somme sur les données : découpées en séquences continues de n bits, utilisée comme somme de contrôle
+-Emetteur : donnée découpée en séquences de 16bits, complément à 1 de cette somme
+-Récepteur : Somme sur les donnée reçues (sommes de contrôle incluses) => si que des un, c'est un succès.
+-Utilisée sur les couches 3/4, mais pas sur la couche 2 :> protection faible, mais simple à réaliser -> utilisation duhardware au niveau 2, opérations plus compliquées permises.
+
+CRC : Cyclic Redundancy Check
+-D : Données à protéger
+-G : générateur négocié entre la source et le destinateur, r bits à ajouter à D
+
+Fiabilité :
+-1 seule erreur tjrs détectée des que deux 1 dans G
+-2 erreurs détectées dès que trois 1 ds G
+
+Très utilisé, taille du générateur de 2 à 65 bits
+
+récupération d'erreur  : 
+-Si destinataire reçoit un paquet qu'il considère en erreur -> hypothèse de lien relativement fiable, et qu'en cas d'erreur, on peut retransmettre.
+-Rejeter le paquet et ne rien faire d'autre -> les couches supérieures s'en occuperont (hypothèse)
+-Prévenir la source qui peut éventuellement retransmettre -> envoi d'un ack lorsque qu'un paquet est reçu avec succès; ne rien faire en cas d'erreur. On attend que la source retransmette le paquet lorsque elle ne reçoit pas d'acquittement. Possiblité d'utiliser la fênetre glissante (plusieurs paquets à la fois).
+-Corriger soi-même les erreurs (correction d'erreur) : possible avec l'utilisation de code correcteurs (code de Hamming), peu utilié en pratique au niveau de la couche 2. ->Utilisé au niveau 1
+
+------------------------------------------------------
+Types de lien de communication :
+-unidirectionel : un seul sens
+-bidirectionnel :
+	-half-duplex : communication possible dans un seul sens à la fois
+	-full duplex : communication simultanée possible.
+
+Accès aux liens de communication
+-lien pt à pt : seulement 2 stations connectées par ce médium (souvent full-duplex)
+-lien partagé : plusieurs stations peuvent être connectés au lien; un paquet trsmis se propage vers ttes les stations
+
+Protocole à accès multiple idéal :
+-Hypothèse : médium partagé avec une capacité de D b/s
+-Efficatié : Quand un noeud est seul à vouloir parler, il doit pouvoir utiliser tt le médium -> trsmettre à D b/s
+-Équité : qd n noeuds veulent trmttre : le débit idéal serait de D/n b/s pour chaque station.
+-Décentralisé (pas d'horloge, pas de coordinateur)
+
+Classification (possible)
+-Basé sur la notion de canal : découpage "strict" du médium de com en sous-parties (sous-canaux)
+
+Techniques multicanaux :
+-Time Division Multiple Acces : découpage en tmps, synchronisation nécessaire (sinon risque de collision si décalage)
+-Frequency Division Multiple Acess : Découpage en fréquence ; débit éventuellement faible, diminuant avec le nbre de découpage.
+-Code Division Multiple Access : utilisation de code => communications parallèles sur le lien partagé. Contrôle de puissance nécessaire. Le reste des signaux est négligeable/négligé.
+
+Technique multicanaux :
+-Marchent très bien quand le nbre d'utilisateur < à la bande passante/tps disponible (nbre de sous canaux)
+-en général nbre de sous canaux << nbre d'utilisateur
+-Sous canaux à trouver dynamiquement -> on demande à une entité spécifique pour obtenir un canal -> utilisation d'un protocole à accès aléatoire pour obtenir un sous canal
+
+Protocole à accès aléatoire :
+-Qd un noeud veut envoyer un pqt -> utilisation complète du médium, pas de coordination à priori entre les noeuds.
+-Collision possible -> comment les détecter, comment les gérer?
+-Exemples : types ALOHA, CSMA (CD/CA)
+
+ALOHA : 
+-Protocole à accès aléatoire developpé pour le 1 er réseau sans fil par commutation de pqt. Actuellement envoyés par le récepteur + retransmis de la source après un temps aléatoire si absence d'accusé de reception confirmant la réception du paquet par le destinataire.. -> Efficacité limitée 1/(2.E) de la capacité, diminuant avec le nbre de stations souhaitant trsmttre.
+-Slotted ALOHA : efficacité doublé par les slots, nécessite une synchronisation. ->
+
+Carrier Sens Multiple Acess CSMA : écoute du médium pour attendre sa libération avant d'envoyer. Reste des risques, en raison des tmps de propagation/trsmssion
+-Collision Detection : la station qui transmet detecte une collision => arrêt de la com
+	-lien filaire : comparaison entre le signal émis et le signal reçus, réalisée par les sources. Retrnsmssion après un tmps aléatoire. Les liens filaires sont assez fiables, pertes de pqts étant dus aux collisions/non acquittement des pqts bien rçus
+	-Taille minimum sur les paquets pour détecter les collisions
+	-signal de brouillage envoyé par les sources détectant une collision-> met toutes les stations du médium dans le même état -> repris ds Ethernet -> de - en - utilisé (Réseaux Ethernet Full-duplex.)
+
+-Collision Avoidance : sur un médium sans fil, difficile de faire du CD, donc paquets acquités par le destinataire. Si on est obligé d'attendre la fin d'une collision, c'est couteux en tmps. On essaye d'éviter au maximum les collisions à priori.
+	-Tmps d'attente aléatoire avant la transmission du paquet d'un paquet (compromis entre le tmps d'attente et la réduction des collisions)
+	-utilisé ds le wifi
+
+Binary Exponential Backoff
+-Fenêtre de contention (Contention Window)
+Backoff : valeur aléatoire tirée dans la CW. Le tirage se fait selon une distribution uniforme.
+À chaque retransmission du paquet, on double la taille de la CW. On a donc une CMax et une Cmin.
