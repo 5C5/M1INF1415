@@ -51,6 +51,12 @@ public class Tortue
 	protected int coul;
 	
 	// Methodes
+	public int getDir() {
+		return dir;
+	}
+	public void setDir(int dir) {
+		this.dir = dir;
+	}
 	public void setColor(int n) {coul = n;}
 	public int getColor() {return coul;}
 

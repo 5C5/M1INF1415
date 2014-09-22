@@ -11,26 +11,42 @@ public class TortueAmelioree extends Tortue {
 
 	private String nom;
 	private static int numero = 0;
+	private TortueBalle balle;
 	
 	private ArrayList <TortueAmelioree> listeTortue; 
 	
 	public TortueAmelioree (String s){
 		
 		nom = new String(s);
+		balle = null;
 		listeTortue = new ArrayList<TortueAmelioree>();
 		
 	}
+	
 	public TortueAmelioree (){
 		
 		numero ++;
 		nom = new String("Franklin n°" + numero);
 		listeTortue = new ArrayList<TortueAmelioree>();
 	}
+
+	public void setBalle(TortueBalle b){
+		
+		balle = b;
+		balle.setPosition(this.getX(), this.getY());
+	}
 	
+	public void passer(TortueAmelioree t){
+		
+		balle.setPossesseur(t);
+		t.setBalle(balle);
+		balle = null;
+	}
 	public int getX(){
 		
 		return this.x;
 	}
+	
 	public int getY(){
 		
 		return this.y;
@@ -88,10 +104,18 @@ public class TortueAmelioree extends Tortue {
 			//System.out.println("Distance à " + t.getNom() + " est de " + this.distance(t));
 			if(this.distance(t) < 15){
 				
-				System.out.println("Salut, " + t.getNom());
-				t.droite(180);
-				t.avancer(50);
+				if(balle != null){
+					
+					this.passer(t);
+					System.out.println(this.getNom() + " passe à " + t.getNom() +"!");
+					balle = null;
+				}
 			}
 		}
+		if(balle != null){
+			
+			balle.setPosition(this.getX(), this.getY());
+		}
+		
 	}
 }

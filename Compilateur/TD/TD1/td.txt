@@ -1,0 +1,256 @@
+TD1 de compilateurs
+
+Création de l'analyseur lexical :
+
+Alex prends le code source -> sort une suite de lexeme
+
+a := 3*b	-->id	|	opaffect	|	entier	|	opmul	|	id	|	pvirg
+			  (a)	|	  			|	(3)		|			|	(b)	|
+
+Définition des delxèmes
+E/R
+[a-z A-Z]⁺  --> id
+
+
+Expressions régulières pour flex
+x 			--> le caractère x;
+·			--> tout caractère sauf le retour à la ligne
+[x y z] 	--> x ou y ou z
+[a-z]		--> un carac entre a et z
+[^x y z]	--> un carac autre que x, y, ou z
+[^a-z]		-->un carac <a ou >y
+RS			--> l'Expression régulière R suivie de l'expression régulière S
+R*			--> l'expression régulière R répété 0 ou + fois
+R+			--> "							   "1 "			"
+R?			--> "									"1" "	"
+\n			--> retour à la ligne
+
+flex --> description de lexèmes --> sort le code C de l'Automate Fini Déterministe, comprenant :
+-une fonction int yylex() qui va parcourir l'AFD en fonction des entrées
+-une variable char * yylex, chaine de carac pour le texte d'entrée correspondant à l'expression régulière
+-une variable int yyleng qui est la longueur de la chaine de carac précédente
+-un pointeur sur un fichier FILE* yyin, fichier sur lequel on ira lire les caractères, initialisé par défaut sur l'entrée standard stdin.
+
+Fichier de description a la forme suivante :
+
+%{
+...(1)
+%}
+...(2)
+%%
+...(3)
+%%
+...(4)
+
+Dans le premier bloc (1) entre accolade, on met le code c comprenant les #includes, les prototypes de fnct°, qui sera recopié au début du code C généré par flex
+Le bloc suivant l'accolade (2) servira à la définition de macros d'expression régulière sous la forme notion E/R --> {notion}
+Dans le bloc (3), c'est la définition des lexèmes et des actions associés, sous la forme E/R {code C de la fonction}
+Dans la dernière partie (4), c'est du code C/C++ recopié dans le code généré.
+
+yylex  parcours l'AFD :
+-Si un texte == E/R --> exécution de l'action associée. Si aucune action n'a été précisée, l'action par défaut est la réécriture du texte dans la sortie standard.
+Son objectif : trouver la + grde chaine correspondant à une E/R.
+Si du texte == plusieurs E/R, alors il éxécute l'action de la première E/R dans l'ordre du fichier de description.
+
+pour compiler le fichier de description (en .l ou .lex)
+flex -o fichier.c fichier.l
+gcc -c fichier -co fichier.o
+gcc -o test fichier.o -lfl
+						|->contient les fonction de gestion de l'AFD
+
+S'il n'y a aucun return spécifié dans les actions du fichiers de description, yylex va s'arreter sur la fin de fichier, sur les return des actions sinon.
+
+int main(int argc, char** argv){
+
+	if(argc > 1){
+		yyin = fopen(argv[1]);
+	}
+	yylex();
+	//un parcours de l'AFD
+	//si des return ont été spécifiés, alors on écrit plutot :
+	int lexeme = yylex();
+	while (lexeme > 0){
+		lexeme = yylex();
+	}
+	//car yylex() renvoi un entier correspondant au lexeme analysé.
+
+	if(argc > 1){
+		fclose(yyin);
+	}
+}
+
+ce code C est utilisé pour valider l'analyseur lexical. Il est a rajouté dans la dernière partie (4) du fichier de description des lexemes.
+
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+création de l'analyseur syntaxique
+
+grammaire du lgge
+G = <axiome, Vt, Vn, règles de production>
+avec axiome, pt d'entrée de l'analyseur; Vt le vocabulaire terminal, Vn le vocubulaire pour hiérarchiser les règles de production.
+
+par exemple, la grammaire <I, {id := + * ;}, {I, E}, {
+	I -->id := E;
+	E --> E + E
+		| E *E
+		| id
+}
+
+Description de la grammaire [fichier] sous un certain formalisme --bison-->code C de l'automate à pile faisant la reconnaissance de la gramR.
+Dans le code C généré, sont compris :
+-une fct° yyparse(), qui analyse le texte en entrée et renvoyant 0 si c'est bon, & en cas d'erreur (ou l'inverse). Suppose qu'il existe une fct° int yylex(). (Normalement, flex l'a généré)
+-une fnction int yyerror(char *), appelée par yyparse() en cas d'erreur, que nous derons définir (soit s'arrêter sur le premiere erreur, soit l'afficher et sortir)
+
+fichier de description de la GramR
+%{
+	//code C/C++
+%}
+//définition de la grammaire
+%%
+//regles de production	actions
+%%
+//code C/C++ ajouté au code généré.
+
+
+Pour compiler les analyseurs syntaxiques et lexicaux.
+flex -o lexem.c lexem.l
+bison -d -o parser.c parser.y
+gcc -c lexem.c -o leme.o
+gcc -c parser.c -o parser.o
+gcc -o test parser.o lexem.o -lfl
+
+l'option -d va générer un parser.h comprenant un certain nbre de déclaration, à inclure ds le fichier de description de flex. Donc ne pas compiler lexem.c avant d'avoir fait bison ...
+
+pour la grammaire suivante :
+<I, {id := + * ;}, {I, E}, {
+	I -->id := E;
+	E --> E + E
+		| E *E
+		| id
+}
+
+nécessitera le fichier de description de grammaire suivant :
+%{
+%}
+%start I
+%token id
+%token opaffect
+%token opadd
+%token opmul
+%token ptvrig
+
+%%
+I : id opaffect E ptvirg
+	;
+E : E opadd E
+  | E opmul E
+  | id
+  ;
+
+%%
+
+int main(int argc, char **argv){
+	if(argc > 1){
+		yyin = fopen(argv[1]);
+	}
+
+	yyparse();
+
+	if(argc > 1){
+		fclose(yyin);
+	}
+}
+
+avec le fichier de description de lexeme suivant
+%{
+#include "parser.h"
+%}
+%%
+[a-zA-Z]+	return id;
+:=			return opaffect;
+"+"			return opadd;
+"*"			return opmul;
+;			return ptvirg;
+.			yyerror("caractere non reconnu");
+\n			;
+
+
+Dans parser.y, pour éviter certains désagréments, on insère des règles de priorité/d'associativité juste après la déclaration des token, sous la forme :
+%left opmul %right	op
+%left opadd %left	op
+%nonassoc	op
+
+Spécification des règles(exemple)
+I : id opaffect E ptvirg		printf("I -> id :=E;\n);
+E : E opadd E					printf("E-> E + E\n");
+  | E opmul E					printf("E -> E* E");
+  | E id						printf("E -> id\n");
+  ;
+
+pour a:= b*c+d;
+on obtient les affichages suivants :
+E -> id
+E -> id
+E -> E *E
+E -> id
+E -> E + E
+I -> id := E;
+
+les deux seules regles comptant vraiment sont la 3 et 5, car si on peut en arriver la, alors on a tout ce qu'il faut pour résoudre.
+
+Définition des attributs ds bison :
+si x un élement du voc terminal et que x a un attibut v de type t, et si X un element du Voc N et ayant un attibut w de type u,
+ds la partie définition, on note
+%union {
+	//liste des attributs de la gramR
+	//avec une contrainte de bison, on ne met qu'un seul attribut par symbole
+	t v;
+	u w;
+	//pour l'exemple juste au dessus
+}
+
+et quand on décrit x
+%token <v> x
+%type <w> X
+
+Si E a un entier val comme attribut
+Ds la description de la graR
+%union{
+	int val;
+}
+
+%token <val> entier;
+%type <val> E;
+
+alors, dans les regles de prod, on a 
+%%
+E : E + E
+  | E * E
+  |entier $$=$1
+  ;
+avec $$ et $1 correspondant aux attributs de E et de entier (en l'occurence, $$ -> Element et $1 premier élément de la  ligne)
+
+pour calculer une expression, il faut faire remonter les valeurs (attributs) des éléments.
+soit
+E : entier	$$=$1
+  | E + E	$$=$1+$3
+  | E * E	$$=$1*$3
+
+E {code C}  +  E {code C}
+$1  $2	   $3  $4  $5
+
+Passage d'attribut entre Flex et Bison, pour pouvoir calculer des valeur (le code en entrée étant des chaines de caractère)
+bison défini une variable glonale yyval du type de l'union, définie dans le parser.h, donc accessible dans yylex().
+Donc, dans la description des lexemes
+[1-9][0-9]*|0	yyval.val = atoi(yytext);
+
+si plusieurs attributs pour un même symbol (on ne peut avoir qu'une ligne %token ou %type par symbole)
+-> une structure contenant tous les attibuts, pour bison, le symbole a un seul attribut du type de cette structure.
+
+exemple : 
+E↑type		typedef struct{
+						int type, val;
+}tattrt
+
+A essayer de définir ds un fichier à part plutot que dans parser
+
+L'interet est de pouvoir faire des fonctions du style void gereAddition(tattr E8 out, const tattr E8 left, const tattr E8 right);
