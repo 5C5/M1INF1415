@@ -1,6 +1,0 @@
-syntax:glob
-.project
-.classpath
-.idea
-.netbeans
-*.iml
