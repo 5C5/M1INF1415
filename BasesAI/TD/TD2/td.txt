@@ -1,0 +1,55 @@
+Partie 1
+
+
+RESOLUS : b, c, a, e
+INSOLUBLES ; g, h
+
+flag : 
+
+u <- d
+
+=> R1 : d <- g, h	(X) -> 
+		rg(g) = 1	//pas de successeur, on le place dans les insolubles
+
+=> R2 : d -> a, e, f
+			appel récursif sur BSH(a), on remarque que b et c sont solubles, on les mets dans resolus. Du coup, a est soluble et mis dans résolus
+			appel récursif de BSH(e) : e est résolu.
+
+			etc
+
+
+___________________
+Le monde des blocs :
+
+Etat : l'ensemble des n blocs, la pince, la table
+exemple -> sur_table(C), sur_table(B), sur(B, A), pinceVide/danspince(D)
+Pour décrire une etat Ei, on a besoin de 
+-sur_table(xi), xi € {A, B, C , D}
+-sur(xi, xj) , xi, xj € {A, B, C, D}
+-pincevide booleen
+-dansPince(xi), xi€ {A, B, C, D}
+
+Op1 : prendreCube(Xi) Condit° : pincevide = vrai + accessible de (Xi)
+	description met Xi dans la pince
+	Etat successeur = 
+		Depiler(Xi) = Op1a : {sur(Xi, Xj) ^ accessible(Xj)}
+		PrendreSurTable(Xi) = OP1b : surTable(Xi)
+					  pincevide <- faux
+					  ajouterDansPince(Xi)
+
+Op2a : poserSurTable(Xi) Condit° : pincevide = faux, dansPince(Xi)
+		Etat successeur :
+						pincevide <- vrai
+						-dansPince(Xi)
+						surTable(Xi).
+						accessible(Xi).
+Op2b : poserSurCube(Xi, Xj) : Condit° pincevide = faux, dansPince(Xi), accessible(Xj).
+		Etat successeur :
+						pincevide <- vrai.
+						-dansPince(Xi).
+						sur(Xi, Xj).
+						-accessible(Xj).
+						accessible(Xi).
+
+
+
