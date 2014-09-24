@@ -403,3 +403,72 @@ Binary Exponential Backoff
 -Fenêtre de contention (Contention Window)
 Backoff : valeur aléatoire tirée dans la CW. Le tirage se fait selon une distribution uniforme.
 À chaque retransmission du paquet, on double la taille de la CW. On a donc une CMax et une Cmin.
+
+
+__________________________________________________________
+Cours du 24/09/2014
+
+Protocoles sans collision :
+-protocoles sur invitation -> un "maître" invite les noeuds à parler; définie dans le WiFi, avec un protocole MAC, mais peut utilisé ou même implanté.
+-Protocole à base de jeton : utilisé dans les réseau en anneaux; deux paquets => le msg et le jeton; le jeton circule, et les noeuds devant envoyer des msgs bloquent le jeton, trsmet le msg à la place, puis rend le jeton une fois assuré de la réception.
+
+Prbs des protocoles sans collions :
+-latence (tps d'attente parfois important pour pouvoir, soit obtenir la parole, soit obtenir le jeton)
+-robustesse (risques augmentés avec l'importance du maître ou du jeton)
+
+Résumé :
+-Trammage (service de niveau 2)
+-Détection d'erreur (optionnel, mais souvent utilisé)
+-Récupération d'erreur (optionnel, utilisation de retransmission, d'acquitement (ACK), de BEB(espacement de retransmission)
+-Protocole MAC
+
+
+---------------------------------
+Standardisation : IEEE, ISO, IETF
+
+2 Technologies très utilisées
+-Ethernet
+-WiFi
+
+Institue of Electrical and Electronics Engineers (1979) -> Developper des standards pour les couches 1 et 2 pour les réseaux locaux et métropolitains.
+	Groupe 802 (février 1980) : contraintes initiales pour les réseaux locaux et métropolitains :
+		-supporter 200 stations; Couverture entre 2 km (LAN) et 50 km (MAN); débit entre 1 et 100 Mb/s; insérer et retirer une stations sans perturbation; adressage individuel/en groupe
+
+Adresse de niveaux 2 : @MAC, ne dépendant pas de la location
+	-sur 48 bits, 3 octets attribués aux constructeurs de cartes, 3 octets correspondant au numéro de série.
+	-Nouvelles adresse sur 64 bits
+	-Adresse de diffusion : broadcast : FF-FF-FF-FF-FF-FF
+
+WiFi : Wireless Fidelity -> IEE 802.11 => standardisation de pts d'accès pour les réseaux sns fil. Interopérabilité entre les différents constructeurs.
+
+Réseaux sans fil
+-Ondes électromagnétique ( < > 300GHz)
+-Atténuation en fction de la distance et de la fréquence; réflexion perturbant la réception
+-Si le SSB (signal sur Bruit) est supérieur à un certain seuil, elle décide de ne pas décoder.
+
+Bande de fréquence des 2.4GHz : 
+-divisé en 14 canaux de 20MHz, répartis sur 835 MHz
+-Uniquement trois canaux indépendans spatialement
+-Une communication entre deux stations se fait un canal.
+
+
+Nous allons travailler sur la version 802.11b -> Les grds principes MAC sont les mêmes entre les différentes versions
+
+Zones en WiFi :
+-Zone de communication : ttes les machines se trouvant ds la zone de comm de la machine émetrice peuvent, si leur SNR est supérieur à leur seuil, décoder les msgs de la machine emetrice.
+-Zone de détection de porteuse : ttes les machines ds cette zone considèrent le canal comme occupé, même si elles ne peuvent en décoder les paquets.
+La taille de ces zones dépends de la modulation (couche physique). En effet, plus le débit/la modulation de transmission est grand(e), plus la porté de transmission est petite.
+
+Étapes de l'Envoi d'un paquet. Accès au méidum en DCF, point à point
+-Écoute du médium
+-Si le médium est libre, tps d'attente éléatoire (Backoff) choisi dans une fenêtre de contention (CW).
+-Le Backoff est décrémenté au fur et à mesure de chaque écoute, tant que le médium est libre. Quand il atteins 0, c'est le signale que la source peut-transmettre le paquet
+-La source envoi le paquet
+-Le récepteur reçoit correctement le paquet
+-Acquittement positif envoyé par le destinataire
+-SIFS => tps d'attente du récepteur avant envoi de l'ACK, plus court que le DIFS (tps d'attente de la source). Les acquittement sont privilégiés par rapport à l'envoi de paquet.
+
+Si une source commence sa décrémentation de son Backoff, et que le medium est alors utilisé, la source garde la valeur du Backoff et le réutilisera quand le canal sera de nouveau libre (elle ne retire pas un nouveau Backoff aléatoire). Cela augmente les chances d'émission.
+Et cela assure que tte station a sa chance.
+
+seuil de RTS -> pour toutes les trames dont la taille est supérieur à ce seuil, RTS sera utilisé.
