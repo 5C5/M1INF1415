@@ -249,4 +249,152 @@ Transistion : considérée comme instantanée :
 
 Evenement : ce qui déclenche les transitions
 
+_________________________________________________________________________
+Cours du 24/08/2014
+
+Designs Patterns :
+
+Réutilisation :
+-constante de la conception d'outils en général
+-En informatique : réutilisation de code (sous la forme de composants ou de frameworks) et de principe de conception
+-dès que des principes se révèlent pertinent : abstraction, réutilisation.
+
+Pattern : solution classqie a un prb de concept° classique
+Pattern de conception :
+
+Propriétés :
+-pragmatisem
+-récurrence
+-génréativité (indépendence du lgge)
+-émergence
+
+-Patrons de conception :
+	-architecture (conception de systèmes)
+	-conception (interaction des composants)
+	-idiome de programmation
+-Patrons d'analyse
+-Patrons d'organisation
+
+Description d'un pattern:
+-nom
+-description du prb
+-contexte initial
+-Solution
+-Contexte résultant
+-exemples
+-justification
+-patrons associés
+
+
+->pas limités au domaine informatique;
+->pas des idées nouvelles
+
+--------------
+Patrons GRASP
+General Responsability Assignement Software Patterns
+-> Quelle est la responsabilité de chaque classe?
+Raisonner objet de façon rationnelle et méthodique.
+
+2 catégories de responsabilité :
+-Savoir : ce que la classe sait, les connaissances dont elle est responsable
+-Faire : les actions dont elle est reponsable
+
+9 Patterns GRASP :
+-créateur
+-Expert en information
+-Faible couplage
+-contrôleur
+-Forte cohésion
+
+
+·Pattern Expert :
+-Prb : quel est le principe général d'affectation des responsabilités aux objets?
+
+
+·Pattern Créateur :
+-Prb : qui doit avoir la responsabilité de créer une nvelle classe?
+-Solution : on affecte à la classe B de créer une instance de la classe A si une ou plusieurs de ces cdtions sont vraies : B contien un A, etc
+
+Ce pattern premet de prendre une décision pour la responsabilité de création d'une instance. Il favorise le faible couplage
+
+·Pattern Faible couplage :
+-Prb : comment minimiser les dpendances, comment réduire l'impact de changement, bref, limiter les liens.
+problèmes liés au couplage fort : les changements forcent à changer toutes ou la plupart des classes liés, les classes prises seules sont difficiles à comprendre, les classes ne peuvent être réutilisées seules sans les classes liées.
+-Principe général : les classes, très génériques et très réutilisables, doivent avoir un très faible coupage.
+
+Ça conditionne la maintenabilité du code. Ce pattern ne doit pas être considéré indépendemment d'autres patterns comme Expert et Forte Cohésion. Il n'y a pas de mesure absolue de quand un couplage est trop fort. Le couplage n'est pas genant pour des objets stables.
+
+
+·Pattern Forte Cohésion : 
+-Prb : maintenir une complexité fonctionnelle.
+Déf de la cohésion : mesure informellle de l'étroitesse des liens et de la spécialisation  des responsabilités d'un élément (d'une classe) -> relations fonctionnelles entres les différentes opérations effectuées par un élément.
+Une classe qui est fortement cohésive a des responsabilités liées les unes aux autres, et n'effectue pas un travail gigantesque.
+Prbs des classes à faible cohésion : elles effectuent trop de tâches, souvent sans lien entre elles. Elles sont difficiles à comprendre
+
+Forte cohésion va en général de part avec Faible couplage : c'est un pattern d'évaluation
+
+·Pattern Contrôleur
+-Prb : Quel est le premier objet au de là de l'IHM? qui reçoit et coordonne (contrôle) une opération système.
+
+Solution -> affecter cette responsabilité à une classe qui représente soit le système glocal, un sous système majeur ou un équipement sur lequel le logiciel s'éxécute, soit un scénario.
+
+Idéalement, un controleur est un objet qui ne fait rien, qui reçoit les evnmts systèmes, et délègue aux objets dont la responsabilité est de les traiter
+
+
+·Pattern Polymorphisme :
+-Prb : comment gérer des alternatives dépendantes des types? Comment créer des composants logiciels "enfichables"?
+
+Principe : tirer avantage de l'approche Orienté Objet en sous classant les opérations dans les types dérivés de l'Expert en information.
+
+Mise en oeuvre : utiliser des classes abstraites, pour définir les autres comportments communs. Utiliser des interfaces pour spécifier les opérations polymorphes. Combiner les deux.
+
+Mauvaise solution : implémenter une logique conditionnelle au niveau du client.
+
+
+·Pattern Fabrication pure :
+-Prb : que faire pour respecter le faible couplage et la forte cohésion, quand aucun concept du monde réel (objet du domaine) n'offre de solution satisfaisante.
+-Solution : affecter un ensemble fortement cohésif a une classe artificielle.....
+
+Ne pas en abuser.
+Règle d'or : concevoir des objets fabrication pure en pensant à leur réutilisabilité.
+
+Indirection
+-Utilité : réaliser des adaptateurs, façades, etc. Réaliser des inversions de dépendances entre packages
+
+·Pattern Protection des variations :
+-Identifier les pts de variation ou d'instabilité prévisibles. Affecter des responsabilité pour créer une interface.
+-Mise en oeuvre : cf. patterns précédents -> encapsulation des données, brokers, machines virtuelles
+
+------------------------------------
+Designs Patterns :
+Déf : bonnes pratiques de combinaison d'un ensemble de modules, d'obj ou de classe -> réutilisabilité, Maintenabilité, vocubumlaire commun?
+Catégories :
+ -création
+ -Structure
+ -Comportement
+
+·Fabrique / Fabrique Abstraite
+->Classe responsable de la création d'obj, lorque la logique de création est complexe, lorsque'il convient de séparer les responsabilités de création
+Fabrique concrète : obj qui fabrique les instance
+Abstract Factory : généralissation du pattern Factory Method
+-> Fabrique des fabriques
+
+Pattern Singleton : Voir cours de l3 (sur demande)
+
+Pattern Prototype :
+-Objectif : réutiliser un comportmeent sans recréer une instance : utilisation de la méthode clone, au lieu d'un new Object().
+
+·Pattern Façade :
+-Objectif : cacher une interface/implementation complexe
+-Fonctionnment : fournir une interface simple regroupant ttes les fonctionnalités utiles aux clients
+
+·Pattern Composite :
+-Objectif : représenter une structure arborescente d'objets.
+Fonctionne avec deux sous classes, un Composite et une Feuille. On fait de l'agrégation plutot que de la composition
+
+·Pattern Proxy :
+-Objectif : résoudre un problème d'accès à un objet : c'est une indirection
+
+·Un certain nbre de ces patterns sont décrits sur le net : commande, Observateur, Adaptateur, etc. Vous aurez de tte façons besoin de fiches de descriptions pour pouvoir les adapter à la situation. Donc inutiles d'en apprendre le fonctionnement par coeur, il faut juste savoir quand les ressortir.
+
 
