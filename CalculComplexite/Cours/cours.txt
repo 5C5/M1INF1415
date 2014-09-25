@@ -169,3 +169,81 @@ M' : (1) mettre $ à gauche
 	 (6> 2k pistes -> 1 piste, place la tete, s'arrete
 
 Possible de simuler une machine multi-dimensionnelle en linéarisant le plan.
+
+
+Random Acces, Machine à Accès direct : accès à chaque case du ruban, àa la différence d'une machine de Turing à accès séquentiel
+->Cette machine comporte un ruban T et ses n Cases T[0]. R_0, R_1, R_3, des registres, et K un compteur de programme, pour savoir ou on en est dans un programme.
+
+Des instructions :
+-read j -> placer ds le premier registre le contenu de la R_j eme case, R_j etant la valeur du j eme registre
+-write j -> le contraire
+-store j -> placer le contenu du j eme registre dans le premier registre
+etc
+
+Role particulier de R_0 : accumulateur
+
+une machine à accès directe est un couple M  =(k, \Theta) avec k > 0 le nbre de registre, et \Theta une suite d'instruction.
+
+On peut simuler une telle machine avec plusieurs rubans : 1 pour la mémoire, 1 pour le programme, 1 pour chaque registre. Le contenu de la mémoire est représenté par des paires de mots (adresse contenu)
+
+Le programme indiqué en exemple dans le cours correspond à une multiplication de R_0 par R_1
+
+
+Machine non déterministe : 
+-> \Delta est ce coups ci un sous-ensemble de K x \Gamma x K x \Gamma x {G U D}.
+
+On peut avoir deux sorties différentes pour une même entrée => accepteur dont le rélusatat intéressant est de savoir si la machine s'arrête ou pas.
+
+On peut construitre pour M tte machine de Turing non déterministe une machine normale M' telle que pour tte chaine w€ \Sigma, si M s'aarête avec w en entréee, alors M' s'arrete sur w, et si M ne s'arret pas sur w, alors M' ne s'arrete pas non plus.
+
+Simulation d'une machine M non déterministe à partir d'une machine C déterministe.
+
+Soit C une cnfig de M. Il peut y avoir i config. C |-_M C_i. Soit d_C le nbre de config, C_i atteignable à partir de C
+Le nbre de transistion de M (q, a, p, b, K)
+d_C est fixé et bornjé d_C =< |K|.|\Gamma|.2
+soit r le nbre de max de transistion applicable sur une config quelconque.
+À partir de la config initiale (de départ) C = (q_0, _#_w#)
+M définit au plus r config atteignable en 1 étape
+C |-_M C_1,C |-_M C_2, etc.
+Et de même pour C_1, et pour C_2, il y a r config atteignables.
+À partir de C, on peut atteindre r² config en deux étapes.
+M' simule M en vérifiant ttes les config atteignables en 1 étape
+"													" en 2 étapes
+"													" en k étapes
+Si M s'arrete, donc nbre fini d'étapes, alors M' découvrira cet arret.
+Si M ne s'arrete pas, M' n'arretera pas non plus la simulation 
+
+M' machine a trois rubans : (<=> M à 1 ruban)
+-Ruban (1) w, (chaine d'origine, n'est jamais modifié)
+-Ruban (2) simulation de M, w recopié sur (2)
+-Ruban (3) stocke la suite de config pour savoir ce qui a été fait et ce qu'il reste à faire, pour trouver la suite de config de M utilisé pour faire la config courante. On a donc sur ce ruban ##, puis une suite de mot appartenant à l'alphabet. {d_1, d_2, d_3, ...., d_r}
+
+					 /-\
+M' >$⁽²⁾D⁽^r⁾N M_1'<-   ->T
+					 \-/
+
+N copie w sur (2), après avoir effacé (2).
+M_1' va simuler un calcule deterministe de M
+Si M_1' s'arrête, alors
+	-si le symbole courant du ruban (3) est # -> M s'est arrété en échec
+	-Si le symbole courant du ruban (3) est non blanc, cela veut dire que M s'est arrété avec la config courante, donc M' s'arrête aussi.
+
+T sur (3) à partir d'un ruban sur lequel il y a le mot #d# -> #d'# avec d' = d+1
+
+Bon, j'ai pas réussi à prendre le dessin.... faudra que je trouve un moyen de les refaire avec Dia. ou Astah.
+En gros, c'est un truc pour produire d' à partir de d sur le ruban (3)
+
+N doit, dans un premier temps, effacer le ruban 2 pour s'assurer qu'il est vide. Étapes de l'opération
+a- se déplace à droite sur (2) de la longueur du ruban (3) =< largeur (3)
+b- effacement (2) G en mettant # jusqu'a $
+c- N copie (1) sur (2)
+d- positionne la tête (3) sur le 1 er symbole
+encore un AEF dessiné. Et un gros. Il explique ce que l'on fait après l'étape d.
+
+M_1' : même étape que M. Travaille sur (2) avec les infos (3)
+-Si sur (3), on a # => simulation terminée
+-Si sur (3), on a autre que #, M_1' simule une étape de M (a symbole a (2) et q etat à (2))avec la transition associée à q définie par (q, a, p_i, b_i, R).
+M_1' entre ds l'etat p_i, écrit b_i sur (2) et déplace la tete de (2) selon R.
+
+C'était écrit tout petit, il est probable qu'il y ai des fautes.
+
