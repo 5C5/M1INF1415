@@ -398,3 +398,86 @@ Fonctionne avec deux sous classes, un Composite et une Feuille. On fait de l'agr
 ·Un certain nbre de ces patterns sont décrits sur le net : commande, Observateur, Adaptateur, etc. Vous aurez de tte façons besoin de fiches de descriptions pour pouvoir les adapter à la situation. Donc inutiles d'en apprendre le fonctionnement par coeur, il faut juste savoir quand les ressortir.
 
 
+__________________________________________________________________________________________________
+Cours du 25/09
+
+Cas d'utilisation
+
+-L'approche UML : diagramme de cas d'utilisation : représentation, inconvénients
+-L'approche d'A Cockburn : cas d'utilisation textuel : Accteur et intervenant, scénario nominal, extensions, portée et niveau objectif.
+
+Un cas d'utilisation établit entre les différents intervenants un contrat régissant le comportement d'un système. Il décrit ce système sous diverses conditions
+-Technique pour capturer les exigences fonctionelles d'un système :
+	-déterminer ses limites
+	-Déterminer ce qu'il devra faire
+
+Les étapes :
+-déterminer les acteur et leur rôles/actions
+-déterminer les grdes catégories d'utilisation
+-Décrire textuellement des interractions
+
+L'acteur principal amorce une interact° avec le système en vue d'atteindre un objectif particulier.
+Souvent, le CU doit servir de moyen de communication entre des personnes n'ayant aucune formation spécifiques
+
+·Acteur : entité situé hors du système. Il joue un rôle (soit déclencher une interract°, ou être sollicité par le système)
+Catégories d'acteur : principaux(fct°s princpales du système), de second plan(administration maintenance), matériel externe, autre systèmes
+
+Un CU est un ensemble de scénario, de chemins possibles impliquant le même acteur.
+Recence les informations échangés et les étapes ds la manière d'utiliser le système, les cas d'erreur et leur gestion.
+->décrit aussi bien un processus métier qu'un système informatique.
+
+Scénario : séquence particulière d'étapes ds la réalisation du CU.
+
+UML : Cas d'utlisation 
+un bulle contenant une action/objectif qui fait intervenir un nbre quelconque d'acteurs. Les diagrammes des cas d'utilisations UML en regroupe souvent plusieurs.
+Relations entre cas d'utilisation (pas forcément intuitif) :
+-Inclusion : un CU de base inclut un CU inclus si une étape du CU de base appelle le nom du CU inclus. Un appel de fct, en gros.
+-Extension (différent d'un héritage) : un CU d'extension etend un cas d'utilsation de BAs en citant celui-ci et en définissant les circonstances dans lesquelles il est amneé à l'interrompre.
+-Spécialisation et généralisation : équivalent de l'héritage appliqué au CU. Un CU spécialise un CU plus général (ou ce CU généralise le plus spécifique).
+
+Inconvénient des CU UML : 
+-ne se suffit pas à lui même
+-Relations non intuitives
+
+-> Rédiger!
+
+Approche d'A Cockburn.
+
+Il est possible d'écrire une version informelle et une version etoffée d'un CU textuel.
+
+La version étoffée comprend un formalise décrivant tous les élements du CU et un scénrio nominal.
+Le rédacteur doit maitriser 3 concepts qui s'appliquenc à chaque phrase du CU :
+-La portée : quel est véritablement le système à l'étude (SAE)
+-l'acteur principal
+-le niveau
+
+Acteur et intervenants : 
+-Intervenant : ttes personnes ou éléments ayant un intéret matériel dans le comportement du système.
+-Acteur : intervenant particulier ayant un comportement digne d'interet pour décrire les CU. Peut être une personne, une société ou une organisat°, un système info matériel/logiciel.
+	-Acteur principal : intervenant déclenchant une interactionavec le SAE dans le but d'atteindre un objectif.
+	-Acteur de second plan : acteur externe fournissant n service au système en cours de conception
+
+Conseil de rédaction : sujet verbe complément(s). Montrer l'intention de l'acteur plutot que ses gestes. Adopter d'un point de vue spectateur.
+
+Il est préconisé de ne pas avoir plus d'une dizaine d'étapes. 
+
+Portée de conception : étendue du système, ce qui est concerné par le CU. Souvent, le nom du système ne suffit pas, il faut préciser la portée. Imbrication possible de portée ou d'acteur -> savoir déterminer la taille de la portée de conception.
+Visibilité boite noire/blance : un CU est dit en boîte noire s'il n'aborde pas la structure interne du SAE, en boîte blanche sinon.
+
+Niveau d'objectif :
+Trois niveaux d'objectf
+-Objectif utilisateur(référence)
+-Objectif stratégique (au dessus)
+-Objectif sous-fonction (en dessous).
+
+Objectif utilisateur : le plus facilement identifiable => les autres niveaux sont relatifs à ce niveau. C'est l'objectif que poursuit l'acteur principal quand il interragit avec le système. Si l'acteur principal peut partir satisfait après avoir agi, si le travail peut être effectué en une seule session par une personne, c'est un CU de niveau d'objectif utilisateur.
+Objectif stratégique : implique plusieurs objectifs utilisateur. Remplit trois fontions.
+
+Objectif sous-fontion : les CU de niveau sous fonction permettent la réalisation de CU de niveau utilisateur.
+
+Couplage portée + niveau d'objectif -> Certains niveaux ne marcherons pas avec certaines portées.
+
+Quand avons nous fini de rédiger les CU.
+-Ts les acteurs et objectifs principaux ont été indentifés
+-ts les scénarios nominaux et extensions ont été spécifiés.
+-ts les CU d'objectif utilisateur, ainsi que les CU stratégiques et leurs sous fonctions, ont été rédigés.
