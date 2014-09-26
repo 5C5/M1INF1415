@@ -247,3 +247,103 @@ M_1' entre ds l'etat p_i, écrit b_i sur (2) et déplace la tete de (2) selon R.
 
 C'était écrit tout petit, il est probable qu'il y ai des fautes.
 
+_____________________________________________________________________
+Cours du 26/09
+
+Les machines de Turing sont un formalisme assimilable à un lgge de programmation.
+Les Machines de Turing Universelles restent des machines standards (pas de puissance supplémentaires).
+
+--------------------
+Grammaires
+
+a^n b^n c^n, Langage Turing-décidable, qui s'arrete automatiquement, obligatoirement. Cela donne une réponse. (Différent de Turing-acceptable (qui inclut Turing-décidable)
+
+Comme un langage L est engendré par une gramR génrale ssi il est récursivement énumérable, cela signifie qu'on peut simuler le fnctionnement de cette gramR avec une Machine de Turing.
+
+SwS -> convention pour le point d'entrée. SwS =>_{G}^{*} ssi f(w) = v. C'est à dire que tte dérivation par G de SwS donne v.
+
+ex : 
+w = abba, f permute les a et les b.
+SabbaS =>^{*} baab
+
+Une fonction f : \Sigma * -> `Sigma * est grammaticalement calculable s'il existe une gramR la calculant.
+
+Fonctions numériques :
+
+pour une Machine de Turing, le ruban correspond aux actuelles chaines de caractères.
+Une fct° passe de |N -> |N
+
+3 fnct°s de base, 2 opérateurs sur les fnct°s de Base, et on mélange entre eux : on construit les fonctions primitives récursives, qui sont aussi la classe des fonctions calculables.
+
+ex : f(n) = n² + 3n + 5 + 2^{n+1}
+qque soit n, peut-être calulé.
+-Composition d'opérations et de cnstntes
+-cnstntes définies à partir de {0, succ n}
+-puissance : construite à partir de produits m^n = {1 si n = 0, m.m si n différent de 0}
+-Produit : construite à partir de sommes
+-somme : construite à partir de succ.
+
+Les entiers sont construits uniquement à partir de 0 et de succ.
+
+Composition : 
+p et k = 1
+g : N -> N
+h : N'-> N
+f : N^{P} -> N f= goh
+f(n1, ..., np) = g(h(n1, ..., np))
+
+Récursivité :
+-> définition avec un cas d'arret et un cas de récursivité.
+
+id_{m, n} récupère le n eme élément d'un vecteur à m arguments.
+
+-Addition
+plus(n, O) = n
+		   = id_{1,1}(n)
+plus(n, M+1) = succ(plus(n, m))
+			 = succ(id_{3, 3}(n, m, plus(n, m)))
+			 |> Fonction h
+
+-Multiplication :
+mult N² -> N
+mult(n, 0) = 0
+mult(n, m+1) = plus(n, mult(n, m))
+
+Possibilité d'écrire aussi mult(n, 0) = zéro_1(n)
+= plus(id_{3, 1}(n, m, mult(n, m)), id_{3, 3}(n, m, mult(n, m)))
+
+-Soustraction :
+pred(0) = 0
+pred(n + 1) = n
+On obetien la soustraction non négative avec le tilde ~ (résultat >= 0)
+m ~ 0 = m
+m~(n+1) = pred(m ~ n)
+
+Prédicat primitif récursif :
+-iszéro -> renvoi 1 si == 0, renvoie 0 sinon
+
+Cela permet de déduire les opérateurs de comparaison (<, =<, =, diff, >, >=:
+-n =< m = iszéro(n ~ m)
+
+Opérateur booléens ( et ^, négation !, ou v)
+- !n = 1 ~ n
+- n^m = 1 ~ iszéro(n * m)
+- n v m = 1 ~ iszéro(n+ m)
+
+Définition par cas :
+
+p prédicat  ->1
+			->0
+f primitive récursive si g1, g2 et p le sont
+f(x_1, ..., x_n) = p(x_1, ..., x_n) * g1(x_1, ..., x_n) + (1~p(x_1, ..., x_n)) * g2(x_1, ..., x_n)
+
+Modulo :
+mod(0, n) = 0
+mod(m+ 1, n) = 0 si mod(m, n) ) pred(n), mod(m, n)+ 1 sinon.
+
+div(0, n) = 0
+div(m+1, n) = div(m, n) si mod(m+1, n) > 0, div(m, n) + 1 sinon.
+
+\Somme :
+sum_f(n)= f(0) + ... + f(n)
+		= sum_f(0) = f(0) ou sum_f(n+1) = sum_f(n, f(n+1))
