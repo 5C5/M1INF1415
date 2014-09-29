@@ -1,0 +1,14 @@
+1.
+<titres>{/collection/serie/tome[@numero <=3]/titre}</titres>
+2.
+<titres>{/collection/serie[@nom="Lanfeust de Troy"]/tome/titre}</titres>
+3.
+<titres>{/bib/book/title}</titres>
+4.
+<personnages>{for $x in distinct-values(/PLAY/ACT/SCENE/SPEECH/SPEAKER) return <personnage>{$x}</personnage>}</personnages>
+5.
+<personnages>{
+for $x in PLAY/ACT
+where $x/TITLE="ACT I"
+return  for $y in distinct-values($x/SCENE/SPEECH/SPEAKER) return <personnage>{$y}</personnage>
+}</personnages>
