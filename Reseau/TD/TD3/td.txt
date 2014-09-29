@@ -1,0 +1,7 @@
+TD3 sur les protocoles de transports
+
+Exercice 1 :
+1. T = 0,2 + 10 × ((8000/(8 ×10⁶)+ 0.05) = 10*(0.001 + 0.05) +.2 = .71 s
+U = T/(T + .1)  87,65%
+
+2. T = 

@@ -1,0 +1,28 @@
+TD Réseau du 29/09
+Généralités sur les réseaux.
+
+Exercice 1 :
+-Exécuter un binaire : sensible à la latence-> faible qté de donnée
+-Lire le contenu d'un fichier(pdf ou doc) : sensible à la bande passante -> qté de donnée > bande passante moyenne
+-Lire le contenu d'un fichier (.txt) : sensible à la latence + bande passante => dépend de la taille
+-Lister le contenu d'un répertoire ou afficher les attributs d'un fichier : sensible à la latence -> faible qté de donnée, et latence + bande passante pour l'affichage des attributs
+
+Exercice 2 : 
+
+1 - 10000 ÷ 250000 = 0,04s -> 1mbps × 0,04 => 40Kb à chaque instant
+2 - Borne supérieure de transmission de donnée (indépendante du protocole utilisée)
+3 - 1 bit : 1 / 1000000 => 0,000001s => 1µs -> 2.5 × 10⁸ × 1 × 10⁻⁶ = 2.5 ×10² = 250 mètres
+4 - taille = s/C
+
+Exercice 3 :
+1. tpsAttente = p_{-1} × ((L*8)/p + H)/(C*10⁻⁶)
+2. tpspTrsfrt = (N-1)(L*8/p + H)/(C*10⁻⁶) + d/v
+3. T = (p+ N -2) × ((L×8/P +H)/(C×10⁻⁶)) + d/v
+4. Quand N augmente, T augmente car il y a plus de temps de retransmission entre chaque noeud.
+5. T augmente proportionnelement selon H. La taille des en-tête a donc une influence sur le temps de transfert, car le nbre de donnée à envoyer augmente.
+6. T diminue proportionnelement selon p jusqu'a un certain point. Tant que L/p > H, c'est à dire que le rapport donnée utile/taille du paquet reste positif, alors T diminue quand p augmente. En effet, cela permet à l'information d'arriver plus vite
+7. p = 1 On veut connaitre la durée de transfert d'1 paquet pour connaitre la perf du réseau a cause du store & forward.
+8. On a juste besoin des noeuds , car il n'y a pas de store & forward.
+
+
+
