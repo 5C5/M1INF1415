@@ -276,3 +276,94 @@ Soldat(x) : x est soldat
 (A renversé) (Singe(x) -> Malicieux(x))
 
 
+______________________________________________________________________________________
+Cours du 30/09
+
+L'ingéniérie des connaissances
+
+Première étape : les langages de représentation des connaissances
+-Idée : se rapprocher du niveau d'abstraction supposé des experts <=> modèle cognitif humain sous jacent :
+-Conception de langage facilitant le codage des conaissances conforme au modèle cognitif :
+	-LISP
+	-Prolog
+	-Smalltalk
+	-Yafool
+
+Validation d'un SBC
+-Retour vers l'expert
+-Tests sur une jeu de problème :
+	-confronter Experts / SBC
+	-Savoir résoudre le plus grand nbre de problème/ savoir résoudre les problèmes les + difficiles
+	-Évaluer le raisonnement suivi.
+
+Évaluation de MYCIN
+-10 cas
+-8 experts + MYCIN + solution du cas telle qu'elle a été appliquée (10 prescripteurs)
+	-chaque expert évalue ttes les prescriptions <=> Note 8/80
+	-Le collège évalue ttes les prescriptions <=> Note/8
+	-Le collège signale les solutions inadmissibles
+-Mycin : meilleurs résultats n'a jamais pu être implémentée de manière opérationnelle.
+
+Dépasser les problèmes de MYCIN qui étaient:
+-Stratégie de résolution implicite
+-Capacités auto-explicatives pauvre
+-Grande distance entre la pratique des experts et l'expression sous la forme de règles liées à l'approche logique
+-Dégradation forte aux limites du domaine ouvert -> pour obtenir des connaissances suffisement large pour couvrir le domaine, le cout est énorme
+-Connaissances de surfaces essentiellement
+-Pas de généricité des systèmes construits
+-Pas de modélisation "lisible" du domaine ouvert 
+
+Mieux modéliser le raisonement :
+-Neo Mycin : méta-règle, stratégie
+-Connaissances stratégiques : comment effectuer une tâche
+-Connaissances du domaine : qu'est ce qui est "vrai" ds le domaine et ds le contexte de la tâche considérée.
+	<=>Notion de modèle Conceptuel = connaissances stratégiques associées aux connaissances du domaine.
+
+Idée d'Alan Newell ds les années 80 : travailler au niveau connaissance.
+
+La modélisation au niveau connaissance :
+-conceptualisation du domaine et des interractions
+-niveau adapté pour la spécification d'un SBC :
+
+Acquisition de connaissance et compréhension des mùéthodes de résolution à utiliser :
+	-recueil, analyse <=> modèle spécifique
+	-Modèle d'expertise = étape dans le développement de SBC
+Modélisation indépendante des structures de représentation et des algorithmes
+	-langage intermédiaire non orienté implémentation, semi-formel
+Acquisition des connaissances guidées par la réutilisation de modèles et/ou de composants génériques.
+
+Responsive Design : système responsable de permettre l'accès à tous, quelque soit le SE, l'appareil utilisé.
+
+Acquisition des connaissances :
+-Techniques de recueil des données pour construire une description de l'expertise.
+	-méthodes informelles : interviews, résolutions à haute voix, observations, enregistrements, recueil de documents, examen de bases de données, etc...
+	-Méthodes formelles : grilles, questionnaires, etc
+	-Méthodes statistiques : fouille de données, analyse de données
+
+-> L'acquisistion des connaissances est la partie la plus couteuse.
+
+Méta classe : classe donnant des instructions sur les propriétés, les comportements, l'implémentation d'une ou plusieurs classes (rien à voir avec super classe-> on hérite d'une super classe, on est contraint par une meta-classe)
+-> Programmation orientée aspect.
+
+Gestion de connaissances : hérer des abstractions partageables :
+-lexiques ->Dictionnaire de donnée
+-thésaurus -> Description des mots clés d'un document; relation entre eux par synonimie, etc
+-Ontologies -> Description du monde avec des concepts, concept décris par un de leur paramètres
+-Modèles du domaine
+-Modèles de cas
+-Décomposition en tâches récurrentes
+-Méthodes de résolution de problèmes
+-Tâches applicatives abstraites
+
+Plus on descend dans cette liste, plus on s'approche de la tâche à réaliser.
+
+Différentes classes d'onthologie
+-de représentation (ontolingua)
+-génériques
+-d'un domaine
+-d'une méthode de résolution de problème(ou de tâche)
+-d'application = > spécialisation d'une ontologie de domaine + d'une ontologie de méthode
+
+herméneutique : sens qu'on donne à un mot en fonction d'un contexte
+
+
