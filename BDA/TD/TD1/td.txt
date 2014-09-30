@@ -1,0 +1,83 @@
+TD du 30/09
+XML
+
+Espace de nommage : 
+
+Exercice 1 : 
+Éléments appartenant à [...]collection.com :
+- <catégorie> 2 eme ligne
+- <nom> 3 eme ligne
+- <catégorie> 5 eme ligne
+- <nom> 6 eme ligne
+- <categorie> 7 eme ligne
+- <nom> 8 eme ligne
+- <coll:categorie> 11 eme ligne -> redéfinition de l'espace de nommage par défaut (parent) à xhtml et préfixage de coll à .com
+- <coll:nom> 13 eme ligne
+- <coll:nom> 15 eme ligne
+Éléments appartenant à [...]1999/xhtml :
+- <em> 4 eme ligne
+- <b> 13 eme ligne 
+- <catégorie> 14 eme ligne
+
+Exercice 2 :
+1.
+Ddtd
+<inscriptions>
+	<ue code ="INF1008M	niveau="M1">
+		<titre>GDW</titre>
+		<resume>NoSQL&Co</resume>
+		<inscrit num ="1234" semestre="S1"/>
+	</ue>
+	<etudiant num="1234">
+		<nom>Toto</nom>
+		<adresse>la bas</adresse>
+	</etudiant>
+</inscriptions>
+
+Dxsd : 
+Le fichier descript au départ le type inscription, puis le type ue (ueContent, utilisé dans inscriptions), ppuis le type etudiant (etudiantContent, utilisé aussi dans incriptions)
+
+<inscription>
+	<ue code="INF1008M" niveau="M1">
+		<titre>GDW</titre>
+		<resume>NoSQL&Co</resume>
+	</ue>
+	<etudiant num="1234"
+		<nom>Toto</nom>
+		<adresse>ici</adresse>
+		<inscription codeUE="INF1008M" Semestre="S1"/>
+	</etudiant>
+</inscriptions>
+
+3.
+Caractérisation de Ddtd et Dxsd :
+-Il n'y en a pas un qui contient pas l'autre
+-Ils ne sont donc pas égaux.
+
+2.
+entre accolades -> attributs, entre parenthèse hors accolades : expression non terminale
+DTD sous forme de gramR
+I -> inscription ø(U⁺, E*)
+
+U -> ue{(code, ID, 1), (niveau, string, 1)} (T, R, I*)
+T -> titre ø (S)
+R -> resume ø (S)
+I1 -> inscrit {(num, ID, 1) (semestre, string, 1)}()
+E -> etudiant {(num, ID, 1)} (N, A)
+A -> adresse ø (S)
+N -> nom ø (S)
+S -> String 
+
+XML sous forme de gramR
+I-> inscriptions ø (U⁺, E*)
+
+U -> ue{(code, ID, 1), (niveau, string, 1)} (T, R)
+T -> titre ø (S)
+R -> resume ø (S)
+E -> etudiant {(num, ID, 1)}(N, A, IZ*)
+N -> nom ø (S)
+A -> adresse ø(S)
+IZ -> inscription {(codeUE, IDREF, 1),(semestre, string,1)}()
+S -S string
+
+
