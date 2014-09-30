@@ -1,0 +1,16 @@
+TD 3 : 
+Système expert pour le contrôle prédictif en production industrielle
+
+Merial : entreprise pharmaceutique animale/vétérinaire
+
+-Information de contrôles internes(normes devant être respectés entre chaque étapes, caractéristiques produit en entrée et en sortie d'une zone.)
+	-> Informations des systèmes d'analyses + informations utiles (à faire corréler entre les différentes zones)	
+-Consignes stockages, perennité d'un stock, limites temporelles inter-étapes;
+-Rapports d'anomalie -> location, informations sur l'anomalie, sur le produit concerné -> dernier test sur ce produit sans anomalie
+-Réglementation visée (objectifs, normes à respecter pour vendre)
+Possibilité de rattraper un défaut -> étape concernée (cout optionnel).
+
+
+Faire parler les documents, les gens, les données -> sorties sous forme de diagrammes, du texte
+
+
