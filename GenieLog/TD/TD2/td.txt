@@ -1,0 +1,118 @@
+TD sur les cas d'utilisations
+
+Exercice 1 :
+-> Il est demandé de faire apparaitre explicitement les répétitions -> au lieu d'un "boucler.... fin de boucle", utiliser répéter les étapes.... tant que ... jusqu'a ce que "
+
+-> Il faut remplacer tous les "si" des étapes 9 à 14 par des extensions, en indiquant ce qui a été détecté : "le système détecte que tella fnction a été détecté".
+
+-> La fin devrait être formulée plus sous la forme "Le cas d'utilisation prend fin lorsque l'utilisateur sélectionne la sortie.
+
+
+Correction : 
+Titre :Cas d'utilisation :  Utilisation du système de gestion de commandes
+
+En-tête : ce qui manque :
+-Acteur principal : utilisateur acheteur
+-Objectifs : gérer ses commandes
+-Portée, niveau : portée système en boîte noire; niveau utilisateur
+-nom : SGC
+-intervenants : acheteur, système
+-Garantie minimale : 
+-Préconditon :(pré existence dans le sytème de l'utilisateur, par exemple)
+
+
+Récriture du scénario
+1. L'utilisateur démarre l'application
+2. L'utilisateur se connecte
+3. L'utilisateur choisit une fonction, utilisation de la fonction (cas d'utilisation)
+4. L'utilisateur répète l'étape 4 jusqu'a ce qu'il sélectionne la sortie
+5. La cas d'utilisation prend fin quand l'utilisateur sélectionne la sortie
+
+Extensions : 
+2.a Le système détecte une erreur lors de la connection
+	2.a.1 Le sytème repropose à l'utilisateur de se connecter
+
+Correction du prof :
+1. L'utilisateur _ouvre une section_ 		//La gestion d'echec se fait dans un autre cas d'utilisation (soulignés dans le texte)
+2. Le système présente les fonctions disponibles, l'utilisateur en sélectionne une parmi les suivantes
+	_Passer une commande_ 			//Chacune des étapes de la liste est un cas d'utilisation différents (soulignés)
+	_Retourner le produit_
+	_Annuler une commande_
+	_Obtenir un état de la commande_
+	_Envoyer un catalogue_
+	_Executer le catalogue des ventes_
+3. Cette opération se répète jusqu'a ce que l'utilisateur choisisse de uitter
+4. Le système ferme la session de l'utilisateur lorsque celui-ci choisit de quitter
+
+
+Exercice 2 :
+(1)
+Version du prof
+
+Titre : Réparation automobile d'une pièce
+ /\
+/__\
+|__| maison noire pour le garage
+Acteur principal : Le client
+Objectif dans la contexte : Le client amène sa voiture afin qu'elle soit entretenue/réparée
+Portée : le garage (représenté par une maison noire, car il est en boîte noire)
+Nom :
+Intervenants : client, garage
+Garantie minimale : le client paye la main d'oeuvre
+Garantie de succès : La voiture est réparée et le client a réglé les frais (main d'oeuvre + pièce de rechange)
+Déclencheur : le client amène sa voiture au garage
+
+Scénario nominal perso:
+1. Client : amener sa voiture
+2. mécanicien : identifier la pièce défectueuse et indique au client 
+3. mécanicien : proposer un devis au client
+4. client accepter le devis
+5. mécanicien : remettre la pièce en état
+6. mécanicien : vérifier le bon fonctionnement du véhicule
+7. client : regler la main d'oeuvre + éventuels surcouts et quitter le garage avec sa voiture
+
+Extension
+a. La pièce a besoin d'être nettoyée : la pièce est nettoyée
+3b. La pièce a besoin d'être changée
+	3b1. Le mécanicien vérifie la disponibilité de la pièce
+
+
+
+Scénario du prof :
+1. Le client amène son véhicule en panne au garage
+2. Le garage recherche la cause de panne et indique au client qu'une pièce doit être remplacée
+3. Le garage indique au client le délai de disponibilité et le coût de la pièce
+4. Le client donne son accord pour le remplacement
+5. Le garage monte la nouvelle pièce
+6. La gagrage vérifie le bon fonctionnement du véhicule
+7. Le client règle les frais de mains d'oeuvre et d'éventuelles pièces et récupère son véhicule
+
+2.a La pièce peut être remis en état, sans remplacement
+	2.A Le garage répare la pièce. retour à l'étape 6
+4a Le client refuse le remplacement
+	4a1 Retour à l'étape 7
+Il faudrait ajouter une extension pour le nettoyage de la pièce
+
+(2) :
+
+Scénaro du prof 
+Titre : faire réparer une pièce sur un véhicule (vue interne)
+Portée : garage (et ses services ateliers magasin)
+niveau : stratégique
+Déclencheur : le client amène son véhicule au garage
+Garanties minimales : une facture est établie pour les frais de main d'oeuvre
+Gaanties de succès : le client repart avec son véhicule réparé, et les frais de main d'oeuvre et de pièces ont été réglés.
+
+1. Le Cclient amène son véhicule à l'atelier du garage
+2. Le Mécanicien prend le véhicule en charge et détermine la pièce défectueuse (CU3)
+3. Le mécanicien fait une demande au Responsable du magasin
+4. Le Responsable du magasin annonce le cout et la disponibilité de la pièce au Mécanicien, qui transmet au client
+5. Le Client donne son accord pour le remplacement au mécanicien, qui transmet au Responsable du magasin
+6. Le Responsable du magasin fournit le pièce au Mécanicien
+7. Le Mécanicien monte la nouvelle pièce
+8. Le Mécanicien vérifie le bon fonctionnement du véhicule
+9. Le client règle les frais de main d'oeuvre et des pièces et récupère son véhicule
+
+2a. Pas de remplacement
+	2a1. Le mécanicien répare, retour à l'étape 8.
+5a. Le client refuse le remplacement

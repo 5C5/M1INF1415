@@ -1,0 +1,113 @@
+TD 1 Couche liaison de donnée :
+
+Détection d'erreur :
+1) 1010101010101011 -> Valeur du champ de détection d'erreur 1
+
+2) Les erreurs se compensant (nbre pair de 1 ou de 0 changés)
+
+3)
+1010|0
+1010|0
+1010|0
+1011|1
+----|-
+0001|1
+
+Correction
+
+4)Cela permet de détecter une erreur et de la corriger :
+Sans erreur :
+10101|1
+11110|0
+01110|1
+-------
+00101|0
+
+Avec erreur : 
+10101|1
+10110|0
+01110|1
+-------
+00101|0
+erreur dans la 2 eme ligne, 2 eme colonne => le bit lu est incorrect.
+
+5)
+ 10011011
+ 11001010+
+----------
+ 01010001
+
+ 10011011
+ 11001010-
+----------
+ 01010001
+
+-> Correspond à un XOR
+
+6)
+
+ 1101
+ 1011
+-----
+10001111
+-> Faux
+
+Explication :
+
+   1101
+  *1011
+--------
+   1101
+  11010
+ 000000
+1101000
+-------
+1111111
+Multiplication sans retenue.
+
+
+7)
+
+D = 1100001010
+G = 10011
+R = _ _ _ _
+
+division :
+
+ 11000010100000 |10011
+-10011			|-----
+ 010110			|11010100101
+ -10011			|
+  0010110
+  - 10011
+    0010100
+	- 10011
+	  0011100
+	   -10011
+	    01111 = R
+
+taille(R)= taille(G) -1
+D = 1100001010
+P= D*2^{taille(R)} + R
+Récepteur : P/G, si reste est nul alors pas d'erreur.
+
+8)
+une source S, envoyant p à un recepteur recevant p'
+E = vecteur d'erreur
+p xor p' = E
+p' ! E xor p
+p' = ? _= G
+Si la division par G donne reste = 0, alors pas d'erreur, sinon au moins une erreur
+
+mais si p' = E xor p _=G, c'est à dire que E est aussi divisible par G, alors l'erreur ne sera pas détectée
+
+9)
+N'importe quel multiple de G, avec G contenant deux bits à 1, comprend lui aussi 2 bits à 1. E ne contien qu'1 erreur, donc n'est pas un multiple de G => donc l'erreur est détectée.
+
+Accès au médium avec Aloha
+1)
+p(1-p)^{(N-1)*2}
+2)
+p(1-p)^{(N-1)×2} × N
+
+
