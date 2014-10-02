@@ -291,4 +291,502 @@ code 3@ test
 		   appeler p
 		   fin
 
+_________________________________________________________________________
+Cours du 02/10
 
+Génération de code : 
+-> représentation du code 3@
+	instruction (sous le forme de struture{
+		étiquette de branchement -> N°unique | 0 s'il n'y a pas d'étiquette
+		code d'instruction -> l'une des instruction citées auparavant
+		opérandes x, y, z -> sous la forme de structure {
+			code  : ø(opérande non utilisée), 1(valeur de l'opérande), 2(identificateur)
+			valeur (si code à 1)
+			N°Unique
+		}
+	}
+
+bloc d'instruction
+	vector <instruction>
+fonction
+-> ajout d'instruction (bloc, instruction)
+-> fusionner(bloc1, bloc2)
+-> int créerétiquette (char *) : enregistre un nouvel identificateur dans la table correspondante et renvoi le numéro unique
+-> int creertemporaire(char *, type) : enregistre un nouveau type temporaire dans la table des indetificateur et renvoie le numéro unique
+
+Gestion des expressions :
+différents types d'espressions
+E -> E1 op E3
+E -> op E2
+E -> id (liste args)	//Fonction
+E -> E1 . id			//Accès au champs d'une structure
+E -> E1[E3]				//Accès à une case d'un tableau
+E -> valeur
+E -> id
+
+Génération de code : 
+	Expression ↑ type		-> type renvoyé
+				 calc	-> booleen vrai si E est calculée à la compilation
+		si calc est vrai :
+			   ↑ valeur		-> Uniquement si le booleen calc est vrai, représente la valeur de E
+		si calc est faux :
+				 place		-> on a à la place de la valeur un N° unique associé à un nouveau temporaire
+				 code		-> bloc de code 3@ permettant le calcul de E dans le temporaire
+				 code@		-> bloc de code permettant le calcul de l'@ de E
+
+Pour les différents types d'expressions :
+·E -> valeur
+	-> E ↑ type = type(valeur)
+	-> E ↑ calc = vrai
+	-> E ↑ val = valeur
+
+·E -> op E2
+		=> vérifier E2↑type compatible avec classe op
+	-> E ↑ type = E2 ↑ type
+	-> E ↑ calc = E2 ↑ calc
+	-> si E ↑ calc est vrai, alors
+		E ↑ val = op E2↑val
+	-> sinon 
+	  	E ↑ code = E2 ↑ code
+		| E ↑ place = op E2 ↑ place
+		E ↑ code@ = ø
+·E -> E1 op E3
+		=> vérifier si E1↑type et E3↑type sont compatibles avec op
+	-> calcul de E ↑ type
+	-> E ↑ calc = E1↑calc && E3↑calc
+	-> Si E↑calc vrai
+		E ↑ valeur
+	-> Sinon (cas ou aucun des deux n'est calculée)
+		E ↑ code = | E1 ↑ code
+				   | E3 ↑ code
+				   | E ↑ place = E1↑place op E3↑place
+exemple : 
+E1 = a * b
+E3 = c/d
+E = E1 + E3
+E1↑code = [t0 = a*b]
+E3↑code = [t1 = c/d]
+E↑code = [t0 = a*b
+		 |t1 = c/d
+		 |t2 = t0+t1]
+
+Cas particuliers :
+· a*b + 5
+avec E1 = a*b et E 3 = 5
+Dans ce cas
+E↑code = E1↑code
+		 E↑place = E1↑place + E3↑valeur
+
+·E -> id
+	-> E↑type = TS[id].type		-> on va récupérer le type dans la table des symboles
+	-> si id = constante
+		E↑calc = vrai
+		E↑valeur = TS[Id].valeur
+	-> si id = variable
+		E↑calc = faux
+		E↑place = nv temp
+		E↑code = E↑place = id
+		E↑code@ = E↑place = &id
+	-> si id = arg constant (passé par valeur)
+		E↑calc = faux
+		E↑place = id↑N°unique
+		E↑code = ø
+		E↑code@ = ø
+	-> si id = arg variable (passé par @)
+		E↑calc = faux
+		E↑place = nv temp
+		E↑code = E↑place = *id	-> pour récupérer sa valeur on déreférence l'adresse
+		E↑code@ = E↑place = id -> Pour récupérer l'@, c'est directement l'identificateur (qui est passé par @)
+	
+	!¡!¡! arguments de type :
+							tableau
+							struct
+							chaine
+		sont toujours passés par adresse
+
+·E -> E1.id		(accès au champ d'une structure)
+	=> vérifier que E1 est bien une structure
+	=> vérifier que id est bien un champ de E1
+	-> E↑calc = faux
+	-> E↑type = type du champ id de la structure
+	-> E↑place = nv temp
+	-> E↑code = E1↑code@
+				t0 = E1↑place + decalage (id, E1↑type)		//On regarde à l'adresse de la structure et on décale de la taille du champ
+				E↑place = *t0								//On déréférence ce qu'il y a à cette adresse
+	-> E↑code@ = E1↑code@
+				 E↑place = E1↑place + décalage(id, E1↑type)
+
+·E -> E1[E2]		(accès à un tableau)
+	=> vérifier que E1↑type = tableau
+	=> vérifier que E2↑type = indice(E1↑type)
+	-> E↑calc = faux
+	-> E↑type = type des éléments de E1↑type
+	-> E↑place = nv temp
+	-> E↑code = E1↑code@
+				E2↑code
+				t0 = E2↑place * taille(E2↑type)
+				t1 = E1↑place + t0
+				E↑place = *t1
+	-> E↑code@ = E1↑code@
+				 E2↑code
+				 t0 = E2↑place + taille(E2↑type)
+				 E↑place = E1↑place + t0
+
+·E -> id(E1.... En)			(appel d'une fonction)
+	=> vérifier que id est de type fct°
+	=> vérifier que arité = n (bon nbre d'arguments attendu)
+	=> vérifier que type(E_i) comptaible avec type(arg i)
+	-> E↑calc = faux
+	-> E↑type = type retour (id)
+	-> E↑place = nv temp
+
+pile d'appel au moment de rentrer dans la fonction
+|§		|	-> cette partie, on s'en fiche, c'est le SE qui gère
+|arg 1	|	-\
+|arg 2	|	  \
+|	§	|	   -> à remplacer par l'appelant
+|arg n	|	  /
+|@résult|	-/
+
+On part de bas en haut (on remonte)
+
+	-> E↑code = empiler &E↑place 
+				E_n↑code			-> ne marche que si arg n est passé par valeur. Si il est passé par @ :
+				empiler E_n↑place															E_n↑code@	
+				...																			empiler E_n↑place
+				...
+				E1↑code
+				empiler E1↑place
+				appeler id
+	-> E↑code@ = ø
+
+Les instructions :
+↑code
+[↑erreur : vrai/faux] ->Nous nous arreterons à la première erreur
+·Si
+I -> if E 2 then I_4
+	=> vérifier si E2↑type compatible booleen
+
+	-> I↑code = E2↑code				(cas général, si E2 n'est pas calculé à la compilation)
+				si E2↑place aller à alors
+				aller à finsi
+				alors : nop
+					I_4↑code
+				finsi
+Autres cas :
+		-> si E2↑calc et E2↑val = vrai
+				I↑code = I_4↑code
+		-> si E2↑calc et E2↑val = faux
+				I↑code = Ø
+
+·Si .... sinon
+I -> if E2 then I_4 else I_6
+	cas général (si non E2↑calc):
+	I↑code = E2↑code
+			 si E2↑place aller à alors
+			 aller à finsi
+			 alors : nop
+			 		I_4↑code
+					aller à finsi
+			 sinon : nop
+			 		I_6↑code
+			 finsi : nop
+	autres cas :
+	si E2↑calc et E2↑valeur = vrai
+		I↑code = I_4↑code
+	si E2↑calc et E2↑valeur = faux
+		I↑code = I_6↑code
+
+·Tant que
+I -> while E2 do I_4
+	cas général
+	->I↑code = test : nop
+			   E2↑code
+			   si E2↑place aller à bcle
+			   aller à fin
+			   bcle : nop
+			   		I_4↑code
+					aller à test
+			   fin
+	Autres cas :
+	si E2↑calc && E2↑valeur = faux
+		I↑code = ø
+	si E2↑code && E2↑valeur = vrai
+		I↑code = debut : nop
+				 I_4↑code
+				 aller à debut
+
+·Jusqu'a ce que (until)
+I -> repeat I_2 until E4
+	cas général
+	-> I ↑code = bcle : nop
+						I_2↑code
+						E_4↑code
+						si E_4↑place aller à fin
+						aller à bcle
+				 fin : nop
+autres cas
+Si E_4↑calc et E4↑val = vrai
+	-> I↑code = I_2↑code
+Si E_4↑calc et E_4↑val = faucx
+	-> I ↑code = bcle : nop
+						I_2↑code
+						aller à bcle
+
+· Pour ... à ...
+I -> for id:= E_4 to E_6 do I_8
+	=> vérifier id var && E_4 && E_6 soit de type entier
+	-> I ↑code = E_4↑code
+				 id = E_4↑place
+				 test : nop
+						E_6↑code
+						to = id > E_6↑place
+						si to aller à fin
+						I_8↑code
+						id = id+1
+						aller à test
+				 fin : nop
+I -> for id:= E_4 downto E_6 do I_8
+	 for id:= E_4|to	| E_6 step E_8 do I_10
+		 		 |downto|
+
+·Appel d'une procédure
+I -> id (E1 .... En)
+		Comme les appels de fonctions, sauf qu'on empile pas le résultat (retourne un void, grosso modo)
+
+C'étaient des instructions simples, jusqu'ici
+.....
+
+·L'affectation (bien compliquée)
+I -> id:= E_3
+	=> vérifier que type(id) compatible type(E_3)
+	=> vérifier que id soit bien une variable, ou le nom de la fonction
+	-si id est une variable
+	-> I↑code = E_2↑code
+				id = E_3↑place
+			-si E_3↑calc : vrai
+			-> I↑code = id = E_3↑var
+	-si id = arg par @ et non constant
+	-> I↑code = E_3↑code
+				*id = E_2↑place
+			-si E_3↑calc = vrai
+			-> I↑code = *id = E_3↑val
+	-si id = nom fct° en cours d'analyse
+	-> I↑code = E_3↑code
+				renvoyer E_3↑place
+			-si E_3↑calc = vrai
+			-> I↑code = renvoyer E_3↑val
+Affectations compliquées
+I -> E_1[E_3] := E_6
+	-> I↑code = E_1↑code@						\
+				E_3↑code					 	 \
+				t0 = E_3↑place * taille case	  -> code@ de E_1[E_3]
+				t1 = E_1↑place + t0				 /
+				E_6↑code						/
+				*t1 = E_6↑place
+I -> E_1:= E_3 -> gramR effective
+i -> E_1.id := E_5
+	-> I↑code = E_1↑code@
+				t0 = E1↑place + decalage(id)
+				E_5↑code
+				*t0 = E_5↑place
+
+
+-----------------------------------------------------------
+Optimisation de code
+
+-> élimination des sous expressions communes
+	a - b + c
+	b = a - d
+	c = b + a
+	d = a - d
+	\		/
+	 \	   /
+	  \	  /
+	   \ /
+	    |
+	on remplace par
+		V
+	a = b + c
+	b = a - d
+	c = b + a
+	d = b
+
+-> propagation des copies
+	a = b
+	t0 = a
+	c = t0 - 2
+	d = t0
+	\	/
+	 \ /
+	  |
+on remplace par
+	  V
+	a = b
+	c = a - 2
+	d = a
+
+-> Élimination du code mort
+	a = b
+	c = a - 2
+	d = a	-> On peut (pas forcément) supprimer d si on ne s'en sert jamais.
+
+-> Graphe de flot du programme
+	->ensemble de bloc
+			bloc -> suite d'instructions
+			lien entre blocs -> selon les branchements
+	instrcutions tête de bloc :
+		-soit 1 ere instruction du code
+		-soit l'instruction cible d'un branchement
+		-soit l'instrcution qui suit un branchement conditionnel
+	bloc = suite d'instruct° 3@ entre une tête de bloc et l'instruction précédent la tête de bloc suivante
+
+	arc entre B_i et B_j si 
+		·dernier(b_i) = branchement_sur_tete(B_j)
+		·j = i + 1 et dernière(B_i) n'est pas un branchment_inconditionnel
+
+	i = m -1				-> Tête de bloc
+	j = n
+	t1 = 4 * n
+	v = a[t1]
+(5) i = i + 1				-> Tête de bloc
+	t2 = 4 * i
+	t3 = a[t2]
+	si t3 < v aller à (5)
+(9)	j = j -1				-> Tête de bloc
+	t4 = 4 * j
+	t5 = a[t4]
+	si t5 > v aller à (9)
+	si i > j aller à (23)	-> Tête de bloc, car suit un si qqch aller à
+	t6 = 4 * i				-> Tête de bloc, même raison
+	x = a[t6]
+	t7 = 4 * i
+	t8 = 4*j
+	t9 = a[t8]
+	t10 = 4 * j
+	aller à 5
+(23)t11 = 4 * i				-> Tête de bloc
+	x = a[t11]
+	t12 = 4 * i
+	t13 = 4 * n
+	t14 = a[t13]
+	a[t12] = t14
+	t15 = 4 * n
+	a[t15] = x
+
+Blocs :
+B1 : [648-651] (lignes du fichier)
+B2 : [652-655]
+B3 : [656-659]
+B4 : 660
+B5 : [661-667]
+B6 : [668-675]
+
+Branchements
+B1 -> B2 
+B2 -> B2
+B2 -> B3
+B3 -> B3
+B3 -> B4
+B4 -> B6
+B4 -> B5
+B5 -> B2
+
+pour chaque bloc B
+	prod(B) = ensemble des calculs eéalisés dans B
+				x op y € prod(B)
+				s'il existe ? = x op y € B
+				et si x et y non ùmodifiés par la suite ds B.
+	
+	sup(B) = ensemble des calculs invalidés par B
+				s'il existe x = ? € B
+					invalide tout calcul |x op y
+										 |y op x
+				sauf si recalculé par la suite.
+
+	In(B) = ensemble des claculs disponibles en entrée de B quelque soit le chemin du graphe pris pour rentrer dans B
+	
+	Ex(B) ensemble des calculs disponibles en sortie de B, quelque soit le chemin pris pour rentrer dans B
+
+Succ(B1) = B2; Pred(B1) = ø
+Succ(B2) = B2, B3; Pred(B2) = B1, B2, B5
+Succ(B3) = B3, B4; Pred(B3) = B2, B3
+Succ(B4) = B5, B6; Pred(B4) = B3
+Succ(B5) = B2; Pred(B5) = B4
+Succ(B6) = ø; Pred(B6) = B4
+
+Pour chaque bloc B
+	prod(B) = ø
+	pour chaque x = f(y, z) dans l'ordre
+	prod(B) += f(y, z)
+	prod(B) -= Ħ f(x, a)
+Ensemble des calculs produits par les blocs
+B1 : n-1; a[t1]; n; 4*n
+B2 : 4*i; a[t2]
+B3 : 4*j
+B4 : 
+B5 : 4*i; a[t6]; 4*j; a[t5]
+B6 : 4*i; a[t13]; 4*n; a[t13]; t14; x;
+
+
+Pour chaque bloc B
+soit U l'ensemble des calculs du programme
+	sup(B) = ø
+	pour chaque x = f(x, y) € B dans l'ordre
+	sup(B) += Ħf(x, a) € U
+	sauf si f(x, ) recalculable par la suite dans B
+U = {m -1; n; 4 * n; a[t1]; i + 1; a[t2]; j - 1; 4 * j; 4 * i; a[t4] ; a[t6]; a[t8]; a[t11]; 4 * n; a[t13]; t14; x}
+Ensemble des cablculs invalidés par B_i
+B1 : i+1; 4*i; j-1; 4*j;
+B2 : i + 1;
+B3 : j -1;
+B4 :;
+B5 : x;
+
+In(B), Ex(B)
+	init
+		In(B1) = ø
+		Ex(B1) = prod(B1)
+		pout tout B différent de B1
+			Ex(B)= U - supp(B)
+		bcle
+		pour tout B différent de B1
+			In(B) = Intersection des Ex(P) tel que P €predecesseur(B)
+			Ex(B) = prod(B) U (In(B) - Sup(B))
+Ensemble des In  et des Ex de B
+B1 : ø											|B1 : m -1; n; 4 * n; a[t1]
+B2 : m-1, n, 4*n, a[t1]							|B2 : 4*i; a[t1], m-1; 4*n; a[t2]
+B3 : 4*i, a[t2], m-1, n; 4*n;  a[t1]			|B3 : U-{j-1}
+B4 : 4*j; a[t4]; 4*i; a[t2]; m-1; n; n*4; a[t1]	|B4 : 4*j; a[t4]; 4*i; a[t2]; m-1; n; n*4; a[t1]
+B5 : 4*j; a[t4]; 4*i; a[t2]; m-1; n; n*4; a[t1]	|B5 : 4*j; a[t4]; 4*i; a[t2]; m-1; n; n*4; a[t1]; a[T6]; a[t8]
+B6 : 4*j; a[t4]; 4*i; a[t2]; m-1; n; n*4; a[t1]	|B6 : 4*j; a[t4]; 4*i; a[t2]; m-1; n; n*4; a[t1]; a[t11]; a[t14]a[t6]; a[t8]
+
+Au 2 eme tour, rien n'est changé, pour B2, et donc pour les autres.
+
+Pour chaque bloc B
+	pour chaque .(i) x = f(x, z) avec i le numéro d'instruction
+	si f(y, z) € In(B)
+	et y et z non modifiés avant (i) dans B
+-> trouver les dernières évaluations de f(y, z) dans le graphe en remontant
+
+ex : 
+On trouveles évaluations	a = f(y, z) <- t0 = f(y, z); 
+											a = t0
+
+Ds B5 :
+	(14) t6 = 4*i
+		 4*i € In(B5) 	-> 4*i disponible en sortie du bloc B5
+-> (6) de B2	(predecesseur contenant 4*i sans modification postérieurs)
+		t2 = 4*i
+	on remplace (6) par
+	temp0 = 4 * i
+		t2 = temp0
+	et on remplace (14) par
+		t6 = temp0
+On a pris un nouveau temporaire pour être sur qu'il ne soit jamais modifié dans le code
+
+(16) t7 = 4*i
+	->(6)' temp0 = 4*i
+		   temp0 = temp1
+	(6') -> temp1 = 4*i
+	(16) -> t7 = temp1
