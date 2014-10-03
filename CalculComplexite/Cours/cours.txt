@@ -1,5 +1,7 @@
 Cours de Calucl et Complexité
 
+Les corrections sont authorisées!
+
 Cours du 11/09/2014
 
 JFLAP : plateforme de test d'automate, de gramR, etc (cg Google).
@@ -347,3 +349,131 @@ div(m+1, n) = div(m, n) si mod(m+1, n) > 0, div(m, n) + 1 sinon.
 \Somme :
 sum_f(n)= f(0) + ... + f(n)
 		= sum_f(0) = f(0) ou sum_f(n+1) = sum_f(n, f(n+1))
+
+_________________________________________________________________
+Cours du 03/10
+
+Essayer de récupérer le cours du 02/10, finissant sur les paradoxes, et le problème de l'arrêt
+
+Soit halt(P, X) une machine prenant en entrée un problème P et une entrée X, et renvoyant vrai  si P s'arrête avec X, Faux sinon.
+Nous ne sommes pas en mesure de dire si P va s'arrêter sans tester P.
+
+Récursivement énumérable : catégorie supérieur, il n'y a rien au dessus.
+
+Preuve par l'absurde que H (voir pdf, pag 108) n'est pas récursif
+
+Supposons H récursif :
+->tt lg énumérable serait récursif
+->SU décidant H
+SU("M" "w") = OUI si M s'arrête
+			  NON sinon
+Soit L un langage récursivement énumérable tel que M' pour tt w € L -> M' s'arrête avec w
+->MT la machine de Turing qui associe w ->SU("M" "w") décidant L
+	w € L ssi SU("M" "w") s'arrête -> YES
+	w n'appartient pas à L ssi SU("M" "w") s'arrête -> NO
+-> M0 : code w, code M', éxécute SU avec "M"
+Or H non récursif (donc SU n'existe pas)
+Sinon, à partir de Su, on pourrait construiree SU' s'arrêtant uniquement sur les entrées "M" "M" (haltbis)
+dupliquer
+"M" -> SU -> oui "M" s'arrête avec "M"			-> Boucle
+		  -> non "M" ne s'arrête pas avec "M"	-> Arret
+
+Q SU' s'arrête t-elle avec "SU'"?
+	-> Oui => SU' ne s'arrête pas
+	-> Non => SU' s'arrete
+
+SU' s'arrête sur "SU'" "SU'" ssi ne s'arrête pas sur "SU'" "SU'"
+-> Ce qui est absurde.
+
+Il existe des langages récursivement énumérable qui ne sont pas récursifs.
+
+
+H1 = {"M"|M est une MT s'arrêtant sur "M"}
+\barre{H1} = {w € \Sigma_u^*
+w n'est pas un codage de MT
+w code de MT ne s'arrêtant pas sur "us"}
+
+H1 recursivement énumérable
+\barre{H1} non récursivement énumérable
+
+réduction => évolution, transformation (ce n'est pas une simplification)
+Soit un probleme indécidable => ce probleme reste indécidable
+	ou
+H non récursif => rec enum \diff récursif
+Pas de bijection entre L_1 et L_2
+\rho S'il existe une réduction entre L_1 et L_2, alors il existe une réduction (différente) entre L2 et L1
+
+mais si \rho(L_1) -> L_2
+alors	\rho(\barre{L_1}) -> \barre{L_2}
+
+(ou)
+si \rho(L_2) -> L_1
+alors \rho(\barre{L_2}) -> \barre{L_1}
+
+L non décidable, on choisit L' non décidable et \rho : L' -> L
+
+Preuve par l'absurde :
+Soit un théorème Si A alors B
+->hypo : Si A alors \barre{B}
+
+On choisit L_1 non récursif (pas de machine M_1 décidant L_1)
+Supposons L_2 récursif M_2 une MT décidant L_2
+Soit R une MT calculant \rho réduisant L_1 à L_2
+w € L_1 <=> \rho(w) € L_2
+Donc R M_2 décide L_1
+
+w € L_1 -> \rho(w) € L_2 => RM_2(w) -> y
+w !€ L_1 => \rho(w) !€ L_2 => RM_2(w) -> N
+
+(a) indécidabilité du probleme de l'arrêt <=> M = {"M" "w" | M s'arrête sur w} non récursif
+(b) L = {"M"| M s'arrête sur e}
+Donc on cherche une réduction de H vers L
+Soient M et w = a_1 ... a_n
+-> M_w fonctionne comme L lorsque l'entrée de M est vide
+M_w = >D a_1 D a_2 ..... D a_n
+
+La fct° "\Sigma" -> "MT"
+		"a_1 ... a_n" -> "D a_1 D a_2....D a_n"
+		-> est récursive
+H à L réécursive => H indécidable donc L indécidable
+
+(c)
+M': -efface le ruban d'entrée
+	-simule M
+M' s'arrête sur certaines entrées <=> M' s'arrête sur une certaine entrée <=> M' s'arrête sur ttes ses entrées <=> M' s'arrete sur e (le mot vide)
+L = { "M" | M s'arrete sur le mot vide e}
+|
+|\rho '
+|
+V
+L' {"M" | M s'errête sur certaines entrées}
+\rho' "M" -> "M"
+récursive
+=> L' non récursif
+
+GramR : problémes indécidables
+(a) M -> G tel que L(G) = L(M)
+w €L(G) ssi M s'arrete sur w
+Il faudrait faire un codage pour passer d'une MT ver une GramR
+M --\rho-->G avec \rho récursif
+
+
+G(génrale) génère ø -> G (algébrique) génère \Sigma*
+
+Il y a stabilité de la classe des langages récursif par compléments :
+
+On a L récursif => L récursivement énumérable
+Donc le complément de L
+\barre{L} récursif => \barre{L} récursivement énumérable
+<= L et \barre{L} réc enum.
+
+M_1 accepte L_1
+M_2 accepte \barre{L_1}
+
+M à deux rubans
+1) copies w sur (1) et (2)
+2) 1 ere étape de M_1 sur (1)
+				  M_2 sur (2)
+3) si on arrive ds un état d'arrêt de M_1 ou de M_2
+-> M_1 s'arrête  : y (M_1)
+				   N (M_2)
