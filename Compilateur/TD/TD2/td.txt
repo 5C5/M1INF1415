@@ -1,0 +1,53 @@
+G = <FI, {<, </, >, id, = , cst}, {FI, T, LT, O, F, LA, A}>
+
+FI -> T
+T -> O↑(id_2) LT F↑(id_1).(id_1 == id_2)
+LT -> T LT
+	| §
+O↑(id) -> < id LA >
+F↑(id) -> </ id>
+LA -> A LA
+	| §
+A -> id = cst
+
+O -> < id LA >		O↑nom = id↑nom
+F -> </id>			F↑nom = id↑nom
+
+Construitre l'arbre sémantique : 
+On a une structure noeud fendins associés
+	noeud creernoeud(nom)
+	void ajouterfils(pere, fils)		-> Ajoute en tant que fil à droite
+	void setnom(noeud, nom)
+
+en plus des attributs de la question 1
+
+FI↑noeud
+T↑noeud
+LT↑Noeud
+_________
+LT -> § 			LT↑noeud = creernoeud("")
+LT -> T LT_2		LT↑noeud = LT_2↑noeud
+					ajouterfils(LT↑noeud, T↑noeud)
+T -> O LT F
+	T↑noeud = LT↑noeud
+	setNom(T↑noeud, O↑nom)
+FI -> T
+	FI↑noeud = T↑noeud
+
+FI↑noeud
+T↑noeud
+LT↓pere
+LT↑resultat
+
+↑attr calculé au + bas remonte dans l'arbre
+↓attre calculé au + haut, descend dans l'arbre
+
+On peut écrire : 
+T -> O LT F
+	T↑noeud = creerNom(O↑nom)
+	LT↑pere = T↑noeud
+LT -> T LT_2
+	ajouterfil(LT↓noeud, T↑noeud)
+	LT_2↑pere = LT↑pere
+
+
