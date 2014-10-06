@@ -472,3 +472,167 @@ Si une source commence sa décrémentation de son Backoff, et que le medium est 
 Et cela assure que tte station a sa chance.
 
 seuil de RTS -> pour toutes les trames dont la taille est supérieur à ce seuil, RTS sera utilisé.
+
+________________________________________________________________
+Cours du 06/10
+
+Partie essentielle de TCP : le contrôle de congestion
+
+Pourquoi un contrôle de congestion ?
+Un réseau, comme tt système physique, a des limites en matières de ressources : il peut travailler jusqu'a une certaine vitesse, et pas au dela. Cette vitesse est limitée par les composants et leurs caractéristiques.
+Lorsque le traffic soumis augmente, quand l'ensemble de la charge dépasse ce que le réseau absorbe, on se retroouve en contention de ressources -> phénomène de congestion.
+
+Idéalement : Si traffic utile soumis < Capacité réseau
+	Traffic utile écoulé = traffic soumis
+Sinon, au dela (Traffic utile soumis > Capacité réseau)
+	Traffic utile écoulé = capacité réseau
+
+En réalité, tt les réseaux ne fonctionnent pas comme ça. En effet, le cout des en-tête, l'utilisation des liens < 1, les erreurs de transmission, le dépassement de la capacité des buffers jouent sur le rapport données/données utiles. En raison de tout ces facteur, nous n'aurons pas un réseau fonctionnant idéalement.
+L'un des objectif des recherches en réseau est d'éviter la zone d'effondrement de performance.
+
+Exemples de réseau idéal :
+-Tuyauterie 
+
+Causes du comportement possible : cout protocoles et erreur de protocole
+Exemple de réseau à courbe possible : Télésièges
+
+Causes du comportement dit indésirable : collision et blocage
+Exemple de réseau à comportement indésirable : aurotoutes.
+
+
+Face à la congestion, deux solutions :
+-retransmettre
+-réguler les sources
+
+Retransmettre est une très mauvais idée, cela ne fait qu'aggraver les choses.
+
+2 approches possibles pour réguler les sources
+-contrôle en boucle fermée, décisions indépendantes de l'état du réseau -> Peu utile, mais existante : surdimensionnement (consite à choisir des tecnologies résaux plus fortes de manières à ne pas rencontrer le problème, à s'éloigner de la zone de congestion); régulation de traffic/lissage (consite à rendre un traffic sporadique plus lisse, plus régulier, facilitant le transmission)
+-Contrôle en boucle fermée, décisions basée sur des mécanismes de feedback : Plus utilisées plus adaptées ->
+	-Contrôle d'admission : si une congestion est signalée, aucune nouvelle communication ne peut être établie
+	-Pré-allocation des ressources : avant de démarrer la communication, chaque noeud sur la route réserve des ressources à cette communication. Plus adpaté à un réseau en mode connect, utilisation des ressources si la charges soumises est faible.
+	-régulation isarythmique : limite le nbre de paquet en transit dans le réseau par un système de jetons, proche du mécanisme de TCP. Modifie la taille de la fenêtre d'anticipation pour réguler les sources; Mise en oeuvre difficile, avec le dimensionement du nbre de jetons, la répartitions, la circulation et l'intégrité des ressources
+	-délestage : les routeurs submergés détruisent des paquets, avec un système de niveau de priorité pour détruire aussi peu de paquet que possible, et seulement des paquets de faible priorité.
+
+Détecter une congestion : deux solutions
+-Soit le réseau (les routeurs) informe les terminaux, avec un système de valeur.
+-Soit les sources le font
+
+
+Versions de TCP :
+-> Détection de la congestion sans assistance du réseau, à partir des terminaux : ce sont les pertes de paquets qui permettent la détection de la congestion -> timeout, réception de 3 ACKs identiques = paquet perdu
+-> Les pertes ne pas toujours liés à une congestion.
+-> Réguler son débit : varier la fenêtre d'émission, cong_Fenetre dépend de l'état ressenti de congestion de réseau.
+	En cas de congestion, on diminue la taille de la fenetre et par conséquent le nbre de paquet envoyés.
+-> Pour un lien dédié d'une capacité C, le débit voulu pour la source sera C.
+Pour un lien de capacité C partagé à plusieurs, le débit voulu par la source sea la bande passante résiduelle (disponible) ~= C - Traffic concurent. Problème, la bande passante résiduelle est dynamique et inconnue.
+
+-> Détection de la bande passante disponible -> augmenter le débit TCP en agrandissant la taille de sa fenêtre de congestion jusqu'a atteindre le débit max supporté : comment savoir qu'on a atteint de débit max => des pertes se produisent.
+Hausse addistive : augmenter la cong_Fenetre d'1 MSS après chaque RTT
+Baisse multiplicative : divise la cong_Fenetre par 2
+-> AIMD Additive increase Multiplicative Decrease
+
+La courbe augmente linéairement jusqu'a l'apparition d'une perte; à ce moment la, division par deux de la taille de la fenêtre, puis augmentation linéaire de nouveau, et ainsi de suite. Traffic en dent de scie, avec évolution browniennede la taille des pics (dynamisme de la taille de la bande passante)
+
+Le "slow start" de TCP :
+-1 MSS = 500 octets, RTT = 200ms et W_{init} = 1MSS
+-débit au premier RTT : 20 Kb.s⁻¹
+-Débit au 2 eme RTT : 40 Kb.s⁻¹
+-Débit au troisime RTT : 60 Kb.s⁻¹
+-Débit à la première seconde : 40 Kb.s⁻¹
+
+Or la bande passante disponible est souvent très largement supérieure : prb d'efficacité.
+Solutions proposées : 
+-augmentation de la valeur onitiale de cong_fenetre
+-Augmenter exponentiellement le débit d'émission jusqu'a la première perte
+
+
+Dans la réalité, le schéma en dent de scie décrit ci-dessus commence au départ non pas par une courbe linéaire, mais une courbe exponentielle. AInsi, le taux initial de transmission est faible mais sa croissance exponentielle
+
+Distinction sur le type de perte :
+-Si arrivée de 3 ACKs identique, cong_fenetre div 2 et croissance linéraire -> réseau encore capble de transmettre
+-Si timeout, cong_fenetre fixé à 1 MSS et croissance exponentielle -> scénario plus alarmant.
+
+Le débit moyen (à long terme)
+-> Approximation classisque (sans tenir compte du "slow start")
+-> pour une fenetre de la taille w, débit instantané w/RTT
+
+W la taille de la fenêtre à l'instant de perte
+	·cong_Fenetre évolue entre 0.5W et W
+	·le débit d'émission augmente linéairement entre 0.5W / W et W/RTT
+		=> débit moyen  ~= 0.75×W/RTT
+
+	Le débit moyen ~= \frac{1.22MSS}{RTT\sqrt{Pr}} avec Pr le taux de perte
+
+Les flux avec les petits RTT sont plus "agressifs" vis à vis des autres flux
+-> pas adpaté aux réseaux très haut-débits
+-> Pas adapté aux réseaux sans fil
+	·Risque de surréaction aux évenements de la couche 2
+	·BER ou collisions (pertes couche 2) du au média radio
+	·retardent les paquets -> déclenchent Timeout
+	·pas forcement une congestion du réseau
+->Le débit TCP n'est pas décidé par l'application
+->Pourquoi ne pas utiliser UDP? -> perte des services proposé par TCP
+-> UDP se base sur des estimations du débit moyens de TCP
+
+----------------------------------------------------------
+La couche réseau
+
+Pourquoi router? Qu'est ce que router?
+On ne peut pas relier ts les noeuds entre eux. Ce n'est pas réalisable.
+
+On utilise un réseau à maillage. Tt le problème du routage sera de COMMENT router des informations d'un noeud à un autre.
+
+Trois façons de distribuer une info dans un réseau
+-unicast : une source vers un destinataire
+-broadcast : un noeud vers tt le monde (envoie d'une copie a tt les noeuds, multiplication des copies des paquets)
+-multicast : un noeud vers une liste fermée de noeuds, un ensemble de noeud
+
+La couche réseau, contrairement à la couche trsport, opére sur quasiment tt les noeuds.
+Le rôle de la couche réseau est de permettre le trsport des segments de l'expérditeur au destinataire :
+-encapsule les segments dans des datagramm chez l'expéditeur
+-délivre les segments à la couche trsprt chez le destinataire
+
+Service de la couche réseau : 
+-Nommage : donne un nom, un identifiant logique d'une unité -> indépendant de la topologie, ne peut être utilisé pour router.
+-Adressage : identifiant topologique d'une entité, dépendant de la position dans le réseau, utilisé pour router, doit être en principe unique (@IP)
+-Dissémination : divulgation de la paire nom/adresse (DNS) => chainon manquant entre les noms connus et les @IP.
+-Acheminement/réexpédition : trsfrt d'un paquet d'une interface d'entrée d'un routeur à l'unde des sorties ("forwarding")
+-Routage : déterminer la route de bout-en-bout à suivre par le paquet depuis la source jusqu'a la destinat°, algortihme de routage
+-Établissement d'une connexion virtuelle (pas toujours, voir très rarement) : précède l'envoi des donnée, implique les temrinaux et routeurs connectés.
+
+Distinction acheminement - routage
+Le routeur interroge les tables d'acheminement local (table de routage) qui sont construite à partir des algorithmes de routage.
+
+Il n'existe que IP en couche 3. IP est un algo du best effort : pas de garantie sur le débit, sur les pertes, sur le séquencement des données ou leur ordre d'arrivée, ou sur le délai. Le role d'IP a été réduit au strict minimum.
+
+-Réseau à datagramme : service réseau sans connexion
+-Réseau à circuit virtuel : orienté connexion
+
+Chemin de la source à la destination = circuit virtuel, a la manière du réseau téléphonique.
+
+Si on doit établir une comm, il faut faire un aller retour.
+Avec un réseau à datagramme, pas d'établissement de connexion. Les paquets ne sont pas forcément transmis sur le meme chemin, tandis que dans un circuit virtuel, le chemin est défini et tous les paquets l'empruntent
+
+Environ quatre milliard d'@IP
+Aucune table de cette, taille, donc on fait de l'aggrégation d'adresse : on regroupe les @ comprises dans une même intervalle, puisque les @ ont un sens topologique (elles sont sensés être proche si elles se suivent.
+
+Réseaux à datagrammes :
+-Algorithme : comment choisit t'on la ligne qui nous intéresse? En comparant les lignes avec l'adresse désiré. Mais il peut y avoir des ambiguités, quand plusieurs lignes correspondent à l'adresses souhaité. On choisit alors la ligne avec le préfixe partagé le plus long.
+
+Le protocole IP est implémenté sur ts les noeuds (utilisateurs, routeurs)
+
+Format d'un datgramme
+-En-tete de 40 octets : 20 TCP + 20 IP
+-Version : version d'IP (IPV4 pour nous, autre possibilité IPV6)
+-Hlen : indique la taille de l'en-tête
+-ToS : Type of Service, indique la façon dont le paquet doit être traité (QoS)
+-Total Length : exprimé en nbre d'octet, comprend l'en tête, codé sur 16 bits (taille max du paquet : 2¹⁶ = 65 535 octets)
+-TTL : Time To Live, fixe une durée de vie maximale pour un paquet, exprimée en nbre de saut, décrémentant à chaque routeur/noeud rencontré. Le paquet est supprimé quand il arrive à zéro. Permet d'éviter qu'un paquet tourne indéfiniment dans le réseau (par exemple en présence d'une boucle de routage)
+-Protocol
+-Checksum : somme de contrôle, détectant les erreurs de trsfert, calculé sur l'entête seulement, complément à 1 de la somme de l'entête
+-les @IP codées sur 32 bits chacunes
+-Les options (inutilées)
+
+Les couches physiques sont très hétérogènes. Chaque liaison a une valeur de MTU (maximum transmission Unit). Que faire lorsque la taille du datagramme > MTU?
+Avec IPV4, si le paquet est trop gros, il le fragmente.
