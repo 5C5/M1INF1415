@@ -1,0 +1,80 @@
+TD Logique
+
+-Exercice 1
+Atomes (soit vrai, soit faux):
+R(_), S(_)
+
+variables
+1.x, y, z, t (z libre)
+2.x, y, z, t (z libre)
+3.x, y, z, t (z libre)
+
+termes :
+1. x, y, z, t
+2. x, y, z, t
+3.f(x),g(z), x, y, z, t
+
+Formules : 
+1.R(_), S(_) ∀x ∃y ∀t R(_), ∃x ∀y ∃t S(_)
+(∀x ∃y ∀t R(x, z, y))->(∃x ∀y ∃t S(x, z, t))
+(∀x ∃y ∀t R(x, z, t))->(∃x ∀y ∃t S(x, z, t))
+(∀x ∃y ∀t R(f(x), g(z), t))->(∃x ∀y ∃t S(x, z, t))
+
+
+-Exercice 2
+·perso :
+(∀x ∃y ∀t R(x, z, y))->(∃x ∀y ∃t S(x, z, t))
+<=>
+-(∀x ∃y ∀t R(x, z, y)) ∨ (∃x ∀y ∃t S(x, z, t))
+<=>
+(∃x ∀y ∃t -R(x, z, t)) ∨ (∃x ∀y ∃t S(x, z, t))
+<=>
+∃x ∀y ∃t (-R(x, z, t) ∨ S(x, z, t))
+·Correction : 
+(∀x ∃y ∀t R(x, z, y))->(∃x ∀y ∃t S(x, z, t))
+<=>
+-(∀x ∃y ∀t R(x, z, y)) ∨ (∃x ∀y ∃t S(x, z, t))
+<=>
+(∃x ∀y ∃t -R(x, z, t)) ∨ (∃x ∀y ∃t S(x, z, t))
+<=>
+∃x ∀y ∃t (-R(x, z, t) ∨ (∃x ∀y ∃t S(x, z, t)))
+<=>
+∃x ∀y ∃t (∃x ∀y ∃t (-R(x, z, t) ∨ S(x, z, t)))
+
+perso :
+(∀x ∃y ∀t R(x, z, t))->(∃x ∀y ∃t S(x, z, t))
+<=>
+-(∀x ∃y ∀t R(x, z, t)) ∨ (∃x ∀y ∃t S(x, z, t))
+<=>
+(∃x ∀y ∃t -R(x, z, t)) ∨ (∃x ∀y ∃t S(x, z, t))
+<=>
+∃x ∀y ∃t (-R(x, z, t) ∨ S(x, z, t))
+correction :
+même que correction, sauf que fin
+∃x ∃t (-R(x, z, t) ∨ S(x, e, t))
+
+-Exercice 3
+
+1. ∀x descendant(x) -> voler(x).
+2.
+3. satisfait(pigeon) <-> (∀x descendant(x, pigeon) -> voler(x))
+4. ∀x gris(x) -> voler(x)
+5. gris(pigeon) -> ∃x (parent(x, pigeon) ∧ blanc(x)) ∨ (parent(x, pigeon) ∧ gris(x))
+
+Correction :
+1. ∀x ∀y descendant(x, y) -> voler(y)
+2. ∃x (descendant(x, Joe) ∧ (grix(x) ∨ blanc(x)))
+3. ∀x ∀y satisfait(x) -> descendant(x, y) -> voler(y)
+4. ∀x gris(x) -> voler(x)
+5. ∃x ∀y (descendant(x, y) ∧ (Gris(x)∨Blanc(x))) -> G(y)
+
+Formes clausales :
+correction : 
+F3 = ∀x (∀y D(x, y) -> V(y)) -> S(x)
+= -(∀x (∀y D(x, y) -> V(y))) ∨ S(x)
+= ∀x (∃y D(x, y) ∧ -V(y)) ∨ S(x)
+= ∀x ∃y (D(x, y) ∨ S(x)) ∧ (-V(y) ∨ (S(x)))
+
+
+Exercice 4
+
