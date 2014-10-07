@@ -147,3 +147,55 @@ __ _ _ _ _ __ __ __
 Mercurial
 -> Dispose d'une interface graphique
 
+______________________________________________________________________________________
+Cours du 06/10
+
+Les méthodes agiles
+
+Méthode de conception :
+-rien (quick and dirty)
+-Agile
+-Spirale
+-Cascade
+
+-> Cascade permet de formaliser très rapidement le problème, mais est très vulnérables aux changements. Contre exemple classique des méthodes à ne pas utiliser. Si l'estimation du cout est facile au départ, la planification est trop rigide alors que les taches sont changeantes. La responsabilité du projet n'est pas partagée.
+
+-Modèle en V : Bénéfices ; tâches clairement établies au début de projet
+	inconvénient : les tâches sont changeantes
+
+Les méthodes itératives : recommencer les parties ou il y a pu avoir des soucis. Chronophage
+
+Les méthodes agiles : trouver un compromis entre un nbre minimum de méthodes, et une capacité de réponse souple au changement.
+
+
+Les principes des méthodes agiles :
+-méthode adaptative (vs prédictives)
+	-itérations courtes
+	-lien fort avec le client
+	-délai et cout fixés, mais pas la portée.
+-insistance sur les hommes
+	-les progs sont des spécialistes (pas interchangeable)
+	-attention à la communication humaine
+	-équipe auto-organisées
+-Processus adaptatif : révision du processus à chaque itération
+
+-Simples
+-Légères
+-Orientés particpants plutot que plan
+-Nbreuses
+
+
+Processus agiles et modélisation
+
+-utilisation d'UML -> utilisé pour communiquer et comprendre
+-Reste à un niveau de modélisation minimalement suffisant
+-modéliser un source
+
+XP : eXtreme Programmation
+Dimension humaine considérée comme déterminente pour la réussite de tt projet
+
+Scrum (mélée): 
+Pouvoir à l'équipe
+	-l'équipe reçoit les pleins pouvoirs
+
+
