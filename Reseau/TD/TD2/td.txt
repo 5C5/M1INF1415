@@ -1,0 +1,33 @@
+TD2 Couche liaison de données
+
+Performance de 802.11b
+1)
+200 ÷ (3 × 10⁸) = 2/3 .10⁻⁶  = 6µs
+
+2) 15,5 * 20µs (compris entre 0 et 31, tiré aléatoirement, multiplié par le tmps d'un slot)
+= 310µs
+
+3) 534 × 8 ÷ 1000000 = 0.004272 s
++ 0.00000552 + 0.000202 + (14 × 8 * 1000000) = 0.004824 + 0.000314 = 0.005138
+
+Débit réel : 778513 b/s pour 1Mb/s et 500octets
+Débit réel : 3.45Mb/s pour 11 Mb/s et 500 octets
+Débit réel : 0.88Mb/s pour 1Mb/s et 1000 octets
+Débit réel : 5.28Mb/s pour 11Mb/s et 1000 octets
+Débit réel : 0.91Mb/s pour 1Mb/s et 1500 octets
+Débit réel : 6.38Mb/s pour 11Mb/s et 1500 octets
+
+4) 6.38 /2
+
+5)Le backoff de la station partant en deuxième ne repart pas à 0 quand elle peut émettre, donc son temps d'attente est plus petit
+
+6) Le débit diminuera proportionnellement au nbre de stations (légèrement supérieur au débit d'une station seule/N ). Si N trop grand, les collisions augmentent et les fenetre de contention s'élargissent.
+
+--------------------
+La station à 11Mb/s verra son débit diminuer énorément (moins de la moitié) tandis que la station à 1Mb/s verra son débit diminuer beaucoup moins. En effet, la station à 1 Mb/s met beaucoup plus de temps à envoyer que l'autre, ce qui a un impact plus fort sur le débit de la station à 11 Mb/s
+
+
+
+
+
+1)
