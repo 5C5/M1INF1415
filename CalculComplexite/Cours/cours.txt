@@ -317,7 +317,7 @@ Possibilité d'écrire aussi mult(n, 0) = zéro_1(n)
 -Soustraction :
 pred(0) = 0
 pred(n + 1) = n
-On obetien la soustraction non négative avec le tilde ~ (résultat >= 0)
+On obtiens la soustraction non négative avec le tilde ~ (résultat >= 0)
 m ~ 0 = m
 m~(n+1) = pred(m ~ n)
 
@@ -341,7 +341,7 @@ f(x_1, ..., x_n) = p(x_1, ..., x_n) * g1(x_1, ..., x_n) + (1~p(x_1, ..., x_n)) *
 
 Modulo :
 mod(0, n) = 0
-mod(m+ 1, n) = 0 si mod(m, n) ) pred(n), mod(m, n)+ 1 sinon.
+mod(m+ 1, n) = 0 si mod(m, n) = pred(n), mod(m, n)+ 1 sinon.
 
 div(0, n) = 0
 div(m+1, n) = div(m, n) si mod(m+1, n) > 0, div(m, n) + 1 sinon.
@@ -477,3 +477,212 @@ M à deux rubans
 3) si on arrive ds un état d'arrêt de M_1 ou de M_2
 -> M_1 s'arrête  : y (M_1)
 				   N (M_2)
+
+
+____________________________________________________
+Cours du 09/10
+
+L accepté par M ==> M', Turing énumère L
+pour i de 1 à l'infini
+	M' génère des mots de longueur i sur ∑*
+	pour chaque mot M simule i de M
+	ssi M s'arrêtes avant i étapes
+		-> ajout du mot au dico s'il n'y ai pas déjà.
+
+
+L Turing énuméré par une Machine M -> construire M' qui accepte L
+	-M' sauvegarde si entrée sur (2)
+	-simule M sur (1), à chaque passage par q, on compare (1) et (2). 
+		Si égalité, alors on s'arrête (si les mots sont égaux), 
+		sinon, on continue la simulation
+
+L décidé par M, on construit M'
+	M' énumère les mots de ∑ dans l'ordre lexicographique (alphabétique)
+	après avoir généré w_i, teste sur M
+		-> y => affiche et on continue
+		-> N =>...
+
+L lexicographiquent énmurable par M
+	->M' -> sauvegarde w
+	lance l'énumération de L jusqu'a
+	-trouver w, alors OK (y)
+	-dépasser w dans l'ordre lexicographique (N)
+	-arrêt de M avant, fin de l'énumération
+
+
+Théorème de Rice
+Preuve :
+Supposons que ø ∈ C (sinon on par de \barre{c}
+Soit L ∈ C, M accepte L
+->M' pour w M lance U avec "M"
+			si U s'errête, M' lance M avec w
+en fct° de M, M' ne s'arrête pas ∀ w
+	-s'arrête si w ∈ L
+Comme L recursivement énumrable, on ne sait pas décidé si U("M") s'arrête
+-> on ne sait pas décider si M' accepte ø => !∈ C
+							 M' n'accepte pas ø => ∈ C
+
+
+---------------------------------------------------------
+Complexité : 
+
+O( )
+\Omega( )
+(H)( )
+
+Pour l'exemple de la géométrie tortue, on est en O(2^n)
+
+O(n!) ≃ O(n^n)
+n! ≃ \frac{n}{2} \sqrt{2\Pi n}
+James STIRLING (1692 - 1770)
+
+Classe Polynomiale
+
+La classe des langages polynomialement décidable est noté P
+
+Soit L polynomialement décidé par M
+\complémentaire'L) par \barre{M} qui correspond à M dans lequel on a juste inversé Y et N (Yes and No, les arrêts)
+
+Cela n'a pas d'influence sur le polynome qui borne M
+\barre{M} polynomialement bornée, donc \barre{L} ∈ P
+
+preuve : 
+
+Soit E un langage | E = {"M" "w" M accepte w après au plus 2^{|w|} étapes}
+
+E n'appartie pas à P. Supposons donc que E ∈ P =>
+E_1 = {"M" M accepte "M" après au plus 2^{|"M"|} étapes}
+
+-> E_1 ∈ P, \barre{E_1} ∈ P
+-> ∃ M* décident \barre{E_1}, M* polynomialement bornée
+∃ p ∀ w ∈ ∑*, M* s'arrête après au plus p(|w|) étapes
+
+O ∃ n_0 | ∀ n > n_0, 2^{(n)} > p(n)
+On suppose que |"M"| ≥ n_0
+	(au besoin, on étudie "M" avec des états inacessibles)
+
+Q M* accepte "M"?
+OUI -> "M" * ∈ \barre{E_1} => M* n'accepte pas "M" en en moins de 2^{|M*|} étapes
+	contredit M* polynome borné par p et p(n) < 2^n
+NON -> M* accepte "M"*
+	M* !∈ \barre{E_1} en au plus 2^{|"M"*|} étapes
+	M* ∈E_1
+	Mais comme L* décide \barre{E_1} M* ne peut accepter "M*" contradication
+
+
+Codage de graphe sommets : entier
+				 arrêtes : couples d'entier
+				 ∑ = {0, 1, (, ), ,}
+
+R = {"G", "i"  | ∃ cemin de v_i à v_j ds G}
+R ∈ P similaire au problème de l'arrêt
+
+
+____________________________________________
+Cours du 10/10
+
+Graphes Eulériens
+
+Euleriens -> a) ∀ u, v ∈ V, si u et v ne sont pas isolés
+			 b) degré interieur = degré extérieur
+	CNS 	a) fermeture réflexive-transitive (polynomial)
+			b) linéaire
+
+
+Classe NP -> Non déterministe Polynomiale
+
+L ∈ NP L décidé par M non déterministe polynomialement bornée
+1) M s'arrête toujours, ∀ w, en un nbre d'étape borné par p(|w|)
+2) M s'arrête et rend Y ou N
+	w accepté s'il existe au moins un chemin (une suite de calcul) qui aboutisse à Y
+3) On parcours l'arbre jusqu'a trouvé un YES, sinon on continue à parcourir l'arbre. La profondeur peut estimer le temps
+
+
+MT à 2 rubans, F sur (1)
+1) on va compter le nbre de variable de F et vérifier que c'est bien une Forme Normale Conjonctive
+2) écrire sur (2) autant de I que de variables
+3) changer de manière non déterministe chaque I -> T
+												\-> ⊥
+MT à \frac{1}{2} état
+
+Puis une machine de turing que j'ai pas pu dessiner, à récupérer
+4) Interpréter la famille devaleur de chaque variable et sur (2)
+-> VRAI (1) -> T => arrêt Y -> f satisfiable
+-> FAUX (1) -> ⊥ => arrêt N -> on continue sur (2)
+	polynomial
+
+
+Problème du voyageur de commerce (faible)
+
+preuve -  de manière non déterministe tous les 
+		-tester de manière det chaque 
+			-> SB ou pas
+
+La classe EXP (exponentielle)
+On prend une MT déterministe exponentiellement bornée.
+
+
+preuve M une MT non déterministe polynomialement bornée par p
+L décidé par M
+on construit M' déterministe exponentiellement borné qui décide L
+	preuve d'équivalence det/ non deterministe
+
+On note r le degré de non déterministe
+		|->fixé, dépend de M
+		=nbre max de quintuplet de \Delta qui se partagent les 2 premiers composants
+		=nbre max de fils dans l'arbre de calcul
+M' simule M sur w: 
+	-tous les calculs de longueur 1 (au maximum r)
+	-"							" 2 (au max r²)
+	-.....
+	-tous les calculs de longueur p(|w|) (au max r^{p(|w|)})
+Simule un calcul de longueur k se fait en O(k)
+-copier l'entrée
+-produire la chaine suivante sur {1, 2, ..., r}
+-Simuler M
+∑_{r=1}^{p(n) +1} r^k = \frac{r(r^{p(n) + 1} -1)}{r - 1}  ≤ (r+1)^{p(n) + 1} = 2 ^{log_{p+1} p(n) + 1}
+							NP											EXP
+on a P ⊂ NP ⊂ EXP
+P = NP ? on ne sait pas
+NP = EXP ? on ne sait pas
+P ⊂ EXP
+P ≠ EXP
+
+
+Notion de certificat :
+pbs d'existence : -produire une situation
+				  -test -> réussite => résolu l'existence
+						   échec à tous => n'existe pas
+Quand les tests sont passé avec succès, on appelle cela un certificat ou témoin
+->Il faut que ce témoin aie une longueur polynomiale par rapport à w
+->....qqch
+
+preuve pour page 136
+L = { x, y | y est un certificat pour x}
+L' = {entrée; certificat pour l'entrée | l'entrée w ∈ ∑*}
+si l'entrée ∈ L, ∃ un certificat
+Si l' existe, alors ∃ MT polynomialement bornée non déterministe qui décide L en testant tous les certificats
+Si L ∈ NP, alors ∃ M decidant L, polynomialement bornée
+
+------------------------------------
+NP complet (NPC)
+
+Les pbs NPC ont une solution polynomiale uniquement si P = NP preuve
+Pour montrer que les pbs NPC n'ont pas de solution polynomiale, il suffit de montrer que P ≠ NP
+
+SAT, VC, ham, on a pas trouvé de solution P
+			si une solution P existait, on l'aurait trouvé
+
+Supposons que P ≠ NP, si on arrive à trouver un pb NP complet, alors on prouve qu'il n'y a pas de solution polynomiale
+
+Analogie avec l'existence
+
+\tho réduit le pb A au pb B (trsfrmt° d'unpb en un autre)
+\tho : A -> B
+	   Pb ⇐ Pb
+	   \barre{Pb} ⇒ \barre{Pb}
+B ∈ P => A ∈ P
+B !∈ => A !∈ P
+
+instance de A
+un Algo pour A
