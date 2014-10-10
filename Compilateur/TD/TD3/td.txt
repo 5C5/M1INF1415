@@ -1,0 +1,69 @@
+TD3 attributs et génération de code
+
+Exercice 2 :
+-
+{ int c, i, l;
+compter(c, i, l)
+	{ char rec, trop;
+	pollir(rec)
+	}
+}
+
+
+programme 		-> bloc
+bloc 			-> {dec ; sint}
+dec 			-> TKVAR suite-ident↓0
+suite-ident↓num	-> ident, suite-ident↓(num+2) | ident
+sinst 			-> opcode(suite-arg) | bloc
+suite-arg		-> suite-arg, ident | ident
+sint 			-> sinst sint | sint
+
+Correction :
+une table des identificateur TI :
+-[id <--> N°unique]
+
+une table des symbole TS :
+-profondeur
+-parent
+-[N°unique <--> position]
+
+bloc -> {¹ dec ; sint ²}
+
+¹ctxt = creerTS(ctxt, prof + 1, ctxt)
+²ctxt = ctxt parent
+
+bloc↑ctxt on faire remonter (et descendre le contexte)
+
+On utilise une variable globale rang
+
+dec -> var suite-ident
+		*rang = 1
+suite-ident -> ident.rang++, suite-ident.ajouter(ctxt, id, rang)
+			|	ident.ajouter(ctxt, id, rang)
+
+ajouter ajoute dans la TS l'identificateur et sa position(rang)
+
+suite-arg -> suite-arg, ident . rechercher(ctxt, ident)
+			|ident . rechercher(ctxt, ident)
+
+Si on utilise pas de variable globale, il faut ajouter des attributs descendants
+suite-ident↑ctxt
+dec↓ctxt
+sint↓ctxt
+sinst↓ctxt
+suite-arg↓ctxt
+
+suite-ident -> ident, suite-ident .ajouter(suite_ident↓ctxt, ident, rang)
+suite-ident_3↓ctxt = suite-ident↓ctxt
+suite-ident_3↓rang = suite-ident↓rang+1
+
+du coup, bloc ressemble
+bloc -> { ¹dec; ²sint}
+¹dec↓ctxt = creerctxt(bloc↓ctxt)
+²sint↓ctxt = dec↓ctxt
+dec -> var ³ suite-ident
+³suite-ident↓ctxt = dec↓ctxt
+ suite-ident↓rang = 1
+
+
+
