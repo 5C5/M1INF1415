@@ -1,0 +1,128 @@
+TD 2 MIF 18
+
+Exercice 1 :
+1)
+étudiants			|	ues		|	formations	|	département
+------------------------------------------------------------			
+etu:1234567			|	ue:mif18|	form:m1if	|
+->nom :	"Alice" 	|			|				|
+etu:2345678			|	ue:mif17|				|	ucbl:informatiqu
+->nom :	"Basile 	|			|				|
+etu:3456789			|	ue:mif16|				|
+->nom : "Charlotte	|			|				|
+etu:4567890			|	ue:mif13|	form:m2if	|
+->nom : "Damien"	|			|				|
+
+liste des différentes relations :
+-formation
+ue:mif18->form:m1if
+ue:mif17->form:m1if
+ue:mif16->form:m1if
+ue:mif13->form:m1if
+
+-départment
+ue:mif18 -> ucbl:informatique
+ue:mif17 -> ucbl:informatique
+ue:mif16 -> ucbl:informatique
+ue:mif13 -> ucbl:informatique
+form:m1if -> ucbl:informatique
+form:m2if -> ucbl:informatique
+
+-insrcit
+etu:1234567 -> ue:mif18
+etu:1234567 -> ue:mif17
+etu:2345678 -> ue:mif17
+etu:2345678 -> ue:mif13
+etu:3456789 -> ue:mif18
+etu:3456789 -> ue:mif17
+etu:3456789 -> ue:mif16
+etu:4567890 -> ue:mif18
+etu:4567890 -> ue:mif17
+etu:4567890 -> ue:mif16
+etu:4567890 -> ue:mif13
+
+-binome
+etu:2345678 -> etu:3456789
+etu:4567890 -> etu 1234567
+
+
+2)
+·Il y a un sélect, donc on recherche ts les étudiants inscrits en mif 18
+etu:1234567
+etu:4567890
+
+·On cherche les binomes des étudiants inscrits en mif18
+etu:4567890
+
+·On cherche les étudiants dont le binome est inscrit en mif18 et ayant un binome inscrit en mif18
+etu:1234567
+etu:4567890
+
+·On cherche les élements et les relations liant l'élément dont le nom est "Basile"
+ucbl:inscrit ue:mif17
+ucbl:inscrit ue:mif13
+ucbl:binome etu:3456789
+ucbl:nom "Basile"
+
+----------------------------
+Exercice 2
+1)
+PREFIX ucbl :<http://univ-lyon1.fr>
+SELECT ?e WHERE {
+	?e ucbl:binome ?e2.
+	?e2 ucbl:nom "Alice"
+}
+
+2)
+PREFIX ucbl :<http://univ-lyon1.fr>
+SELECT ?e WHERE {
+	?e ucbl:inscrit ?u.
+	?u ucbl:form form:m1if.
+}
+
+3)
+PREFIX ucbl :<http://univ-lyon1.fr>
+SELECT ?e, ?e2 WHERE {
+	?e ucbl:binome ?e2.
+	?e ucbl:inscrit ?u.
+	?e2 ucbl:inscrit ?u.
+}
+
+4)
+PREFIX ucbl :<http://univ-lyon1.fr>
+SELECT ?u, ?u2 WHERE {
+	?u ucbl:form ?f.
+	?u2 ucbl:form ?f.
+	?u ucbl:departement ?d1.
+	?u2 ucbl:departement ?d2.
+	FILTER(?d1 != ?d2).
+}
+
+si une ue est dans deux départements?
+PREFIX ucbl :<http://univ-lyon1.fr>
+SELECT ?u, ?u2 WHERE {
+	?u ucbl:form ?f.
+	?u2 ucbl:form ?f.
+	NOT EXISTS {
+		?u ucbl:departement ?d.
+		?u2 ucbl:departement ?d
+	}
+}
+
+
+5)
+SELECT ?e, ?a WHERE {
+	?e ucbl:binome ?b.
+	?a ucbl:binome ?b.a
+	FILTER(?e != ?a).
+}
+
+SELECT ?e1, ?e2 WHERE {
+	{?e1 ucbl:binome ?e.
+	UNION
+	?e ucbl:binome ?e1.}
+	{?e2 ucbl:binome ?e.
+	UNION
+	?e ucbl:binome ?e2.}
+	FILTER(?e1 != ?e2)
+}
