@@ -5,6 +5,10 @@
 *.class
 *.elf
 
+# Fichiers de sauvegarde VIM
+*.swp
+*.swo
+
 #Fichiers temporaires Latex
 
 *.aux
