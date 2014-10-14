@@ -134,4 +134,32 @@ Sécurité :
 	-reprtoire pouvant accueillir des cripts
 Attention aux CGI récupérés sur le web
 
+_________________________________________________________________
+Cours du 14/10
 
+AJAX
+Rappels sur javaScript :
+-inteprété, fonctionnel(pile ayant une taille max)
+-orienté prototype, typage dynamique
+-Evenementiels : méthode de callback, pattern observer : eventListener
+
+Fermeture : closure -> source de plein d'erreurs
+
+Function factory -> une fonction retournant une fonction
+
+Faire des trucs propres : contructeurs, utilisation de données encapsulées avec this
+
+Callback : fct° passée en paramètre d'une fonction, avec éxécution de celle passée en paramètre à la fin de l'autre.
+
+
+/!\ dans le cas
+<?xml version "...">
+<toto>
+	<titi>bonjour</titi>
+</toto>
+
+Il y a cinq noeuds (le noeud bonjour, plus les retour à la la ligne)
+
+
+Que doit faire un serveur Web à la réception d’une requête asynchrone AJAX ?
+Par défaut, le contentType est en texte HTML. Il faut donc vérifier et modifier si besoin.
