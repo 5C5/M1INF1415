@@ -1,0 +1,6 @@
+** Code (helloworld)
+helloworld:	nop
+			ecrire 			__ch1
+			sautdeligne
+			fin
+

@@ -1,0 +1,94 @@
+
+%macro byte.push 1
+	sub		esp, 1
+	push 	eax
+	mov 	al, %1
+	mov		byte [esp+4], al
+	pop 	eax
+%endmacro
+
+%macro byte.pop 1
+%if %1 = al
+	mov 	al, byte [esp]
+%else
+	push 	eax
+	mov 	al, byte [esp+4]
+	mov 	%1, al
+	pop 	eax
+%endif
+	add		esp, 1
+%endmacro
+
+%macro word.push 1
+	sub		esp, 2
+	push 	eax
+	mov 	ax, %1
+	mov		word [esp+4], ax
+	pop 	eax
+%endmacro
+
+%macro word.pop 1
+%if %1 = ax
+	mov 	ax, word [esp]
+%else
+	push 	eax
+	mov 	ax, word [esp+4]
+	mov 	%1, ax
+	pop 	eax
+%endif
+	add		esp, 2
+%endmacro
+
+%macro program.prologue 0
+	pop     eax
+	pop     ebx
+	mov     ebp, esp
+	and     esp, 0xFFFFFFF0
+.begin:
+%endmacro
+
+%macro program.epilogue 0
+.end:
+    mov     eax, 1
+    push    dword 0
+    sub     esp, 4
+    int     0x80
+%endmacro
+
+%macro subprogram.call 1
+	call 	%1
+	add 	esp, %1.args_size
+%endmacro
+
+%macro subprogram.prologue 0-1 0
+	enter	.vars_size + .temps_size, 0
+	pushad
+%if %1 = 1
+	fsave	[.fpu.state]
+%endif
+.begin:
+%endmacro
+
+%macro subprogram.epilogue 0-1 0
+.end:
+%if %1 = 1
+	frstor	[.fpu.state]
+%endif
+	popad
+	leave
+	ret
+%endmacro
+
+%macro clib_prolog 1
+    mov ebx, esp        ; remember current esp
+    and esp, 0xFFFFFFF0 ; align to next 16 byte boundary (could be zero offset!)
+    sub esp, 12         ; skip ahead 12 so we can store original esp
+    push ebx            ; store esp (16 bytes aligned again)
+    sub esp, %1         ; pad for arguments (make conditional?)
+%endmacro
+
+%macro clib_epilog 1
+    add esp, %1         ; remove arg padding
+    pop ebx             ; get original esp
+    mov esp, ebx        ; restore
+%endmacro

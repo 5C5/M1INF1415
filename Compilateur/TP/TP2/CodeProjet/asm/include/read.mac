@@ -1,0 +1,20 @@
+
+extern readString
+extern readString.args_size
+extern readString.result_size
+
+extern readInt
+extern readInt.args_size
+extern readInt.result_size
+
+extern readFloat
+extern readFloat.args_size
+extern readFloat.result_size
+
+extern readChar
+extern readChar.args_size
+extern readChar.result_size
+
+extern readBoolean
+extern readBoolean.args_size
+extern readBoolean.result_size

@@ -1,0 +1,24 @@
+
+extern writeString
+extern writeString.args_size
+extern writeString.result_size
+
+extern writeInt
+extern writeInt.args_size
+extern writeInt.result_size
+
+extern writeFloat
+extern writeFloat.args_size
+extern writeFloat.result_size
+
+extern writeChar
+extern writeChar.args_size
+extern writeChar.result_size
+
+extern writeBoolean
+extern writeBoolean.args_size
+extern writeBoolean.result_size
+
+extern newLine
+extern newLine.args_size
+extern newLine.result_size

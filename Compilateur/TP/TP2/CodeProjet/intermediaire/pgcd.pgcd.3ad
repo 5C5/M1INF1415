@@ -1,0 +1,33 @@
+** Code (pgcd)
+pgcd:		nop
+			reserver		0
+.si002:		nop
+			.__temp0 = a == b
+			si .__temp0 aller a .alors002
+			aller a .sinon002
+.alors002:	nop
+			renvoyer		a
+			aller a .finsi002
+.sinon002:	nop
+.si001:		nop
+			.__temp1 = a > b
+			si .__temp1 aller a .alors001
+			aller a .sinon001
+.alors001:	nop
+			empiler			& .__temp3
+			empiler			b
+			.__temp2 = a - b
+			empiler			.__temp2
+			appeler			pgcd
+			renvoyer		.__temp3
+			aller a .finsi001
+.sinon001:	nop
+			empiler			& .__temp5
+			.__temp4 = b - a
+			empiler			.__temp4
+			empiler			a
+			appeler			pgcd
+			renvoyer		.__temp5
+.finsi001:	nop
+.finsi002:	nop
+			retourner		4

@@ -1,0 +1,9 @@
+** Code (hello)
+hello:		nop
+			ecrire			__ch1
+			lire			name
+			ecrire			__ch2
+			ecrire			name
+			ecrire			'!'
+			sautdeligne
+			fin

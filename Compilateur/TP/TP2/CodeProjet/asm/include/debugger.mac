@@ -1,0 +1,51 @@
+
+extern  sub_dump_regs, sub_dump_mem, sub_dump_math, sub_dump_stack
+extern  writeString, writeString.args_size
+extern  newLine, newLine.args_size
+
+; usage: Debug label memaddress
+%macro Debug 2
+		push 		dword linefeed
+		call		writeString
+		add			esp, writeString.args_size
+		call 		newLine
+		add 		esp, newLine.args_size
+		push   		dword %1
+		call   		sub_dump_regs
+		push 		dword linefeed
+		call		writeString
+		add			esp, writeString.args_size
+		call 		newLine
+		add 		esp, newLine.args_size
+		push  		dword %1
+		call  		sub_dump_math
+		push 		dword linefeed
+		call		writeString
+		add			esp, writeString.args_size
+		call 		newLine
+		add 		esp, newLine.args_size
+		push  		dword 4
+	    push  		dword 4
+		push  		dword %1
+	    call  		sub_dump_stack
+		push 		dword linefeed
+		call		writeString
+		add			esp, writeString.args_size
+		call 		newLine
+		add 		esp, newLine.args_size
+%if 0
+		push  		dword %1
+		push  		dword %2
+		push  		dword 4
+		call  		sub_dump_mem
+		push 		dword linefeed
+		call		writeString
+		add			esp, writeString.args_size
+		call 		newLine
+		add 		esp, newLine.args_size
+%endif
+%endmacro
+
+section		.data
+linefeed			db 38
+					times 38 db '-'

@@ -1,0 +1,66 @@
+
+####################################################################
+#
+#  A ADAPTER SELON A MACHINE SUR LAQUELLE ON SE TROUVE
+#
+####################################################################
+ASM			=	/Users/eguillou/Desktop/Devpt-Ext/nasm-2.11.05/nasm
+ASMFLAGS	=	-f macho -g
+LDFLAGS		=	-arch i386 -macosx_version_min 10.7 -no_pie -lc /usr/lib/crt1.o
+####################################################################
+
+BIN			=	helloworld hello pgcd
+
+all: $(BIN:%=bin/samples/%)
+
+bin/samples/helloworld:	obj/samples/helloworld.o obj/samples/write.o
+bin/samples/hello:	obj/samples/hello.o obj/samples/write.o obj/samples/read.o
+bin/samples/pgcd:	obj/samples/pgcd.o obj/samples/write.o obj/samples/read.o
+
+#------------------------------------------------------------------
+
+LD			=	ld
+ECHO 		=	echo
+CAT 		=	cat
+RM 			=	rm
+
+NO_COLOR=\x1b[0m
+OK_COLOR=\x1b[32;01m
+ERROR_COLOR=\x1b[31;01m
+WARN_COLOR=\x1b[33;01m
+INFO_COLOR=\x1b[33;40m
+FILE_COLOR=\x1b[34;40m
+
+OK_STRING=$(OK_COLOR)[OK]$(NO_COLOR)
+ERROR_STRING=$(ERROR_COLOR)[ERRORS]$(NO_COLOR)
+WARN_STRING=$(WARN_COLOR)[WARNINGS]$(NO_COLOR)
+
+bin/samples/%:
+	@$(ECHO) "$(INFO_COLOR)Linking $(FILE_COLOR)$@$(INFO_COLOR) ... $(NO_COLOR)\c"
+	@$(LD) $(LDFLAGS) -o $@ $+  2> temp.log || touch temp.errors
+	@if test -e temp.errors; then $(ECHO) "$(ERROR_STRING)" && $(CAT) temp.log; elif test -s temp.log; then $(ECHO) "$(WARN_STRING)" && $(CAT) temp.log; else $(ECHO) "$(OK_STRING)"; fi;
+	@$(RM) -f temp.errors temp.log
+
+obj/samples/%.o:	asm/%.asm
+	@$(ECHO) "$(INFO_COLOR)Compiling source file $(FILE_COLOR)$@$(INFO_COLOR) ... $(NO_COLOR)\c"
+	@$(ASM) $(ASMFLAGS) -o $@ $<  2> temp.log || touch temp.errors
+	@if test -e temp.errors; then $(ECHO) "$(ERROR_STRING)" && $(CAT) temp.log; elif test -s temp.log; then $(ECHO) "$(WARN_STRING)" && $(CAT) temp.log; else $(ECHO) "$(OK_STRING)"; fi;
+	@$(RM) -f temp.errors temp.log
+
+obj/samples/%.o:	asm/packages/%.asm
+	@$(ECHO) "$(INFO_COLOR)Compiling package $(FILE_COLOR)$@$(INFO_COLOR) ... $(NO_COLOR)\c"
+	@$(ASM) $(ASMFLAGS) -o $@ $<  2> temp.log || touch temp.errors
+	@if test -e temp.errors; then $(ECHO) "$(ERROR_STRING)" && $(CAT) temp.log; elif test -s temp.log; then $(ECHO) "$(WARN_STRING)" && $(CAT) temp.log; else $(ECHO) "$(OK_STRING)"; fi;
+	@$(RM) -f temp.errors temp.log
+
+clean:
+	@$(ECHO) "$(INFO_COLOR)Cleaning object files ... $(NO_COLOR)\c"
+	@$(RM) -f obj/samples/*.o  2> temp.log || touch temp.errors
+	@if test -e temp.errors; then $(ECHO) "$(ERROR_STRING)" && $(CAT) temp.log; elif test -s temp.log; then $(ECHO) "$(WARN_STRING)" && $(CAT) temp.log; else $(ECHO) "$(OK_STRING)"; fi;
+	@$(RM) -f temp.errors temp.log
+
+mrproper:	clean
+	@$(ECHO) "$(INFO_COLOR)Cleaning executable files ... $(NO_COLOR)\c"
+	@$(RM) -f bin/samples/*  2> temp.log || touch temp.errors
+	@if test -e temp.errors; then $(ECHO) "$(ERROR_STRING)" && $(CAT) temp.log; elif test -s temp.log; then $(ECHO) "$(WARN_STRING)" && $(CAT) temp.log; else $(ECHO) "$(OK_STRING)"; fi;
+	@$(RM) -f temp.errors temp.log

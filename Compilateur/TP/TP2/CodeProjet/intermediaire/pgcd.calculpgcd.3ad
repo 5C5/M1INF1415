@@ -1,0 +1,19 @@
+** Code (calculpgcd)
+calculpgcd:	nop
+			ecrire			__ch1
+			lire			x
+			ecrire			__ch2
+			lire			y
+			empiler 		& .__temp6
+			empiler			y
+			empiler			x
+			appeler			pgcd
+			resultat = .__temp6
+			ecrire			__ch3
+			ecrire			x
+			ecrire			__ch4
+			ecrire			y
+			ecrire			__ch5
+			ecrire			resultat
+			sautdeligne
+			fin
