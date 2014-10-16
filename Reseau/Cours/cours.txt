@@ -636,3 +636,68 @@ Format d'un datgramme
 
 Les couches physiques sont très hétérogènes. Chaque liaison a une valeur de MTU (maximum transmission Unit). Que faire lorsque la taille du datagramme > MTU?
 Avec IPV4, si le paquet est trop gros, il le fragmente.
+
+_________________________________________________________
+Cours du 15/10
+
+L'adressage IP
+
+Une @ IP sert à identifier un noeud, une interface
+Les interfaces (connexion entre l'hote/routeur et le lien physique) ont chacune leur propres @IP, même sur un même hote/routeur
+
+Composition d'une @ IP:
+-Composante réseau (bits de poids fort, deux premiers octets)
+-composante hôte (bits de poids faible)
+
+Sous réseau : ensemble d'interface ayant leur composante réseau commune (elles n'ont pas besoin de routeurs pour communiquer entre elles)
+
+Les classes A, B et C de sous-réseaux sont désormais obsolètes : 
+maintenant, choix libre pour la longueur de la partie réseau de l'adresse
+Format d'une adresse : a.b.c.d/x avec x le masque de sous réseau, le nbre de bit de la composante réseau.
+
+Obtention de l'@ IP :
+-manuelle (configuration via un fichier ou des propriétés)
+-automatique (obtention dynamique de l'@IP via le DHCP (Dynamic Host Configuration Protocol)
+
+Les réseaux obtiennent leurs adresses IP via les FAI
+
+Adressage hiérachique : annonciation efficace des informations de routages; utilisation d'agrégation de routes
+Possibilité d'utiliser une route spécifique dans les cas d'entrées individuelles (les algos de routages prennent les blocs dont la composante réseau est la plus longue.
+
+Comment les FAI obtiennent les blocs d'@ ?
+-Ils demandent à l'CANN Internet Corporation for Assigned Names and Numbers, qui gèrent les @ IP, le DNS.
+
+Classes d'@ privées, destinées aux réseaux locaux (pas de paquets sur Internet avec ces @ IP, ils sont confinés aux réseaux locaux).
+
+
+NAT : Network @ Translation
+
+Transformer une @ IP locale (non routable) en @ IP routable sur internet (publique). Les datagrammes circulant sur le réseau local ont une @ IP locale, dès qu'ils sortent du réseau local, ils ont l'@ IP publique du routeur.
+Vis à vis de l'extérieur, les réseaux locaux n'utilisent qu'une @ IP (quelque soit le nbre différente). Cela permet d'économiser des @ publiques (on adresse plusieurs machines avec une @). Possibilité de changer de FAI sans changer l'@IP des machines locales. Et vis à vis de l'extérieur, personne ne connait les machines du réseau local
+
+Le routeur NAT remplace dans les datagrammes sortant les @IP src et le N° de port src par l'@NAT et un nouveau n° de port.
+Il y a environs 60 000 connexions simultanées disponibles derrière une seule @ IP
+L'utilisation intensive du NAT est controversée, car les routeurs ne devaient pas agir au delà de la couche 3(aors qu'on attaque la couche 4), que le NAT rompt le principe de bout en bout de la couche transport. La possibilité d'un NAT doit être pris en compte par les developpeurs (P2P, IPsec, FTP active mode)
+
+Un routeur classique modifira possiblement les champs ToS, Total length, Flags, Frag Offset, TTL, Checksum (les deux derniers forcément) de l'en-tête IP
+Le routeur NAT modifie ces mêmes champs, plus les @IP destinations et sources, les n° de ports sources et destination, ainsi que la checksum, mais cette fois ci de la couche 4 (TCP)
+
+ICMP : envoyer des informations au niveau réseau entre les noeuds, notemment pour les erreurs, les pings et le traceroute (chemin parcouru par les pquets vers une destination).
+
+------------------------
+Algorithmes de routages
+
+Deux familles d'algorithmes :
+-algo centralisés (chaque noeud a une connaissance complète du réseau) -> algo par états de lien
+-algo décentralisés (chaque noeud connait uniquement ses voisins et le cout de ces liens) -> algo à vecteur de distance
+
+Algo de dijkstra
+
+Complexité de l'algorithme pour un réseau de n noeuds
+- à chaque itération, tester tous les noeuds à l'extérieur de N
+- car{N} incrémente de 1 jusqu'a N
+- donc (N(n+1)/2 comparaison : o(n²)
+- o(nlog(n)) avec une implémentation efficace
+
+Routage par vecteur de distance :
+

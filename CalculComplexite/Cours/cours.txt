@@ -194,7 +194,7 @@ Le programme indiqué en exemple dans le cours correspond à une multiplication 
 Machine non déterministe : 
 -> \Delta est ce coups ci un sous-ensemble de K x \Gamma x K x \Gamma x {G U D}.
 
-On peut avoir deux sorties différentes pour une même entrée => accepteur dont le rélusatat intéressant est de savoir si la machine s'arrête ou pas.
+On peut avoir deux sorties différentes pour une même entrée => accepteur dont le résultat intéressant est de savoir si la machine s'arrête ou pas.
 
 On peut construitre pour M tte machine de Turing non déterministe une machine normale M' telle que pour tte chaine w€ \Sigma, si M s'aarête avec w en entréee, alors M' s'arrete sur w, et si M ne s'arret pas sur w, alors M' ne s'arrete pas non plus.
 
