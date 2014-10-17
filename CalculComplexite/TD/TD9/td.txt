@@ -1,0 +1,72 @@
+TD9 de calculabilité et complexité
+
+
+2-SAT
+F = (x ∨ -y) ∧ (z ∨ -x) ∧ ...
+	clause
+	à deux
+	littéraux
+F satisfaisable?
+
+2 color :
+G = (U, E)
+Il faut que la couleur (ou la valeur ∈{0, 1} ) soit différente entre deux sommets reliés par une arrête.
+Existe il une fonction qui permette cela?
+
+1 : L1 ~~~~(f polynomiale)~~~> L2 si w ∈ L1 <=>f(x)∈L2	avec f polynomiale
+
+L'interet de la réduction polynomiale est d'éviter de trouver directement un algo polynomial
+théorème : Si L1 ∈ P et si on montre que L1 ~~polynomial~~~>L2
+alors L2 ∈ P
+
+
+
+2 : rédution polynomiale de 2 color vers 2-SAT
+Soit un graphe G (U, E). On va construire une formule ψG tel que ψG SAT <=> G est 2-coloriable, avec ψ une FNC à deux littéraux
+
+On numérote les noeuds v1, v2, v3
+ψG = formule avec les v_i ∈ V
+
+Pour chaque arrête que l'on note (v1, v2) de E, on construit la sous formule
+(v1∨v2) ∧ (-v1 ∨ -v2).
+La formule est donc ∧_{(v1, v2) ∈E} (v1 ∨ v2) ∧ (-v1 ∨ -v2)
+pour tt V1 et V2 appartenant à E, on a ci-dessus.
+
+L'algo de construction est polynomial en |G| = |U| + |E|
+car la formule produite est de taille K.|E| avec K une constante et |E| le nbre d'arete
+
+=> supposons que la formule est satisfiable | ∃ valeurs pour chacun des v_i tel que ψG vaut T.
+G est 2-coloriable en prenant le coloriage suivant 
+c(v_i) = 1 si v_i = T
+c(v_i) = 0 si v_i = ⊥ 
+
+=> Soit c un 2 coloriable
+ψG est satisfiable en prenant v_i = T si c(v_i) = 1
+							  v_i = ⊥ si c(v_i) = 0
+
+
+(3) Montrer que 2-color est dans P
+Un graphe est 2 coloriable ssi il n'existe pas de cycle avec un nbre impair d'aretes
+On prend un sommet, on le colorie d'une couleur, puis on parcours le graphe en largeur, en coloriant les sommets consécutifs de l'autre couleur. On enregistre les sommets vus.coloriés dans une pile. BFS.
+Une adapation du BFS fournit un 2 coloriage. On sort dès que l'on tombe sur un cycle de couleur impair(on retombe sur un noeud déjà vu et colorié d'une couleur opposée).
+
+(4)
+Montrer que 2-SAT est dans P
+
+On écrit un graphe G=(V, E) dont les noeuds sont les variables x_1, x_2, ... x_n 
+V= {x_1, x_2, ..., x_n,x_1', x_2', .. x_n'} avec x_i' = -x_i, soit 2n noeuds -> polynomiale
+Donc G est orienté
+exemple :
+F = (x_1 ∨ x_2) ∧ (x_3 ∨ -x_4) ∧ (x_1 ∨ x_4) ∧ (x_1 ∨ x_3) ∧ (-x_2 ∨ x_4)
+
+Si on sait que x_1 est faux, alors forcément x_2 est vrai
+
+-x_1  --> x_2
+ x_2 --> x_4
+-x_2 --> x_1
+-x_4 --> x_1
+-x_3 --> x_4
+-x_4 --> x_3
+-x_3 --> x_1
+-x_1 --> x_3
+-x_4 --> -x_2
