@@ -686,3 +686,158 @@ B !∈ => A !∈ P
 
 instance de A
 un Algo pour A
+
+
+_____________________________________________
+Cours du 17/10
+
+NP -complétude
+
+Définition : 
+un langage est NP complet si
+-L ∈ NP
+-pour tout langage L' ∈ NP, il existe une réduction polynomiale de L' dans L
+
+Le premier point est facile à établir (avec un algo non déterministe polynomial). Le second point est plus délicat.
+Mais si on connait un langage L'' NP-complet, il suffir de démontrer qu'il existe une réduction entre L et L''.
+
+
+Preuve du problème de HAM(ilton) : 
+-Problème du cycle hamiltonien (rappel, soir G un graphe, existe t'il dans G un cycle passant par chaque sommet une fois et une seule?)
+-Théroème  :
+	HAM est NP-complet
+
+	On va faire une réduction du problème hamiltonien vers SAT.
+On part d'un graphe G ⊂ V × V, V {1, ..., n} n étant le nbre de sommet
+-> \theta(G) = FNC satisfiable si G hamiltionien.
+Vairables propositionnelles
+un sommet i possède une certaine propriété par rapport à un cycle hamiltonien
+
+On a n² variables, x_{ij} vraie si le sommet i de G est à la j eme position d'un cycle hamiltonien
+
+On va créér des formules à partir de x_{ij} exprimant globalement ce fait.
+Ce paquet de formule :
+(1) à la j eme place apparait exactement UN sommet
+(2) chaque somment apparait une fois et une seule
+(3) la suite de variables x_{ij} forme bien un chemin de G passe (par les arrêtes de G)
+
+(1) (a) à la j eme place apparait au moins UN sommet 
+		f_j = x_{1j} ∨ x_{2j} ∨ ... ∨ x_{nj}
+	(b) à la j eme place apparait au plus UN sommet
+		∀i x_{ij} => !x_{1j} ∧ !x_{2j} ∧ .... ∧ x_{i-1j}
+		(x_{ij} => !x_{1j}) ∧ (x_{ij} => ! x_{1j}) .....
+
+	f_{ijk} = !x_{ij} ∨ !x_{kj} ∀ i, j, k ≤ n, i ≠ k -> ~ n³ formules
+
+(2) (a) apparait au moins une fois
+		g_i = x_{i1} ∨ x_{i2} ∨ ... ∨ x_{in}
+
+	(b) apparait au plus une fois
+		x_{ij} -> !x_{ik}  ∀ j ≠ k
+
+	g_{ijk} = ! x_{ij} ∨ ! x_{ik} ∀ i, j, k, j ≠ k
+
+(1) f1 = ∧^n_{j=1} f_j ∧ ∧_i, j, k∈{1, ...n}³, i ≠ k f_{ijk}
+(2) f2 = ∧^n_{j=1} g_j ∧ ∧_i, j, k∈{1, ...n}³, i ≠ k g_{ijk}
+
+(3) on ne peut pas passer dans G de j à j+1 s'il n'y a pas d'arrête
+h_ {ijk} => x_{ij} => !x_{k(j+1)} si (i, k) !∈ G
+
+
+F3 = ∧_{i, j, k ∈ {1, ..., n}³, ∀j, ∀(i, k) | (i, k) !∈G} h_{ijk}
+
+F = F1 ∧ F2 ∧ F3
+O(n³) clauses
+O(n³) littéraux.
+
+-> polynomial
+
+G est hamiltonien si F est satisfiable
+
+\Sigma  de [1 n] (\Gamma⁻¹ (i), \Gamma⁻¹(i+1)) ∈ G
+x_{ij} = { T si j = \Gamma(i)
+		   ⊥ sinon
+
+
+Théorème de Cook
+
+Définition : problème SAT
+Soit F une FNC
+Existe t'il une fonction d'interprétation qui rend F vraie?
+
+
+(1) SAT ∈ NP
+	- on génère une interprétation de Fde manière non déterministe
+	- On vérifie que cette interprétation -> T
+(1) réduite tout problème NP à SAT
+
+soit L ∈ ∑* L ∈ NP
+L décide par une MT M = (K, ∑, \Gamma, \Delta, s, F) non déterministe, polynomialement bornée par p.
+
+à partir de M --> \tho M, w  (|w| = n)
+				-> satisfiable si M accepte w
+
+M accepte w s'il existe une exécution de M d'au plus p(n) étapes -> état fini
+
+-> succession de a plus (p(n) + 1) configuration
+	-> simplification w accepté en exactement p(n) + 1 étapes
+
+éxécution de M sur w
+- tableau R (∈ \Gamma), diminue (pn) + 1, p(n) + 1)
+R(i, j) = symbole des rubans de M à la j emme case du ruban à la i eme étape
+
+-> un vecteur P ∈ {1, ..., p(n) +1}
+	P(i) = position de la tete à la i eme étape
+-> un vecteur Q ∈ K  de dimension p(n) +1
+	Q(i) = état courant à l'étape i
+-> un vecteur C ∈ {1, ...., r} p(n)+1		-> r le degré du non déterministe (nbre maximale de flèche partant d'un état avec le meme symbole)
+	C(i) = choix non déterministe fait à l'étape i
+
+\tho -> produit une formule (FNC) satisfaisable si M accepte w
+
+par exemple R(ij) contient un élément de \Gamma
+
+r_{ijk} = { T si R(i, j) = \alpha	(p(n)+1)².|\Gamma| formules
+			⊥ sinon
+
+P_{ij} = {T si P(i) = j			(p(n)+1)² propositions
+		  ⊥ sinon
+q_{ik} = { T si Q(i) = k		(p(n)+1).|K| propositions
+			⊥ sinon
+C_{ij} ) { T si C(i) = j		(p(n)+1).r propositions
+			⊥ sinon
+
+p(n) polynomiale
+(p(n)+1) aussi, pour M donné, |\Gamma|, |K|, r sont fixés
+
+(1) R(i, j) contient une et une seul valeur
+	∀ i, j ∈ (1, p(n)+1)
+FNC = {r_{i\alpha0} ∨ r_{ij\alpha1}
+	   r_{ij\alpha} => !r_{ij\beta}, \alpha, \beta, ∈ \Gamma, \alpha ≠ \beta}
+
+(2)P(i)  \
+(3) Q(i)  -	1 et 1 seule valeur
+(4) R(i) /
+
+(5) config initiale correcte
+R(1, 1) = #, R(1, 2) = F1 ...
+P(1) = 1
+Q(1) = s
+C(1) = peu importe
+
+-> r_{11#} ∧ r_{12\Gamma 1} ∧ P_{11} ∧ Q_{1s}
+
+(6) Chaque configuration est obtenue a partir de la précédente
+
+Règles à respecter pour passer d'un config à la suivante
+-les cases qui ne sont pas sous la tête de lecture ne sont pas modifiés
+	r_{ij\alpha} ∧ !P_{ij} => r_{(i+1)j\alpha}		-> pas modifiés dans la config suivante
+-la case sous la tete est modifié et déplacement de la tête
+	Q_{ik} ∧ P_{ij} ∧ r_{ij\alpha} ∧ C_{ik} => Q_{(i+1)k} ∧ r_{(i+1)j\Beta} ∧ P_{(i+1)(j-1)} si (k, \alpha, k', \beta, G) ∈ \Delta
+
+(7) q_{1y} ∨ q_{2y} ∨ ... ∨ q_{(p(n)+1)y}
+
+\tho (1) ... (7)
+	-> M termine avec w --> y
+	T
+	F satisfiable ssi M accepte w

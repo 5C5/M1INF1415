@@ -1,0 +1,41 @@
+1- l'arret des MT / d'un programme C est indécidable
+
+2 Xth problème de Hilbert : p(a, b, c, ..., z ) = 0 ∈ Z indécidable
+
+3 PCP
+
+
+Soit le problème 
+x + y - sin(Z) = t * 42 a une solution dans R
+
+On sait qu'un problème P indécidable
+On peut dire que P' est indécidable ssi 
+P se réduit de manière récursive à P'
+
+à partir de P, on construit un algo embarqué dans P'
+on prend une instance de P w pour construire une instance de P' f(w) tel que w ∈ P <=> f(w) ∈ P'
+
+Dans notre cas, P est Xth de Hilbert, et P' est fsin
+On prend un polynome p(a, b, c, .., z)  ~~~~~~> ψ avec le ~~~~~~~> qui est une transformation calculable
+∃ a, b, c, ..., z | p(a, b, c, ..., z) = 0  dans Z ===> ψ a une solution dans R
+													MT
+
+ψ = p(a,b, c, ..., z) = 0 ∧ sin(u.a) = 0 ∧ sin(u.b) = 0 ∧ .... ∧ sin(u.z) = 0 ∧ sin(u) = 0 ∧ 3 < u <4
+
+Il faut montrer la réduction (comment on passe de P à P', on prouve qu'elle est calculable). Il faut prouver qu'il y ait une réduction de P vers P' pour dire que si P indécidable, alors P' indécidable
+
+Exercice 2 :
+si A1 et A2 des automates finis, alors \deldta(A1) = \delta(A2) est décidable
+
+Soit M1 et M2 deux machines de Turing. P' est  ∃ une Machine de Turing  M' qui décide \delta(M1)= \delta(M2)
+
+Notre problème indécidable P est {"M, w,", M accepte w}. On doit trouver une réduction de P vers P'
+
+"M, w" 	M' tel que pour w accepté par M <=> f(w) accepté par M'
+
+soit M' la MT d'entrée U qui accepte son entrée si cette entrée U = w
+et sinon se comporte comme M pour l'entrée U
+
+L(M') =>  L(M) U{w}
+Tester l'égalite L(M) et L(M') est équivalent à savoir si M accepte w
+
