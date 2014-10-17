@@ -1,0 +1,186 @@
+a = b + c				-> Tete de bloc 1
+b = a + c
+d = c + e
+si d > 7 aller à 8
+t = a + c				-> Tete de bloc 2
+v = c + e
+aller a 10
+t = b + c				-> Tete de bloc 3
+v = a + c
+b = a + c				-> Tete de bloc 4
+a = b + c
+
+Optimiser le code suivant
+
+graphe de flot :
+-Bloc B1 lignes 1 à 4
+-bloc B2 lignes 5 à 7
+-bloc B3 lignes 8 à 9
+-bloc B4 lignes 10 à 11
+
+
+arcs :
+B1 -> B3
+B1 -> B2
+B2 -> B4
+B3 -> B4
+
+Pred(B1) = ø 		| Succ(B1) = B2, B3
+Pred(B2) = B1		| Succ(B2) = B4
+Pred(B3) = B1		| Succ(B3) = B4
+Pred(B4) = B1, B2	| Succ(B4) = ø
+
+
+Prod : Ensemble des calculs produit par le bloc
+B1 : a+c, c+e
+B2 : a+c, c+e
+B3 : b+c, a+c
+B4 : b+c
+
+Sup : Ensemble des calculs invalidés par le bloc
+B1 : b+c
+B2 : ø
+B3 : ø
+B4 : a+c
+
+In : Ensemble de calculs disponible en entrée du bloc
+B1 : ø
+B2 : a+c, c+e
+B3 : a+c, c+e
+B4 : a+c, c+e
+
+Ex : Ensemble des calculs disponible en sortie du bloc.
+B1 : a+c, c+e
+B2 : b+c, a+c, c+e; a+c, c+e
+B3 : b+c, a+c, c+e; b+c, a+c
+B4 : b+c, c+e; b+c, c+e
+
+Ce qu'il y a après le ; est le résultat de la boucle après l'initialisation
+
+Optimisation :
+B1 -> IN(B1) = ø, pas d'optimisation
+
+B2 -> (5) t = a + c et a+c ∈ IN(B2) et a et c ne sont pas modifiés avant (4) dans B2
+		On peut optimiser (4). On remonte dans le Graphe, et on voit que (2) de B1 b = a+c
+		On peut donc remplacer par :
+	(2)	t0 = a+c
+		b=t0
+	(5)	t = t0
+	-> (6) v = c+e et c+e ∈ In(B2) et c et e ne sont pas modifiés avant (6) dans B2
+		On peut optimiser (6). On remonte dans le graphe, et on voit que (3) d = c+e
+		On peut remplacer par
+	(3)	t1 = c+e
+		d = t1
+	(6) v = t1
+
+B3 -> (9) v = a+c et a+c ∈ In(B3) et a et c ne sont pas modifiés avant (9) dans B3
+		On peut optimiser (9). On remonte dans le graphe, et on voit (2) t0 = a+c. On sait que t0 est un temporaire, inutile de le remplacer par tx = a+c; t0 = Tx
+		On peut remplacer par :
+	(9) t = t0
+B4 -> (10) b = a+c et a+c ∈ In(B4) et a et c ne sont pas modifiés dans B4 avant (10)
+		On peut optimiser (10). On remonte dans le graphe et on voit (2) t0 = a+c, dernièr calcul de a+c
+		On peut remplacer par :
+	(10) b = t0
+
+Soit le code optimisé final :
+a = b+c
+t0 = a+c
+b = t0
+t1 = c+e
+d = t1
+si d > 7 aller à 8
+t = t0
+v = t1
+aller à 10
+t = b+c
+v = t0
+b = t0
+a = b+c
+
+
+Comme v et t ne servent à rien, on peut les supprimer. Comme il n'y plus de B3, on peut supprimer d. Comme b n'est pas modifié entre le B1 et le B4, on peut supprimer de B4 la ligne b = t0. t0 n'est plus utilisé qu'une fois, on peut le supprimer. On peut supprimer les aller à.
+On obtien donc :
+a = b+c
+b = a+c
+a = b+c
+
+-----------
+1. x = a+b
+2. y = a*b
+3. t = a+b
+4. si y > t aller à 8
+5. a = a + a
+6. x = a+b
+7. aller à 3
+8. .......
+
+B1 : 1 à 2
+B2 : 3 à 4
+B3 : 5 à 7
+B4 : 8 .....
+
+arcs :
+B1 -> B2
+B2 -> B3
+B2 -> B4
+B3 -> B2
+
+U={a+b, a*b, a+a}
+
+Prod(B)
+B1 : a+b, a*b
+B2 : a+b
+B3 : a+b
+
+Sup(B)
+B1 : ø
+B2 : ø
+B3 : a+a, a*b
+
+In(B) (1er tour)
+B1 : ø
+B2 : a+b
+B3 : a+b
+
+Ex(B) (1er tour)
+B1 : a+b, a*b
+B2 : a+b, a*b, a+a
+B2 : a+b
+
+In(B) (2 eme tour)
+B2 : a+b, a*b
+B3 : a+b, a*b
+
+Ex(B) (2 eme tour)
+B2 : a+b
+B3 : a+b
+
+Comme In(B2) ne change pas (dépend de Ex(B1) et Ex(B2)), alors In(B3), Ex(B2) et Ex(B3) ne change pas.
+
+
+
+Optimisation :
+B2 -> (3) a+b ∈ In(B2)
+		a et b non modifiés avant (3) dans B2
+		On peut optimiser (3), donc on remonte dans le graphe. La dernière évaluation de a+b est (1) dans B1 et (6) dans B3.
+		On remplace 
+	(1) t0 = a+b
+		x = t0
+	(6) t0 = a+b
+		x = t0
+	(3) t = t0
+
+B3 -> a+ b ∈ In(B3) (6) t0 = a+b ∈ B3 
+			/!\ a modifé en (5) dans B3. Pas d'optimisation possible
+
+On obtient au final le code optimisé suivant
+t0 = a+b
+x = t0
+y = a+b
+t = t0
+si y > t aller a 8
+a = a+a
+t0 = a+b
+x = t0
+aller à (3)
+8 : ....

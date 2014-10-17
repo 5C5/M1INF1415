@@ -205,7 +205,7 @@ code pascal --> code 3@
 
 -nop --> ne fait rien.
 
-Le nom du code vient de la, les instruct° ayant max trois adresses.
+Le nom du code vient de là, les instruct° ayant max trois adresses.
 instruction :
 x = y op z	calcul y op z stocke le résultt dans x
 	  |
@@ -693,7 +693,7 @@ B4 -> B5
 B5 -> B2
 
 pour chaque bloc B
-	prod(B) = ensemble des calculs eéalisés dans B
+	prod(B) = ensemble des calculs réalisés dans B
 				x op y € prod(B)
 				s'il existe ? = x op y € B
 				et si x et y non ùmodifiés par la suite ds B.
@@ -704,7 +704,7 @@ pour chaque bloc B
 										 |y op x
 				sauf si recalculé par la suite.
 
-	In(B) = ensemble des claculs disponibles en entrée de B quelque soit le chemin du graphe pris pour rentrer dans B
+	In(B) = ensemble des calculs disponibles en entrée de B quelque soit le chemin du graphe pris pour rentrer dans B
 	
 	Ex(B) ensemble des calculs disponibles en sortie de B, quelque soit le chemin pris pour rentrer dans B
 
@@ -732,8 +732,8 @@ B6 : 4*i; a[t13]; 4*n; a[t13]; t14; x;
 Pour chaque bloc B
 soit U l'ensemble des calculs du programme
 	sup(B) = ø
-	pour chaque x = f(x, y) € B dans l'ordre
-	sup(B) += Ħf(x, a) € U
+	pour chaque x = f(x, y) ∈ B dans l'ordre
+	sup(B) += f(x, a) € U
 	sauf si f(x, ) recalculable par la suite dans B
 U = {m -1; n; 4 * n; a[t1]; i + 1; a[t2]; j - 1; 4 * j; 4 * i; a[t4] ; a[t6]; a[t8]; a[t11]; 4 * n; a[t13]; t14; x}
 Ensemble des cablculs invalidés par B_i
@@ -765,7 +765,7 @@ Au 2 eme tour, rien n'est changé, pour B2, et donc pour les autres.
 
 Pour chaque bloc B
 	pour chaque .(i) x = f(x, z) avec i le numéro d'instruction
-	si f(y, z) € In(B)
+	si f(y, z) ∈ In(B)
 	et y et z non modifiés avant (i) dans B
 -> trouver les dernières évaluations de f(y, z) dans le graphe en remontant
 
@@ -775,7 +775,7 @@ On trouveles évaluations	a = f(y, z) <- t0 = f(y, z);
 
 Ds B5 :
 	(14) t6 = 4*i
-		 4*i € In(B5) 	-> 4*i disponible en sortie du bloc B5
+		 4*i ∈ In(B5) 	-> 4*i disponible en sortie du bloc B5
 -> (6) de B2	(predecesseur contenant 4*i sans modification postérieurs)
 		t2 = 4*i
 	on remplace (6) par
