@@ -82,7 +82,7 @@ SELECT ?e WHERE {
 
 3)
 PREFIX ucbl :<http://univ-lyon1.fr>
-SELECT ?e, ?e2 WHERE {
+SLECT ?e, ?e2 WHERE {
 	?e ucbl:binome ?e2.
 	?e ucbl:inscrit ?u.
 	?e2 ucbl:inscrit ?u.
@@ -97,7 +97,7 @@ SELECT ?u, ?u2 WHERE {
 	?u2 ucbl:departement ?d2.
 	FILTER(?d1 != ?d2).
 }
-
+ 
 si une ue est dans deux départements?
 PREFIX ucbl :<http://univ-lyon1.fr>
 SELECT ?u, ?u2 WHERE {

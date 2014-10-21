@@ -1,0 +1,88 @@
+@prefix key: <http://rdf.freebase.com/key/>.
+@prefix ns: <http://rdf.freebase.com/ns/>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+ns:m.0fp_fq_
+    ns:common.topic.alias    "New 2011 Peanuts special"@en;
+    ns:common.topic.article    ns:m.0fp_fr3;
+    ns:common.topic.description    "Happiness Is A Warm Blanket, Charlie Brown es la cuadrag\xe9sima quinta y m\xe1s reciente pel\xedcula basada en el c\xf3mic de Peanuts, de Charles M. Schulz. Es el primer especial sin Lee Mendelson o Bill Mel\xe9ndez involucrados en su producci\xf3n. Fue lanzada en DVD el 29 de marzo de 2011.\nFue anunciado por uno de los presentadores del Macy's Thanksgiving Day Parade 84, en 2010, cuando pas\xf3 un globo de Snoopy, diciendo: "Los fans de Snoopy estar\xe1n felices sabiendo que una nueva pel\xedcula de Peanuts est\xe1 en camino".\nComo todos los especiales, el guion se basa en las historietas del c\xf3mic, y fue adaptado por el creador del c\xf3mic Pearls Before Swine Stephan Pastis. Debido a la muerte de Bill Mel\xe9ndez, Andy Beall, el director, realiz\xf3 las voces de Snoopy y Woodstock."@es;
+    ns:common.topic.description    "Happiness Is a Warm Blanket, Charlie Brown is a Peanuts television special animated by Cookie Jar Group that was released in 2011. The special is the 45th Peanuts special and the first produced without Bill Melendez on the production team. It is also the first special without the direct involvement of Peanuts creator Charles Schulz, Lee Mendelson Productions or Bill Melendez Productions. In addition, it is the first Peanuts special produced in part under Warner Bros. Television, which holds the home media distribution rights to the Peanuts specials.\nThe special was released on DVD on March 29, 2011, and first aired on television on October 1, 2011, on Teletoon in Canada. The special premiered in the United States on Thanksgiving Day, November 24, 2011 at 8:30PM ET/PT on Fox, the first Peanuts special to air on the network; with this airing, Peanuts specials have aired on all four major networks. Coincidentally, the first half of the film's original Fox broadcast in 2011 competed directly with a Peanuts special that aired at the same time on ABC. The special aired again in 2012 - this time on November 23 and December 17 - and 2013."@en;
+    ns:common.topic.image    ns:m.0gkflll;
+    ns:common.topic.notable_for    ns:g.125cc3_wk;
+    ns:common.topic.notable_types    ns:m.0jsg2m;
+    ns:common.topic.topic_equivalent_webpage    <http://en.wikipedia.org/wiki/index.html?curid=29798521>;
+    ns:common.topic.topic_equivalent_webpage    <http://movi.es/BW0Dh>;
+    ns:common.topic.topic_equivalent_webpage    <http://www.netflix.com/Movie/70167041>;
+    ns:common.topic.topic_equivalent_webpage    <http://www.imdb.com/title/tt1810633/>;
+    ns:common.topic.topic_equivalent_webpage    <http://en.wikipedia.org/wiki/Happiness_Is_a_Warm_Blanket,_Charlie_Brown>;
+    ns:common.topic.topic_equivalent_webpage    <http://es.wikipedia.org/wiki/index.html?curid=4601485>;
+    ns:common.topic.topic_equivalent_webpage    <http://es.wikipedia.org/wiki/Happiness_Is_A_Warm_Blanket,_Charlie_Brown>;
+    ns:film.film.country    ns:m.09c7w0;
+    ns:film.film.directed_by    ns:m.0bml869;
+    ns:film.film.directed_by    ns:m.0gm176m;
+    ns:film.film.genre    ns:m.04zgj2;
+    ns:film.film.genre    ns:m.0215n;
+    ns:film.film.initial_release_date    "2011"^^xsd:datetime;
+    ns:film.film.language    ns:m.02h40lc;
+    ns:film.film.netflix_id    ns:70167041;
+    ns:film.film.release_date_s    ns:m.0j570hs;
+    ns:film.film.release_date_s    ns:m.0j574rq;
+    ns:film.film.runtime    ns:m.0gw6199;
+    ns:film.film.starring    ns:m.0gm16s4;
+    ns:film.film.starring    ns:m.0gm1jx5;
+    ns:film.film.starring    ns:m.0gm1nyr;
+    ns:film.film.starring    ns:m.0gm1x3r;
+    ns:film.film.starring    ns:m.0gm29w3;
+    ns:film.film.starring    ns:m.0gm2q2k;
+    ns:imdb.topic.title_id    ns:tt1810633;
+    key:authority.imdb.title    "tt1810633";
+    key:authority.netflix.api    "http$003A$002F$002Fapi$002Enetflix$002Ecom$002Fcatalog$002Ftitles$002Fmovies$002F70167041";
+    key:authority.netflix.movie    "70167041";
+    key:authority.netflix.tiny    "BW0Dh";
+    key:wikipedia.en_id    "29798521";
+    key:wikipedia.en_title    "Happiness_Is_a_Warm_Blanket$002C_Charlie_Brown";
+    key:wikipedia.en    "Happiness_is_a_Warm_Blanket";
+    key:wikipedia.en    "Happiness_Is_A_Warm_Blanket$002C_Charlie_Brown";
+    key:wikipedia.en    "New_2011_Peanuts_special";
+    key:wikipedia.en    "Happiness_Is_a_Warm_Blanket$002C_Charlie_Brown";
+    key:wikipedia.es_id    "4601485";
+    key:wikipedia.es_title    "Happiness_Is_A_Warm_Blanket$002C_Charlie_Brown";
+    key:wikipedia.es    "La_felicidad_es_como_una_manta_calentita$002C_Charlie_Brown";
+    key:wikipedia.es    "La_felicidad_es_una_manta_c$00E1lida$002C_Charlie_Brown";
+    key:wikipedia.es    "Happiness_Is_A_Warm_Blanket$002C_Charlie_Brown";
+    ns:media_common.netflix_title.netflix_genres    ns:m.0215n;
+    ns:media_common.netflix_title.netflix_genres    ns:m.0cq22fs;
+    ns:media_common.netflix_title.netflix_genres    ns:m.0gw5nz9;
+    ns:type.object.key    ns:wikipedia.en_id.29798521;
+    ns:type.object.key    ns:authority.netflix.movie.70167041;
+    ns:type.object.key    ns:authority.netflix.tiny.BW0Dh;
+    ns:type.object.key    ns:authority.netflix.api.http$003A$002F$002Fapi$002Enetflix$002Ecom$002Fcatalog$002Ftitles$002Fmovies$002F70167041;
+    ns:type.object.key    ns:authority.imdb.title.tt1810633;
+    ns:type.object.key    ns:wikipedia.en_title.Happiness_Is_a_Warm_Blanket$002C_Charlie_Brown;
+    ns:type.object.key    ns:wikipedia.en.New_2011_Peanuts_special;
+    ns:type.object.key    ns:wikipedia.en.Happiness_Is_A_Warm_Blanket$002C_Charlie_Brown;
+    ns:type.object.key    ns:wikipedia.es.La_felicidad_es_como_una_manta_calentita$002C_Charlie_Brown;
+    ns:type.object.key    ns:wikipedia.en.Happiness_Is_a_Warm_Blanket$002C_Charlie_Brown;
+    ns:type.object.key    ns:wikipedia.en.Happiness_is_a_Warm_Blanket;
+    ns:type.object.key    ns:wikipedia.es.Happiness_Is_A_Warm_Blanket$002C_Charlie_Brown;
+    ns:type.object.key    ns:wikipedia.es_title.Happiness_Is_A_Warm_Blanket$002C_Charlie_Brown;
+    ns:type.object.key    ns:wikipedia.es_id.4601485;
+    ns:type.object.key    ns:wikipedia.es.La_felicidad_es_una_manta_c$00E1lida$002C_Charlie_Brown;
+    ns:type.object.name    "Happiness Is A Warm Blanket, Charlie Brown"@es;
+    ns:type.object.name    "Happiness Is a Warm Blanket, Charlie Brown"@en;
+    ns:type.object.type    ns:film.film;
+    ns:type.object.type    ns:media_common.netflix_title;
+    ns:type.object.type    ns:base.type_ontology.non_agent;
+    ns:type.object.type    ns:common.topic;
+    ns:type.object.type    ns:base.type_ontology.inanimate;
+    ns:type.object.type    ns:base.type_ontology.abstract;
+    ns:rdf:type    ns:base.type_ontology.non_agent;
+    ns:rdf:type    ns:media_common.netflix_title;
+    ns:rdf:type    ns:film.film;
+    ns:rdf:type    ns:common.topic;
+    ns:rdf:type    ns:base.type_ontology.abstract;
+    ns:rdf:type    ns:base.type_ontology.inanimate;
+    rdfs:label    "Happiness Is A Warm Blanket, Charlie Brown"@es;
+    rdfs:label    "Happiness Is a Warm Blanket, Charlie Brown"@en.
