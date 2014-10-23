@@ -1,0 +1,225 @@
+Soutien
+
+NP-Complétude
+
+Deux grandes classes de problèmes :
+-Indécidables
+-Polynomiaux.
+
+Non déterministe Polynomial
+
+NP complet : 
+SAT -> 3 SAT
+3-Color
+HAM
+
+-------------------------------------------------------------
+
+Etape 1 de la preuve que le probleme p est NP-complet, prouver que p ∈ NP
+
+Etape 2 : prouver que c'est NP-complet
+
+CLIQUE : 
+une clique est un sous-graphe complet. Une clique prend en entrée un graphe G et un entier k. Existe t'il une clique de taille k dans un graphe donné?
+
+Etape 1 -> ∈ NP
+
+	Tous les sous-graphe de taille k à n -> Exponentiel
+	=> Clique ∈ NP
+	Pour un algo non déterministe, on génée tous les sous graphes de taille k à n. Si un est une clique, -> OUI, sinon, NON.
+
+Etape 2 -> Clique NP complet.
+On part d'un problème connu comme NP complet (SAT, 3-SAT, 3-Color, HAM).
+On prend 3-SAT, et on trouve une réduction polynomial d'une instance I de 3-SAT en une instance I' de Clique. Il faut ensuite prouver que I est aussi compliqué que I' et vice versa.
+
+3-SAT : 
+C1 ∧ C2 ∧ C3 ∧ Ck
+(xi ∨ xj ∨ xk)
+C1 = x_1 ∨ \barre{x_2} ∨ \barre{x_3}
+C2 = \barre{x_1} ∨ x_2 ∨ x_3
+
+∀ Ci (=x_l ∨ x_m ∨ x_n), on crée 3 sommet V_l^i, V_m^i, V_n^i -> 3k sommets, polynomial.
+
+On crée une arête (V_i^r, V_j^s) <=> r ≠ s et x_i^n ≠ \barre{x_j^s}
+On relie les sommets dont l'exposant n'est pas identique et qui ne sont pas leurs opposés respectifs.
+
+k clauses : on cherche une clique de taille k
+
+Prouver que les deux solutions sont équivalentes :
+I => I' : (On a résolu 3-SAT, donc on résout la clique)
+∀ la clause, elle contient un littéral vrai. Ce littéral correspond à un sommet(x_i -> v_i^r). K= {v_i^r} r ∈ [1, k]; -> est une clique
+
+I' => I : (On a résolu la clique, donc on résout 3-SAT)
+On a une clique {v_i^r}, x_i <- TRUE. On met le littéral correspondant à true, et comme on est dans une clique, on ne peut avoir l'opposé à true, donc c'est satisfiable
+=> 3-SAT OK.
+
+------------------------------------------------------------
+
+Probleme PLANAR-3-COLOR
+On va partir de 3-COLOR
+
+voir google.
+
+Soit le graphe planaire et 3-coloriable W, ayant deux sommets de couleur différente en entrée et deux sommets respectivement de la meme couleur par rapport à un sommet en entrée.
+
+Soit un graphe G =(V, E), un graphe 3-coloriable, avec V= {x1, x2, x3, x4}
+On pose les sommets les un après les autres, et on les relient entre eux (on recrée les arêtes)
+On utilise W pour supprimer les arêtes (en échangeant la couleur des sommets et créant des sommets intermédiaires, puis en échangeant la couleur de nouveau) qui empeche le groupe d'être planaire et 3-color. On obtient au final un grapheà n⁵ sommets --> POLYNOMIAL
+
+-------------------------------------------------------------
+
+Probleme SUBSET-SUM
+Soit un ensemble S d'entier positif, et t ∈ N. (ex, 2, 2, 4}
+∃? S' inclut dans S tq ∑ x = t avec x∈ S'
+ *NP : Test de tous les S' inclut dans S =
+ 	|S| ! -> NP
+
+On utilise 3 SAT
+C1 ∧ C2 ∧ ... ∧ Cp clause
+p clauses, comprenant x1, x2, ..., xn, avec n le nbre de littéraux.
+
+
+
+on prend un nbre, divisé en deux partie, un de n chiffre, et une de p chiffres. Dans la partie de n chiffres, on met un 1 à la position du littéral, et un 1 à la j eme position dans la partie à p chiffres lorsque x_i ∈ C_j
+∀xi  ki = 0.....0100...001.....	un nbre décimal
+		  |____________||______|
+		  		n			p
+même chose avec \barre{k_i}, mais avec \barre{x_i}
+
+											   i
+Pour chaque clause, on crée 3 k'i = 000...00...1...0
+									|_____||_______|
+										n		p
+										-> polynomial
+S = {K_i, \barre{K_i}, K'_i ×3}
+
+t = 1....14...4
+	|____||___|
+	  n		p
+
+Subset-Sum ∃? S' inclut dans S | ∑_{x ∈S'} x = t
+* supposons 3-SAT satisfiable
+0.....00...0
+|__n__||_p_|
+
+S' <-	K_i si x_i= T  			
+		___
+		K_i si x_i = ⊥	1.....1	..≥1
+						|__n__||_p__|
+		K'_i pour compléter
+
+* Supposons ∃ S' tq ∑ x = t = 1....14...4 avec x∈S'
+							  |__n_||_p_|
+∀ i : Si k_i ∈ S'
+	x_i <- T
+		  ___
+	Sinon(K_i ∈ S')
+	x_i <- ⊥
+3 < 4 => Toutes les clauses sont vraies. Satisfiables
+
+
+Probleme 2-Partition
+->Nécéssite la preuve de Subset-Sum
+
+La 2-Partition d'un ensemble :
+Soit S un ensemble d'entier positifs
+∃? I innclut dans S tq ∑ x = ∑ x
+					  x∈I	x/∈I
+	Soit (S, t) une instance de SUBSET SUM
+
+2 cas :
+* si t ≤ ∑ x < 2t
+		x∈S
+	On pose y = 2t - ∑ x
+					x∈S
+	S' = S U {y}
+* Si on a I inclut dans S tq
+	∑ x = t
+   x∈I
+   	    = 2t * 1/2
+		= 1/2 ∑ x
+			 x∈S'
+=> On a I' = S
+
+* Réciproquement, on a I' tq ∑ x = ∑ x
+							x∈I'  x/∈I'
+
+Supposons que y /∈ I'
+Or ∀ x ∈ I', x ∈ S ==> I = I'
+
+
+Cas 2 :
+ ∑ x ≥ 2t
+x∈S
+
+On pose y = ∑ x - 2t
+		   x∈S
+S' <-- SU{y}
+Donc on a ∑ x = 2∑ x -2t
+		 x∈S'   x∈S
+
+* Supposons ∃ I inclut dans S tq ∑x = t
+								x∈I
+Alors I' <- I U{y}
+ ∑ x = ∑ x + y
+x∈I'  x∈I
+	= t + ∑ x -2t
+		 x∈S
+∑ x = ∑ x -t
+x∈I' x∈S
+	= 1/2(2 ∑ x - 2t)
+		   x∈S
+	=1/2(∑ x)
+		x∈S'
+* Si ∃ I' inclut dans S' tq ∑ x = ∑ x
+						   x∈I'  x/∈I'
+Si y ∈ I' : I <- I' \{y}
+
+∑ x = ∑ x - y = .... = t
+x∈I	 x∈I'
+
+-----------------------------------------------------------------------
+
+Soit une matrice M n×m de 0 et de 1
+
+Peut on supprimer des transformer des 1 en 0 de façons à ce qu'il n'y ait qu'un seul 1 par ligne et par colonne.
+
+Preuve qu'il appartienne à NP -> on compte les transformations possible de 1 en 0
+
+Preuve qu'il est NP-complet :
+On crée un graphe ayant un circuit hamiltonien de la matrice :
+1---2
+|	|
+4---3
+
+circuit hamiltonien : 1 2 3 4 1
+
+  1 2 3 4
+1|0 1 1 1
+2|1 0 1 1
+3|1 1 0 1
+4|1 1 1 0
+
+-> On garde tous les 1 qui correspondent à une arete du cycle :
+  1 2 3 4
+1|0 1 0 0
+2|0 0 1 0
+3|0 0 0 1
+4|1 0 0 0
+
+-------------------------------------
+
+Décidabilité
+
+Etant donné une machine de Turing M, déterminez s'il existe un mot w tel que M passe par tous ses états.
+
+Soit E énumérateur de ∑*
+∑ ={a, b}
+E = , a, b, aa, ab, ba, bb, aaa, ...
+
+∀ x généré par E
+	On simule M sur w
+	Si on passe par tous les états de M
+		| Renvoyer OUI
+Décider que M s'arrête sur tous les états, c'est décider que la machine ci-dessus s'arrête, ce qui est indécidable, les problèmes sont équivalents.
+
