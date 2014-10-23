@@ -665,7 +665,7 @@ Adressage hiérachique : annonciation efficace des informations de routages; uti
 Possibilité d'utiliser une route spécifique dans les cas d'entrées individuelles (les algos de routages prennent les blocs dont la composante réseau est la plus longue.
 
 Comment les FAI obtiennent les blocs d'@ ?
--Ils demandent à l'CANN Internet Corporation for Assigned Names and Numbers, qui gèrent les @ IP, le DNS.
+-Ils demandent à l'ICANN Internet Corporation for Assigned Names and Numbers, qui gèrent les @ IP, le DNS.
 
 Classes d'@ privées, destinées aux réseaux locaux (pas de paquets sur Internet avec ces @ IP, ils sont confinés aux réseaux locaux).
 

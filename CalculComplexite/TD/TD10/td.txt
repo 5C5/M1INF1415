@@ -1,0 +1,53 @@
+Problemes NP-complet
+
+1 : Montrer que TSP est NP-complet
+
+-> TSP ∈ NP :
+
+Soit M une MT qui devine un cycle hamiltonien de poids ≤ k. La MT deterministe cherche en un temps P si ce cycle est hamiltonien et de poids ≤ k, (en parcourant le cycle et en sommant les arrêtes
+
+-> TSP est NP-Complet (Réduction à partir de Hamiltonien)
+	Soit G = (V, E) ~~~~~> G' = (V', E'), c, k  avec E' = V'×V'    Le passage de l'un a l'autre est polynomiale : on énumère toutes les paires de noeuds, et on construits les arrêtes si elles n'existent pas encore.
+	Il faut montrer que G étant un cycle hamiltonien <=> G' étant un cycle hamiltonien de poids ≤ k
+	On considére que V (les sommets) = V'.
+	On prend k = 0 (le cout maximum = 0)
+	et c(u,v) ={si(u, v)∈ E, alors 0
+				sinon 1
+
+On sait que Ham est NP-complet, donc on a trouvé une réduction de Ham dans TSP
+
+
+
+3 color :
+1.
+	-> 3-COL ∈ NP
+	On peut trouver un algonon déterministe polynomial qui
+
+	-> 3-COL est NP-Complet
+2. (a) comme on prend U={0, 1, 2} représentant les couleurs, les ronds prennent le reste du U par rapport à la couleur passé. Prendre que des zéros finit par amener un 1|2 rond au dernier
+(b) On a pris v différent de 0, on a montré qu'il y forcément un x, y ou z différent de 0
+Colorions v à rouge. Par cas, on montre que forcément x, y ou z est ≠ de 0
+
+3. Taille = 6p + 2m +2
+p le nbre de clause, n le nbre de variable
+
+I est candidat à une réduction
+
+4.
+Supposons G coloriable (3 couleurs)
+DPS 	color(D) = 2
+		color(Z) = 0
+Je prend x_i = T si x_i colorié à 1
+			   ⊥ si x_i colorié à 0
+forcément, chaque noeud est colorié avec 0 ou 1
+v_i est relié à Z. Donc, forcément, v_i est colorié à 1 ou 2. Cela impose qu'il existe un littéral de C_i à 1.
+La formule est satisfiable.
+
+Soit ψ une formule 3-CNF
+supposons ψ satisfiable -> chaque clause est à 1, et pour chaque clause on peut dire qui était à 1.
+soit c(v_1) = 1
+	 c(x_i) = 1 si x_i = T
+	 		| 0 sinon
+
+	c(D) = 2
+	c(Z) = 0

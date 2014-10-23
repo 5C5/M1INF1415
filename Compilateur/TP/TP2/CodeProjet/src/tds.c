@@ -1,0 +1,1 @@
+/* Fichier contenant la description de la table des symboles*/
