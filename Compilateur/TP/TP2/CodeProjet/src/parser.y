@@ -1,13 +1,25 @@
 %{
 
 #include <cstddef>
+#include "tdi.h"
+#include "tds.h"
 
 extern int yyerror ( char* );
 extern int yylex ();
 
+int context;
+//on crée une variable globale pour contenir le contexte, pour l'optimisation
 %}
 
 %union{
+	int ident,		// Numéro de l'identificateur
+	int valentier;
+	double valreel;
+	int valbooleen;
+	char valcar;
+	string* valchaine;
+	int nb_arg;		// Nombre d'argument d'une fonction
+	char* type;		// chaine de caractère pour faire remonter les types lors de l'analyse
 }
 
 %token KW_PROGRAM
@@ -37,11 +49,12 @@ extern int yylex ();
 %token KW_DOWNTO
 %token KW_PROC
 %token KW_FUNC
-%token KW_INTEGER
-%token KW_REAL
-%token KW_BOOLEAN
-%token KW_CHAR
-%token KW_STRING
+
+%token <type> KW_INTEGER
+%token <type> KW_REAL
+%token <type> KW_BOOLEAN
+%token <type> KW_CHAR
+%token <type> KW_STRING
 
 %token KW_WRITE
 %token KW_WRITELN
@@ -70,12 +83,26 @@ extern int yylex ();
 %token OP_EXP
 %token OP_AFFECT
 
-%token TOK_IDENT
-%token TOK_INTEGER
-%token TOK_REAL
-%token TOK_BOOLEAN
-%token TOK_CHAR
-%token TOK_STRING
+%token <ident> TOK_IDENT
+%token <valentier> TOK_INTEGER
+%token <valreel> TOK_REAL
+%token <valbooleen> TOK_BOOLEAN
+%token <valcar> TOK_CHAR
+%token <valchaine> TOK_STRING
+
+%type <ident> DeclVar
+%type <ident> ProcIdent
+%type <ident> FuncIdent
+%type <type> Type
+%type <type> UserType
+%type <type> BaseType
+%type <type> EnumType
+%type <type> InterType
+%type <type> ArrayType
+%type <type> RecordType
+%type <type> PointerType
+%type <type> FuncResult
+%type <type> ArrayIndex
 
 %start Program
 
@@ -189,7 +216,7 @@ ListDeclVar			:	ListDeclVar DeclVar
 			 		|	DeclVar
 			 		;
 
-DeclVar				:	ListIdent SEP_DOTS BaseType SEP_SCOL
+DeclVar 			: ListIdent SEP_DOTS SimpleType SEP_SCOL
 			 		;
 
 ListIdent			:	ListIdent SEP_COMMA TOK_IDENT
@@ -268,6 +295,7 @@ Instr				:	KW_WHILE Expression KW_DO Instr
 			 		|	KW_WRITE SEP_PO ListeExpr SEP_PF
 			 		|	KW_WRITELN SEP_PO ListeExpr SEP_PF
 			 		|	KW_READ SEP_PO VarExpr SEP_PF
+					|	KW_WRITELN
 			 		|	BlockCode
 			 		;
 

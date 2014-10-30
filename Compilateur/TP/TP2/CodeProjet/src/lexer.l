@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cmath>
 #include "parser.h"
+#include "tdi.h"
 
 extern int row, column;
 
