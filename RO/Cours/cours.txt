@@ -60,3 +60,26 @@ un employé ne peut exécuter plus d'une tache : ∑ x_ij ≤ 1, ∀j
 											  i=1
 ______________________________
 La théorie des graphes
+
+____________________________________________________________
+Cours du 31/10
+
+Partie Graphe Classique
+
+Notations :
+-Un graphe G = (X, U, L)
+	X = ensemble des sommets
+	U = ensemble des arcs (U⊆ X²)
+	L = fonction de pondértions des arcs (U → R)
+|X| = n
+|U| = m
+
+Des façons de représenter un graphe :
+-La matrice d'adjacence. On met un 1 dans la cas ij lorsqu'il y a un arc entre les sommets i et j. On peut remplacer le 1 par la pondération s'il y en a une. Tm la taille memoire. Tm = O(n²) => ∃c | Tm ≤ c.n² ; Tm = θ(n²) => c1 n² ≤ Tm ≤ c2.n²
+-Listes d'adjacences. Tm = O(n²) = O(n⁸). Tm = O(m+n) avec m ⊆ n², ce qui est une amélioration
+
+Le calcul de la somme des successeurs, qui dépend de la structure de donnée, se fait en complexité :
+-O(n²) pour les matrices d'adjacences
+-O(m+n) pour les listes d'adjacences
+
+

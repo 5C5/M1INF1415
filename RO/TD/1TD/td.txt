@@ -1,0 +1,22 @@
+TD1 de Recherche Opérationnelle
+
+Exercice 1 :
+1) f, c, a, h
+2) (h, g), (a,g), (d, f), (e, f) , (g, c)
+3) successeurs(a) = b, c, g, h
+	successeurs(h) = g, e
+4) predecesseur(f) = d, e
+5) d⁺(g) = 1
+	d⁻(g) = 3
+	d(g) = 4
+6) {f, c}
+7) G n'est pas : symétrique, anti-symétrique, transitif, réflexif, complet
+   G est anti-reflexif
+
+8)
+9)
+10) a, g, c, d, f
+11) ab, c, f, f
+12) (ijki)
+13) (iki)
+14)
