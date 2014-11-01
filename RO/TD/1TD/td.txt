@@ -19,4 +19,35 @@ Exercice 1 :
 11) ab, c, f, f
 12) (ijki)
 13) (iki)
-14)
+14) 6
+15) R_c {g, a, c, b, d, f, h, e, l} {i,j,k}
+16) R_FC {c, d, e, f, g} {ik} 
+
+Exercice 2 :
+Matrice d'adjacence
+0 1 0 0 0 | 0  u1  0  0  0
+0 0 0 1 1 | 0   0  0 u4 u6
+1 0 0 0 1 | u3  0  0  0 u8
+1 0 1 0 0 | u2  0 u5  0  0
+0 0 0 1 0 | 0  	0  0 u7  0
+
+Liste d'adjacence
+1 -> 2
+2 -> 4 -> 5
+3 -> 1 -> 5
+4 -> 1 -> 3
+5 -> 4
+
+Exercice 3
+Soit un graphe non orienté G à 15 sommet où chaque sommet à au moins 7 voisins. Montrer que G est connexe :
+Soit i et j deux sommets quelconques. Soit C_1 et C_2 les composantes connexes de i et de j
+
+comme i et j ont au moins septs voisins chacun, |C_1| ≥ 8 et |C_2| ≥ 8
+=> l'intersection de C_1 et C_2 ≠ ø > C_1 = C_2
+
+Exercice 4
+On identifie les conseillers à des aretes et les comissions à des graphes.
+Nombre de conseillers : 7*6 /2 = 21
+
+Exercice 5
+1 {f,gh, i} {a, b}

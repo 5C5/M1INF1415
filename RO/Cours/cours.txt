@@ -82,4 +82,24 @@ Le calcul de la somme des successeurs, qui dépend de la structure de donnée, s
 -O(n²) pour les matrices d'adjacences
 -O(m+n) pour les listes d'adjacences
 
+Définition d'un graphe Fortement connexe : le graphe a un seule composante fortement connexe. Pour tout couple de point, il existe un chemin entre eux. Il est possible de décomposer n'importe quel graphe en un ensemble de composantes fortement connexes.
+
+Définition formelle d'une relation fortement connexe :
+Deux sommet i et j sont reliés par la relation R_FC si
+	-∃ un chemin entre i et j
+	-∃ un chemin entre j et i
+R_FC est une relation d'équivalence ?
+
+Les composantes fortement connexes sont les classes d'équivalences de R_FC
+·Réflexivité : i R_FC i
+·Symétrie : i R_FC j => j R_FC i
+·Transitivité i R_FC j et j R_FC k => i R_FC k
+
+Définition formelle d'une relation connexe :
+Deux sommet i et j sont reliés par la relation R_C si	
+	-∃ une chaine entre i et j
+R_C est une relation d'équivalence ?
+Les composantes connexes sont les classes d'équivalence de R_C
+
+
 
