@@ -1,0 +1,69 @@
+# Exercice 1
+1)
+1-2-4-7-9-11-12 (somme : 37)
+1 :(0;-);
+2 : (-9;1)
+4 : (-16;2)
+2 : (-8;1)
+5 : (16;3)
+6 : (-21;5)
+7 : (-25;4)
+8 : (-22;6)
+9 : (-26;7)
+10 : (-31;0)
+11 : (-35;9)
+12 : (-37; 10)
+
+
+Parcours BellMan sans cycle, on prend l'opposé des valeurs pour obtenir le chemin le plus long.
+
+2) : .9*.7*.9*.1*.5*.6
+
+3)
+Bellman sans circuit :
+d[1] = 1
+d[u] = -∞ pour tout u ≠ s
+
+pour tout j = 2 à n = 12
+	d[j]=min(log(d[j]), log(d[i]) + log(d(i, j)))
+	P[j] = arg min(log([j]), log(d[i]) + log(d[i, j])).
+
+1 : (1;-)
+2 : (.9;1)
+3 : (.8;1)
+4 : (.63;2)
+5 : (.64;3)
+6 : (.320;5)
+7 : (.567;4)
+8 : (.032;6)
+9 : (.128;6)
+10 :(.064; 9)
+11 :(.1152;9)
+12 :(.0384;10)
+
+Exercice 3 :
+1)
+On définit la longueur d'un chemin C comme le minimum des valuations des arcs de ce chemin
+But : Trouver un chemin de longueur maximale entre les sommet 1 et 16
+
+Dijkstra
+	d[1] = ∞
+	d[u] = -∞
+	E = {s}
+	tant que E ≠ ø
+		choisir u n'appartenant pas à E tel que d[u] maximal
+			pour tout successeur v de u n'appartenant pas à E 
+				si d[v] < min(d[u] , l(u,v))
+					d[v] = min(d[u], l(u,v))
+					P[v] = u
+				finsi
+			finpour
+	fintant
+
+-> Application de l'algo
+
+E : {1,2,3,7,6,10,14,15,16}
+d[u] = 19
+Hauteur maximale de la gondole : 190 cm
+
+

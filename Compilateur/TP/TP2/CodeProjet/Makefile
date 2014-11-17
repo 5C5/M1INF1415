@@ -1,7 +1,7 @@
 FLEX 		= 	flex
-BISON 		= 	bison
-CC   		= 	gcc
-LD   		= 	gcc
+BISON 		= 	bison -d
+CC   		= 	g++
+LD   		= 	g++
 ECHO 		=	echo
 CAT 		=	cat
 RM 			=	rm

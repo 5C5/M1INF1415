@@ -102,4 +102,30 @@ R_C est une relation d'équivalence ?
 Les composantes connexes sont les classes d'équivalence de R_C
 
 
+______________________________________________________________
+Penser à récuper le dernier cours de RO de mercredi 5/11
+
+______________________________________________________________
+Cours du 7/11
+
+Parcours en largeur (G, s):
+Utilisation d'une file.
+
+//Initialisation
+Pour chaque sommet u ∈ S[G]
+	d[u] <- ∞
+	Pi[u] <- nul
+d[s] <- 0
+Enfile(Fifo, s)
+
+Tant que Fifo ≠ ø
+	u <- tête(Fifo)
+	pour chaque successeur vide de u
+		si d[v] <- d[u] + 1
+		Pi[v] <- u
+		Enfile(Fifo, v)
+	Défile(Fifo)
+
+Pi est le "père de", permettant de savoir par ou on est passé pour découvrir chaque sommet
+
 

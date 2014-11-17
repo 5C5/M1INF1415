@@ -1,0 +1,52 @@
+TD du 14/11 sur les flots
+
+# Exercice 1
+1 On considère une source S alimentant A, B, C et D avec des flots respectifs de 15, 10, 15 et 15. On considère également un puit alimenté par J, K et L respectivement de 15, 20, 15
+
+Flots complets :
+SA : 7[15]
+SB : 5[10]
+SC : 15[15]
+SD : 10[15]
+BA : [5]
+BF : 5[5]
+AE : 7[7]
+CF : 10[10]
+CG : 5[7]
+DG : 10[10]
+FG : [5]
+EF : [5]
+GI : 15[15]
+FI : 15[15]
+EH : 4[4]
+HI : [7]
+EI : 3[15]
+HJ : 4[7]
+IK : 29[30]
+KJ : 9[10]
+IL : 4[4]
+JP : 13[15]
+KP : 20[20]
+LP : 4[15]
+
+Flot max de 37
+v(q) = 37
+
+On a montré qu'il n'existe pas de chemin entre s et p dans le graphe d'écart (méthode de masquage) => on a le flot maximal
+
+2)
+La capacité de l'arc AE doit etre ≤ 20
+La capacité de l'arc IL doit etre ≤ 15
+3)
+AE doit etre modifié en premier, car cela permet de modifier la coupe mimimale, et par conséquent le flot maximum.
+4) 49
+
+## Exercice 3
+
+Colisée : 1, 2, 5
+Forum Romain : 5, 6, 7
+Musée du Vatican : 2, 7, 4
+Thermes de Caracalas : 3, 4, 6
+
+OUI
+

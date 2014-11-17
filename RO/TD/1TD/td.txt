@@ -50,4 +50,80 @@ On identifie les conseillers à des aretes et les comissions à des graphes.
 Nombre de conseillers : 7*6 /2 = 21
 
 Exercice 5
-1 {f,gh, i} {a, b}
+1 {f,gh, i} {a, b}, {d, e} , {r}, {s}
+
+
+3 
+{a, b} -2-> {c} -1-> {d, e} -2-> {s}
+{r} -2-> {f,g,h,i} -2->{d,e}
+{r} -2-> {a,b} -1-> {f,g,h,i}
+{a,b} -3-> {d,e}
+{f,g,h,i} -2-> {s}
+
+4
+{a, b} -2-> {c} -1-> {d, e} -2-> {s}
+{r} -2-> {a,b} -1-> {f,g,h,i} -2->{d,e}
+
+Exercice 6
+
+pour ∀ x ∈ S
+	pour tout s ∈ successeur[x]
+		predecesseur[s].push(x)
+	end
+end
+
+Exercice 7
+1
+a : d=1; f=18
+b : d=2; f=15
+c : d=3; f=14
+d : d=4; f=13
+e : d=5; f=12
+f : d=6; f=9
+g : d=7; f=8
+h : d=16; f=17
+i : d=19; f= 24
+j : d=20, f=21
+k : d=22; 23
+l : d=10; f =11
+
+7)Soit z n'appartenant pas à la composante connexe à laquelle appartienne x et y.
+∃ 1 chemin de x vers z
+∃ 1 chemin de z vers y
+Comme il existe un chemin de y vers z (composantes connexe), alors z appartient à la composante connexe
+
+Exercice 8
+{motoculteur;Jacques} --> a
+{Tronçonneuse;Jacques} -->b
+{Taille-Haies;Jacques} -->c
+{Boucheuse;Jacques} -->d
+{motoculteur;Paul} -->e
+{Tronçonneuse;Paul} -->f
+{Taille-Haies;Paul} -->g
+{Boucheuse;Paul} -->h
+{motoculteur;Pierre} -->i
+{Tronçonneuse;Pierre} -->j
+{Taille-Haies;Pierre} -->k
+{Boucheuse;Pierre} -->l
+
+		|	B	|	Th	|	T	|	M
+Jacques |	3	|	4 	|	2	|	1
+Pierre  |	3	|	1	|	2	|	4
+Paul	|	4	|	3	|	1	|	2
+
+
+Solutions de Pierre
+a-->e-->i
+f-->b-->j
+g-->c-->k
+l-->h-->d
+Le graphe de Pierre a un circuit -> sa solution n'est pas envisageable.
+
+Solution de Paul
+Envisageable
+
+
+Nbre de jours minimal égale au plus long chemin du graphe (chemins critiques)
+Solution de Paul : 7
+Solution de Jacques : 5
+

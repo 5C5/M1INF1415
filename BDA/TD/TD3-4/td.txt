@@ -125,6 +125,100 @@ end COMBINER
 
 
 # Exercice 3
-++ : concaténation 
-(+) aggregag sur 2 valeurs
+rappels :
+	++ : concaténation 
+	(+) aggregag sur 2 valeurs
+
+## 3.1
+
+(++) : [α]×[α] ->  [α]
+	map : ((K1×V1) -> [(K2×V2)]) -> [(K1×V1)] -> [[K2×V2]]		Le vrai type de map : (α -> β) -> [α] -> [β]
+	red : (V2×V2 -> V2) -> ([V2] -> V2)
+
+## 3.2
+(x(+)y)(+)z = (+) (y (+) z)
+= (red((+))[x] (+) red((+))[y]) (+) red((+))[z]
+=(red((+))([x] ++ [y]))(+) red((+))[z]
+=(red((+))(([x] ++ [y]) ++ [z])
+=red((+))([x] ++ ([y] ++ [z]))
+=red((+))[x] (+) (red((+))([y] ++ [z]))
+=x (+) (red((+)) [y] (+) red((+)))[z]
+= x (+) (y (+) z)
+
+preuve détaillée 
+On suppose ++ commutatif
+x (+) y
+= red((+))[x] (+) red((+))[y]
+= red((+))([x] ++ [y])
+= red((+))([y] ++ [x])
+= red((+)) [y] (+) red((+)) [x]
+
+On suppose ++ idempotent
+(x (+= y) (+) y
+= red((+)) (([x] ++ [y]) ++ [y])
+= red((+))([x] ++ [y])
+= x (+) y
+
+g o red(+): L -> g(red((+))(L))
+red((×)) o map : L -> red((×))(map(g)(L))
+g(red(+)[x] = g(x)
+			= red((×))([g(x)])
+			= red((×))(map(g)[x])
+
+g(red((+))(xS ++ yS))
+= g(red((+)) (xS) (+) red((+))(yS))
+= g(red((+)) (xS)) (×) g(red((+))(yS))
+par récurence sur xS et yS
+= red((×))(map(g)(xS)) (×) red((×))(map(g)(yS))
+= red((×))(map(g)(xS) ++ map(g)(yS))
+= red((×))(map(g)(xS ++ yS))
+					L
+
+# Exercice 4
+## 4.1
+map(r, t)
+	if(t.A < 10)
+		emit(r, t)
+
+reduce(r, ts)
+	return ts[0]
+
+## 4.2
+map(r, t)
+	emit({A:t.A, B:t.B}, {A:t.A, B:t.B})
+
+reduce(r, ts)
+	return r
+
+## 
+SELECT A, B
+FROM R
+INTERSECT
+SELECT X AS A, Y AS B
+FROM S
+
+-> 
+map(r, t)
+	if(REL(r) = "R")
+		emit({a;t.A, B:t.B}, "R")
+	else
+		emit({A:t.X, B:t.Y}, "S")
+reduce(r, ts)
+	if(ts.contains("R") && ts.contains("S"))
+		return r;
+	else
+		return null;
+
+## Jointure
+map(r, t)
+	if(REL(r) = "R")
+		emit({a;t.A, B:t.B}, "R")
+	else
+		emit({A:t.X, B:t.Y}, "S")
+reduce(r, ts)
+	if(ts.contains("R") && ts.contains("S"))
+		return r;
+	else
+		return null;
+
 

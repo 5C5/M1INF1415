@@ -1,11 +1,13 @@
 #ifndef _TDS_H_
 #define _TDS_H_
 
+#include "type.h"
+
 extern int tableContexte[TAILLE];
 
 typedef struct {
 	int ident;
-	signification ;
+	signification s;
 } symbole;
 
 

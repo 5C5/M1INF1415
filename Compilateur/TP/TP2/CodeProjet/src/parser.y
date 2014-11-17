@@ -12,13 +12,13 @@ int context;
 %}
 
 %union{
-	int ident,		// Numéro de l'identificateur
+	int ident;		/* Numéro de l'identificateur*/
 	int valentier;
 	double valreel;
 	int valbooleen;
 	char valcar;
-	string* valchaine;
-	int nb_arg;		// Nombre d'argument d'une fonction
+	char* valchaine;
+	int nb_arg;		/* Nombre d'argument d'une fonction*/
 	char* type;		// chaine de caractère pour faire remonter les types lors de l'analyse
 }
 
@@ -100,7 +100,7 @@ int context;
 %type <type> InterType
 %type <type> ArrayType
 %type <type> RecordType
-%type <type> PointerType
+/*%type <type> PointerType*/
 %type <type> FuncResult
 %type <type> ArrayIndex
 

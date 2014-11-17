@@ -23,7 +23,7 @@ typedef struct {
 // Structure d'un programme
 typedef struct {
 	// Pas de type pour les programmes
-	char* type = null;
+	const char* type;
 } s_programme;
 
 // Structure d'une fonction 
@@ -32,7 +32,7 @@ typedef struct {
 	char* type;
 	// Nombre d'argumments
 	int arite;
-} s_fonction
+} s_fonction;
 
 typedef union{
 	s_variable* variable;
