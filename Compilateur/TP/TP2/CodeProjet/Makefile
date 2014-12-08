@@ -1,7 +1,7 @@
 FLEX 		= 	flex
 BISON 		= 	bison -d
-CC   		= 	g++
-LD   		= 	g++
+CC   		= 	g++ -g
+LD   		= 	g++ -g
 ECHO 		=	echo
 CAT 		=	cat
 RM 			=	rm
@@ -13,7 +13,7 @@ BIND = bin
 
 EXEC = ppc
 
-OBJFILES = parser.o lexer.o main.o
+OBJFILES = parser.o lexer.o main.o tdi.o
 OBJS = $(OBJFILES:%.o=$(OBJD)/%.o)
 
 NO_COLOR=\x1b[0m

@@ -1,0 +1,97 @@
+# Modulation
+
+## Exercice 1
+
+1) s(t) est signal d'entrée (à envoyer, le signal source), p(t) est la porteuse (support), et V(t) est le signal de sortie, correspondant à la porteuse modifiée par la source. k est présent pour borner l'amplitude de s(t).
+
+3) Modulation de fréquence (Vg(t) = V0 cos(2 Pi f0 + ks(t)t), modulation de phase
+
+## Exercice 2
+On module la fréquence du signal selon une valeur. On associe aux modulations positives et négatives une valeur logique.
+
+## Exercice 3
+1. Le diagramme montre les valeurs associées aux décalages de phases et modulation d'amplitudes. On modifie la phase/l'amplitude en fonction de la valeur à transmettre. ce codage permet d'adapter le signal au support.
+2. 010001111000110111011
+
+# Multiplexage
+## Exercice 4
+1) échantillonage du signal, quantification (valeur des échantillons). Passage d'un signal continu à un signal discret.
+2)20kHz -> Fréquence max. Fréquence échantillonage > 2 * fréquence max => 40kHz = 40 000 echantillons/s
+1 echantillon : 10 bits
+Debit = 400kbits/s
+3) Dmax = é W log_2 V
+avec W la bande passante disponible, V le nbre d'éléments (ici, 2)
+soit Dmax = 2W >>debit
+W >> 200 kbit/s
+
+## Exercice 5 :
+Paquets : 1200 bits
+A : 3600 bits	-> 3 paquets
+B : 12000 bits  -> 10 paquets
+C : 4800 bits	-> 4 paquets
+
+débit de la liaison commutée : 4800 bits/s
+A : 0.75s
+B : 2.5s
+C : 1s
+total : 4.25s
+
+17 paquets à envoyer, .25 s par paquet :
+4 paquets par secondes sur la ligne partagée
+
+Plusieurs répartition possibles :
+Solution 1 : On fait des slots de 2.5 secondes (durée pour envoyer B)
+B|B|B|B|B|B|B|B|B|B|A|A|A| | | | | | | | |C|C|C|C
+
+Solution 2 :  chaque source a le canal un fois sur trois
+|A|B|C|A|B|C|A|B|C|B|C|B|B|B|B|B|B
+
+## Exercice 6
+AABAACAABADCADCBABAB
+
+A 10	-> 1/2		1/2		= 0
+B 5		-> 1/4		1/4 -|
+C 3		-> 3/20-|		 -> = 1
+				-->	1/4 -|
+D 2		-> 1/10-|
+
+|
+|-0->A
+|
+|BCD
+|
+|-0->B
+|
+|CD 1
+|
+|-0-> C
+|
+v
+1 D
+
+2) : longueur moyenne pour une lettre :
+m = 1/2 * 1 + 1/4 * 2 + 3/30 * 3 + 1/10 * 3 = 35/20 = 1.75
+
+3) Optimalité du code => entropie
+
+H = -∑pi log_2 pi
+	pi∈Probad'apparition
+= 1.74
+
+## Exercice 7
+1.1 H(X) =  -∑ x_i log_2 x_i
+			x_i∈x
+		 
+		 = 1/2 log_2(1/2) + 2 * 1/5 log_2(1/5) + 1/10 log_2(1/10)
+		 = 1.76 b/symbole
+1.2
+I(X, Y) = H(X) - H(X|Y)
+  ↑	 ↑  
+  |  réception
+ émission
+1.76 b/symbole
+
+3) C = Max(I(X, Y))
+	lois de X
+	 = Max (H(X))
+	 =[1.76]

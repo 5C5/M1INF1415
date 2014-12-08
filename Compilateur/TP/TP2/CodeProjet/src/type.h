@@ -1,6 +1,8 @@
 #ifndef TYPE_H
 #define TYPE_H
 
+#include "tdi.h"
+
 /* Structures de descriptions des types*/
 #define TRUE 1
 #define FALSE 0

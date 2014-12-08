@@ -1,10 +1,14 @@
-#include "tdi.h"
 /* Fichier contenant la description de la table des identificateurs*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "tdi.h"
 
 //Définition des variables et types
 int numeroUnique = 1;
 
-s_identificateur * TI = null;
+s_identificateur * TI = NULL;
 
 /* Fonctions liés à la table des identificateurs*/
 
@@ -14,19 +18,18 @@ unsigned int ajouterIdentificateur (const char* s){
 	int index = 0;
 	s_identificateur *courant;
 	
-	if(TI == null){
+	if(TI == NULL){
 		
-		TI = (s_identificateur *) malloc(sizeof(s_identifcateur));
-		TI->nom = (char *) malloc(strlen(s));
+		TI = (s_identificateur *) malloc(sizeof(s_identificateur));
 		strcpy(TI->nom, s);
 		TI->id_unique = numeroUnique++;
-		TI->suivant = null;
+		TI->suivant = NULL;
 		return TI->id_unique;
 	}
 	else {
 
 		courant = TI;
-		while(courant->suivant !=null){
+		while(courant->suivant != NULL){
 			
 			if(strcmp(courant->nom, s) == 0)
 				return courant->id_unique;
@@ -34,8 +37,7 @@ unsigned int ajouterIdentificateur (const char* s){
 				courant = courant->suivant;
 		}
 		courant->suivant = (s_identificateur *) malloc(sizeof(s_identificateur));
-		courant = suivant;
-		courant->nom = (char *) malloc(strlen(s));
+		courant = courant->suivant;
 		strcpy(courant->nom, s);
 		courant->id_unique = numeroUnique++;
 		return courant->id_unique;
@@ -77,39 +79,41 @@ const char* getNom(const unsigned int num) {
 void afficherTableIndent(){
 	s_identificateur * courant = TI;
 	
-	if(courant != null){	
+	if(courant != NULL){	
 		
-		while(courant->suivant != null){
+		while(courant->suivant != NULL){
 			
-			printf("\tidentificateur : %s \tidentifiant unique : %i\n", courant->nom, courant->id);
+			printf("\tidentificateur : %s \tidentifiant unique : %i\n", courant->nom, courant->id_unique);
 			courant = courant->suivant;
 		}
-		printf("\tidentificateur : %s \tidentifiant unique : %i\n", courant->nom, courant->id);
+		printf("\tidentificateur : %s \tidentifiant unique : %i\n", courant->nom, courant->id_unique);
 
 	}
 }
 
 //Sauvegarde de la table des identificateurs dans un fichier dont le nom est passé en paramètre
-void sauvegarderTableIdent(const char* nom){
+void sauvegarderTableIdent(const char* nom_fic){
 
-	FILE* ficher = null;
-	if((fichier = fopen(nom, "w+")) == null){
-		printf("Erreur lors de l'ouverture de %s\n", nom);
+	FILE* fichier = NULL;
+
+	if((fichier = fopen(nom_fic, "w+")) == NULL){
+		
+		printf("Erreur lors de l'ouverture de %s\n", nom_fic);
 		exit(0);
 	}
 	else {
 
 		s_identificateur *courant = TI;
 		
-		if(courant != null){
+		if(courant != NULL){
 			
-			while(courant->suivant != null){
+			while(courant->suivant != NULL){
 
-				fprintf("%i;%s\n", courant->id_unique, courant->nom);
+				fprintf(fichier, "%i;%s\n", courant->id_unique, courant->nom);
 				courant = courant->suivant;
 			}
 			
-			fprintf("%i;%s\n", courant->id_unique, courant->nom);
+			fprintf(fichier, "%i;%s\n", courant->id_unique, courant->nom);
 		}
 		fclose(fichier);
 	}
@@ -119,17 +123,17 @@ void sauvegarderTableIdent(const char* nom){
 // Fonction nettoyant un noeud
 void nettoyerIdent(s_identificateur* s){
 	
-	if(s->suivant != null){
+	if(s->suivant != NULL){
 		nettoyerIdent(s->suivant);
 	}
-	free(s->nom)
+	free(s->nom);
 	free(s->suivant);
-	s->suivant = null;
+	s->suivant = NULL;
 }
 
 int nettoyerTableIdent(void){
 	
-	if(TI != null){
+	if(TI != NULL){
 		
 		nettoyerIdent(TI);
 	}
