@@ -24,6 +24,6 @@ mefaits([T|R]):-assert(faux(T)), mefaits(R).
 
 raz:-retractall(vrai(_)), retractall(faux(_)).
 
-saturer :- vrai(e).
-saturer :- not(marquer(X)),fail.
-saturer([H|Q]):- not(marquer(H)), regle(r1), assert(changement);
+appliquer:- not(marquer(X)), regle(X), assert(marquer(X)),write(X), write( : ), vrai(e).
+
+saturer:- .
