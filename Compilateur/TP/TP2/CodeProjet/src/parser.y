@@ -7,7 +7,7 @@
 extern int yyerror ( char* );
 extern int yylex ();
 
-int context;
+int context = 0;
 //on crée une variable globale pour contenir le contexte, pour l'optimisation
 %}
 
@@ -124,7 +124,7 @@ Program				:	ProgramHeader SEP_SCOL Block SEP_DOT
 					;
 
 ProgramHeader		:	KW_PROGRAM TOK_IDENT
-					;
+
 
 Block				:	BlockDeclConst BlockDeclType BlockDeclVar BlockDeclFunc BlockCode
 					;

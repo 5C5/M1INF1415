@@ -105,7 +105,25 @@ CHIFFRES [0-9]+
 {T}{R}{U}{E}					column += yyleng; yylval.valbooleen = TRUE; return TOK_BOOLEAN;
 {F}{A}{L}{S}{E}					column += yyleng; yylval.valbooleen = FALSE; return TOK_BOOLEAN;
 [a-zA-Z]([a-zA-Z0-9])*			column += yyleng; yylval.ident = ajouterIdentificateur(yytext); return TOK_IDENT;
-'({NQUOTE}|'')+'				column += yyleng; if ( yyleng == 1 ){yylval.valcar = yytext[0]; return TOK_CHAR;} else{ yylval.valchaine = (char *)malloc(yyleng); strcpy(yylval.valchaine, yytext); return TOK_STRING;}
+'({NQUOTE}|'')+'				{
+									column += yyleng;
+									//printf("Longueur du truc emmerdant : %d, et de la chaine à envoyer : %s\n", yyleng, yytext);
+									if ( yyleng == 3 ){
+										yylval.valcar = yytext[1];
+										return TOK_CHAR;
+									} else if(yyleng > 3){ 
+										
+										yylval.valchaine = (char *)malloc(yyleng-1);
+										char temp[yyleng-1];
+										int i;
+										for(i = 0; i < yyleng-2; i++){
+											temp[i] = yytext[i+1];
+										}
+										temp[i] = '\0';
+										strcpy(yylval.valchaine, temp);
+										return TOK_STRING;
+									}
+								}
 -?{CHIFFRES}					column += yyleng; yylval.valentier = atoi(yytext); return TOK_INTEGER;
 -?{CHIFFRES}"."{CHIFFRES}		column += yyleng; yylval.valreel = atoi(yytext); return TOK_REAL;
 

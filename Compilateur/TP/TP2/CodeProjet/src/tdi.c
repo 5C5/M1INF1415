@@ -28,7 +28,10 @@ unsigned int ajouterIdentificateur (const char* s){
 	}
 	else {
 
+		courant = (s_identificateur *)malloc(sizeof(TI));
 		courant = TI;
+
+
 		while(courant->suivant != NULL){
 			
 			if(strcmp(courant->nom, s) == 0)
@@ -77,7 +80,15 @@ const char* getNom(const unsigned int num) {
 
 //Fonction affichant la table des identificateurs dans la sortie standard
 void afficherTableIndent(){
-	s_identificateur * courant = TI;
+	s_identificateur * courant;
+	
+	courant = (s_identificateur *)malloc(sizeof(s_identificateur));
+		
+	courant->suivant = (s_identificateur *)malloc(sizeof(TI->suivant));
+	courant->suivant = TI->suivant;
+	strcpy(courant->nom, TI->nom);
+	courant->id_unique = TI->id_unique;
+
 	
 	if(courant != NULL){	
 		
@@ -127,7 +138,6 @@ void nettoyerIdent(s_identificateur* s){
 		nettoyerIdent(s->suivant);
 	}
 	free(s->nom);
-	free(s->suivant);
 	s->suivant = NULL;
 }
 

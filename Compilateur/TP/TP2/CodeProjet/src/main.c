@@ -39,6 +39,7 @@ int main ( int argc, char** argv ){
     yyparse ();
 	/* traitements post analyse */
 	afficherTableIndent();
-	nettoyerTableIdent();
+	//nettoyerTableIdent();
+	//nettoyerTableSymbole();
 	/* sauvegarde des resultats */
 }

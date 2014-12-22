@@ -13,7 +13,7 @@ BIND = bin
 
 EXEC = ppc
 
-OBJFILES = parser.o lexer.o main.o tdi.o
+OBJFILES = parser.o lexer.o main.o tdi.o tds.o
 OBJS = $(OBJFILES:%.o=$(OBJD)/%.o)
 
 NO_COLOR=\x1b[0m
