@@ -3,11 +3,11 @@
 
 :- dynamic vrai/1, faux/1, changement/0, marquer/1.
 
-si([X]):-vrai(X).
-si([T|R]):-vrai(T), si(R).
+si([X]):-vrai(X), !.
+si([T|R]):-vrai(T), si(R), !.
 
-alors([X]):- assert(vrai(X)).
-alors([T|R]):-assert(vrai(T)), alors(R).
+alors([X]):- assert(vrai(X)), !.
+alors([T|R]):-assert(vrai(T)), alors(R), !.
 
 %# Déclaration des règles
 regle(r1):- si([a, b]), alors([c]).
@@ -29,16 +29,18 @@ raz:-retractall(vrai(_)), retractall(faux(_)), retractall(marquer(_)).
 
 %# Affichage des faits vrai(?)
 lire([X]):-write(X), nl, !.
-lire([T|H]):-write(T), write(' '), lire(H).
+lire([T|H]):-write(T), write(' '), lire(H), !.
 
-lister([]):-vrai(X), lister([X]).
-lister(L):-  vrai(X), not(member(X, L)), lister([X|L]).
-lister([T|H]):- write(T), write(' '), lire(H).
+lister([]):-vrai(X), lister([X]), !.
+lister(L):-  vrai(X), not(member(X, L)), lister([X|L]), !.
+lister(L):- lire(L), !.
 
 %# Application des changement
-application:- not(marquer(X)), regle(X), assert(marquer(X)),write(X), write(' : '),lister([]).
-appliquer:- changement, retract(changement), !, application, assert(changement), fail.
+application:- marquer(X), fail.
+application:- regle(X), not(marquer(X)), assert(marquer(X)),write(X), write(' : '), !.
+appliquer:- changement, retract(changement), application, lister([]), assert(changement), fail.
 appliquer:- not(changement).
 
 %# Lancement du chainage avant
-saturer:- assert(changement), !, appliquer.
+lancer:- raz, faits([a, c, d]).
+saturer:- assert(changement), appliquer.
