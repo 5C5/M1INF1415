@@ -6,8 +6,9 @@
 si([X]):-vrai(X), !.
 si([T|R]):-vrai(T), si(R), !.
 
+alors([X]):-vrai(X), !.
 alors([X]):- assert(vrai(X)), !.
-alors([T|R]):-assert(vrai(T)), alors(R), !.
+alors([T|R]):- alors([T]), alors(R), !.
 
 %# Déclaration des règles
 regle(r1):- si([a, b]), alors([c]).
@@ -28,19 +29,26 @@ mefaits([T|R]):-assert(faux(T)), mefaits(R).
 raz:-retractall(vrai(_)), retractall(faux(_)), retractall(marquer(_)).
 
 %# Affichage des faits vrai(?)
-lire([X]):-write(X), nl, !.
-lire([T|H]):-write(T), write(' '), lire(H), !.
+lister:- findall(X, vrai(X), R),write(R), nl, !.
 
-lister([]):-vrai(X), lister([X]), !.
-lister(L):-  vrai(X), not(member(X, L)), lister([X|L]), !.
-lister(L):- lire(L), !.
+lancer:- raz, faits([a, c, d]).
 
-%# Application des changement
-application:- marquer(X), fail.
-application:- regle(X), not(marquer(X)), assert(marquer(X)),write(X), write(' : '), !.
-appliquer:- changement, retract(changement), application, lister([]), assert(changement), fail.
+%# Gestion du chainage avant
+
+%# Application du moteur d'inférence par chainage avant
+
+application:- regle(X), not(marquer(X)),assert(marquer(X)),write(X), write(' : ').
+appliquer:- changement, retract(changement), application, lister, assert(changement), fail.
 appliquer:- not(changement).
 
 %# Lancement du chainage avant
-lancer:- raz, faits([a, c, d]).
-saturer:- assert(changement), appliquer.
+saturer:- assert(changement),repeat, appliquer.
+
+
+%# Gestion du chainage arrière
+satisfait(X):- vrai(X), write(X), writeln(' dans la base de faits.').
+satisfait([X]):- satisfait(X).
+satisfait(X):- clause(regle(R), (si(L), alors([X]))), satisfait(L), regle(R), write(X), write(' satisfait grace à '), write(R), nl.
+satisfait([T|R]):- satisfait(T), satisfait(R).
+
+saturer(X):-satisfait(X).
