@@ -51,4 +51,11 @@ satisfait([X]):- satisfait(X).
 satisfait(X):- clause(regle(R), (si(L), alors([X]))), satisfait(L), regle(R), write(X), write(' satisfait grace à '), write(R), nl.
 satisfait([T|R]):- satisfait(T), satisfait(R).
 
+%# Lancement du chainage arrière.
 saturer(X):-satisfait(X).
+
+
+%# Chainage mixte
+
+terminal(X):- clause(regle(_), (si(L), alors(_))), not(member(X, L)).
+observable(X):-clause(regle(_), (si(_), alors(L))), not(member(X, L)).
