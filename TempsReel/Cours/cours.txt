@@ -1,0 +1,101 @@
+Cours de Système en temps réel(enrichie des commentaires du prof)
+
+
+\section{notions :}
+	\begin{itemize}
+	\item QoS (Qualité de Service)
+	\item Temps réel ≠ rapide
+	\item Échéance : moment ou le résultat doit avoir été calculé
+	\item Temps réel dur (Hard real time) : on respecte toutes les échéances.
+	\item Temps réel lache (soft real time) : on peut rater execptionnellement des échéances
+	\item Déterminisme : on sait à l'avance combier de temps au maximum cela peut prendre
+	\item Nécessaire : quand on a des actionneurs et capteurs
+	\item exemple de temp réel
+	\begin{itemize}: 
+		\item gravage de CD -> nécessité de tout reprendre du début en cas de problème car peu de ram dans les lecteurs de cd, donc forcément temps réel
+		\item carte son : immédiateté des sons : tout petit buffer à remplir progressivement (petit buffer à cause de la latence)
+		\item GSM : compression du son, par petit paquets
+		\item routeur réseau -> veut faire passer des paquets le plus vite possible d'un point à un autre
+	\end{itemize}
+\end{itemize}
+
+Système Temps Réel(STR) et Système Généraliste (SG)
+SG : 
+\begin{itemize}
+	\item Objectif : que ça aille le plus vite possible. On optimise le cas moyen
+\end{itemize}
+STR :
+\begin{itemize}
+	\item Objectif : respecter son échéance. On s'intéresse au pire cas, à combien de temps cela prendra dans le pire des cas. On optimise donc le pire cas.
+	\item Algorithmes : 
+	\begin{itemize}
+		\item Pas de Quicksort (O(n²) dans le pire cas); 
+		\item Jamais utilisé de cache : on considère que les calculs sont tous refaits à chaque fois
+		\item Pas de table de hachage : Dans le pire cas, tous les éléments de la table se retrouvent au même endroit
+		\item peu de switch(C) car algo linéaire -> le compilateur lit les cas les uns après les autres
+	\end{itemize}
+\end{itemize}
+
+Qu'est ce qui empêche un système d'être en temps réel?
+\begin{itemize}
+	\item Temps CPU
+	\item les entrées sorties
+	\item les interruptions et exceptions
+	\item les zones critiques (zones à verrous, forçant des processus à attendre si déjà accédées)
+\end{itemize}
+
+Au démarage, le processeur reçoit une interruption Reset -> l'adresse mémoire du Reset contenue dans le vecteur d'inerruption (liste d'adresse mémoire) est stocké dans le compteur ordinal(registre contenant l'@ de la prochaine instruction à éxécuter). Ce programme est le BIOS (Basic Input Output System). Il démarre un autre programme intermédiaire, généralement très court (GRUB, LILO), qui charge tout le système en mémoire et démarre son exécution.
+Le système ((Linux) Noyau + Initrd/Initramfs (système fichier contenant le nécessaire pour faire démarrer le système)) initialise la mémoire. Puis, il initialise le système de fichiers, la mémoire virtuelle (définie par le Memory Management Unit) et l'ordonanceur. Lancement de init, qui démarre la machine. Historiquement, init regarde un fichier nommé /etc/inittab et /etc/init.d/...  (/etc/rc2.d/... -> lien symboliques vers /etc/init.d/..). Lancement de udev qui gère les périphériques.
+
+
+Temps Réel Minimaliste
+(une intro pour montrer qu'on peut pas s'en sortir comme ça)
+
+POSIX 1003.1b norme se résumant à une bibliothèque de fonctions minimales (minimales minimales, genre du sémaphore, le pipe, des timer et des interruptions) pour écrire des applications. Cela représente quelques ko de code. Ce sont des fonctions avec un comportement déterministe.
+
+Boucle de scrutation : le programme regarde les entrées, fait les actions, et recommence.
+On veut pouvoir avoir des actions longues -> thread -> verrous car sections critiques.
+Faire le temps réel dans le gestionnaire d'interruption -> comme le fait le SE.
+
+On veut un système complet temps réel. -> faire des programmes les plus simples possibles
+
+
+\section{Système d'exploitation}
+\subsection{Interruption}
+\begin{itemize}
+	\item périphérique (DMA, données à traiter)
+	\item Défaut de page (MMU)
+	\item Real Time Clock, composant programmable envoyant des interruptions à des intervalles ou après des durées choisies. Ce composant est extrêment lent à programmer, donc on y touche au minimum
+	\item Exception (±∞, Nan, /ø)
+\end{itemize}
+
+\subsection{Que se passe t'il quand on reçoit une interruption du RTC?}
+\begin{enumerate}
+	\item Le processeur sauvegarde le compteur ordinal et le registre de status
+	\item le processus passe en mode root
+	\item On met l'@ du code indiqué dans le vecteur d'interruption dans le compteur ordinal
+	\item gestionnaire d'interruption : ordonnanceur
+	\item sauvegarde des registres que l'on va modifier (ceux qui contiennent des entiers)
+	\item Si on change de tâche 
+	\begin{enumerate}
+		\item Sauvegarde la sauvegarde du compteur ordinal et du registre de status dans la taille d'information, ainsi que les autres registres (+ les registres flotantes)
+		\item On récupère les mêmes informations du nouveau processus
+		\item reprogrammer le MMU
+	\end{enumerate}
+	\item On restaure les registres de la tâche que l'on reprend
+	\item On quitte l'interruption
+	\item le processus récupère le compteur ordinal et le registre de status
+	\item la nouvelle tâche reprend son éxécution
+\end{enumerate}
+
+\subsection{Ordonnancement}
+
+[Non Exitant] -création->  <-destruction- [Non Opérationnel] -lancement-> <-Arrêt- [Opérationnel]
+
+Tous les processus envoient une valeur à leur père quand ils se terminent. SI le père ne peut recevoir la réponse, ils deviennent des zombies en attendant.
+
+[en attente] --Réveil--> [Prêt]  --Allocation--> <--préemption-- [courant]
+     ^						    		    v
+     |-------------------------------blocage------------------------|
+
+
