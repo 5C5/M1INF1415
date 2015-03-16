@@ -1,0 +1,118 @@
+%Espace pour le cours du lundi 9/03
+
+\section{Intégration de données}
+
+
+\subsection{Introduction}
+
+\begin{itemize}
+\item Accès : requete d'interrogation principalement
+\item Uniforme : requête d'interrogation sur une seule BD(interface)
+\end{itemize}
+
+
+Quelques statistiques :
+\begin{itemize}
+\item 40\% des budgets informatiques sont dépensés en intégration
+\end{itemize}
+
+Domaine d'application :
+\begin{itemize}
+\item Entreprise Information Integration (EII) pour les entreprises
+\item Fusion de grdes BD scientifiques pour la générat°
+\item Le Web : millions de sources (mashups, comparateurs de prix)
+\end{itemize}
+
+\subsection{exemples}
+\begin{itemize}
+\item Exemple 1 : Rachat d'entreprise : besoin de détecter et supprimer des doublons (nettoyer des données)
+\item Exemple 2 : fusion d'entitées : recherche d'information exactes et complètes -> besoin de fusionner les informations de plusieurs entités.
+\item Exemple 3 : interrogation distribué
+\item Exemple 4 : mashup (WikipédiaVision)
+\end{itemize}
+
+\subsection{définistion}
+\begin{itemize}
+\item G le schéma global ou intégré
+\item S un ensemble de sources (de données)
+\item M un ensemble de mappings
+\end{itemize}
+
+On dispose de S, et de G, et on doit découvrir M.
+\vskip 1cm
+Ce qui rend l'intégration difficile, certaines caractéristiques de sources de données :
+\begin{itemize}
+\item La distribution des données
+\item Autonomie (chaque site est indépendant et responsable de ses sources de données, notemment concernant la conception(modèle et format de données, sémantiques sur les données, langage d'accès aux données) et l'éxécution des requêtes locales ou externes, comment le site répond aux requêtes (communication) et le disponibilité des sources
+\item hétérogénéité (langage, format, données-sémantiques, modèle, structurel)
+
+\end{itemize}
+
+Étapes d'une intégration 
+\begin{itemize}
+\item Compréhension des sources
+\item Découverte des correspondances (soit entre sources, soit entre sources et G)
+\item définition d'un Schéma global
+\item découverte des mappings
+\end{itemize}
+
+\subsection{découverte des correspondances)
+\texbf{correspondance} : lien sémantique entre deux concepts de sources de données différentes et se représentant par un triplet <c_1, c_2, R>, c_1 et c_2 les concepts et R la relation sémantique (équivalence, susbomption, ..)
+
+\vskip 1cm
+On découvre ces correspondances pour construire le schéma global et prépare la fusion de données, permet de réécrire les requêtes.
+
+\vskip 1cm
+La Découverte des correspondance se fait habituellement manuellement, mais peut se faire en utilisant des outils d'alignement basé sur des mesures de similarité). Validation par des experts du domaine si nécessaire.
+
+Outils :
+\begin{itemize}
+\item Pentaho, IBM information Integrator, Nimble)
+\item prototype de recherche
+\end{itemize}
+
+\vskip 1cm
+-> Processus couteux et rarement automatisé
+
+\subsection{Définition d'un schéma global}
+Un schéma global regroupe (tous) les concepts des schémas sources.
+
+Permet de stocker les données en respectant ce schéma, d'accéder aux données via ce schéma, et d'évaluer l'intersection entre les différentes sources
+à faire valider par des experts.
+\vskip 1cm
+Possibilité de reprendre le schéma de l'une des sources de données, soit parce qu'il couvre ts les concepts des autres sources, soit parce qu'il convient pour le stockage ou l'interrogation.
+
+
+\subsection{Mapping}
+Un mapping m = <c_1, c_2, R, f> est une correspondance qui spécifie en plus la fnct° de transformat° de donnée f entre les deux concepts. Permet de transformer les données sources dans le modèle du schéma global
+
+Permettent d'éviter la redondance et la cohésion des données, de résoudre des conflits
+
+\vskip 1cm
+
+Les mapping sont définis commes des vues intégrantes.
+
+\subsection{Architectures}
+architecture interopérables
+\begin{itemize}
+\item Système fédérés => systèmes pour un ptit nbre de source faiblement hétérogènes
+\item Entrepot de données => matérialisation des données de différentes sources via Extraction Transformation Loading
+\item Médiateur => intégration virtuelle
+\item Architecture P2P
+\end{itemize}
+
+\paragraph{Systèmes fédérés}
+Export d'un schéma commun aux différentes sources -> ensemble des schéma formant le schéma global. Processus minimum d'intégrat°, pas de matérialisat°, requetes envoyés aux sources, mais données faiblement hétérogènes.
+
+\paragraph{Entrepot de données}
+Définition du schéma global de l'entrepot, puis outil ETL. Permet des gros calculs, beaucoup utilisé dans le marketing.
+
+\paragraph{Système médiateur}
+Le médiateur décompose les requêtes qui passent dans des adaptateurs et recompose les réponses des différentes sources.
+
+Avantages : pas de matérialisat°, effort distribué, données à jour, mais inconvénients : performance dépendant des sources, réécriture des requêtes, et dépendance vis-à-vis de la disponibilité des requêtes.
+
+
+\subsection{conclusion}
+Intégration de donnée : fournit un accès uniforme à plusieurs sources hétérogènes stockées sur des sites autonomes.
+\end{Document}
