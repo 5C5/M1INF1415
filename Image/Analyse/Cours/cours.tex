@@ -1,0 +1,68 @@
+\documentclass[11pt]{cours}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[frenchb]{babel}
+
+
+\title{Analyse d'image}
+
+\begin{document}
+
+\maketitle
+
+\section{Outils Fondamentaux}
+\subsection{définitions}
+L'image peut-être plongé dans le plan dscret $Z^2$
+
+Distances spatiales utilisées :
+\begin{itemize}
+	\item $D_2 (P,Q) = ((x_P - x_Q)^2 + (y_P - y_Q)^2)^{1/2}$
+	\item $L_1 (P, Q) = |x_P - x_Q| + |y_P - y_Q|$
+	\item $l_\infty  (P, Q) = MAX(|x_P - x_Q|, |y_P - y_Q|)$
+\end{itemize}
+
+Deux points discrets P et Q sont dits 4-adjacents ssi $L_1(P, Q) = 1$.\\
+Deux points discrets sont dit 8-adjacents ssi $L_\infty (P, Q) = 1$.
+
+Voisinage :
+\begin{itemize}
+\item V : voisinage d'un pixel P au sens d'une distance D
+\item $V(P) = P' tel que  D(P, P') =< \epsilon}$. $\epsilon$ valeur donnée. En général $\epsilon = 1$.
+\item Si $\epsilon = 1$, $V_4$ <=> 4-connexité
+\item $V^4(P) = {P', P' \in I L_1(P, P') = d_4(P, P') =< 1}$. P $\in$ voisinage. C'est la connexité simple : il existe un recouvrement (aussi fin qu'il soit). La connexité par arc consiste en l'existence d'un arc permettant de passer de n'importe quel point à un autre.
+\end{itemize}
+
+\vskip 2cm
+Chemin discret : un chemin discret k-connex est une suite de points discrets ($P_0$, $P_1$, ..., $P_n$), $P_{i-1}$ et $P_i$ sont \texbf{k-adjacents}.\\
+
+Code de Freeman : la suite ($P_0$, $P_1$, ..., $P_n$) est représentée par ($P_0$, $d_0$, ..., $d_{n-1}).$ La valeur $d_i$ code le déplacement relatif de $P_i$ à $P_{i+1}$, avec cadrant(droite 0, haut 1, gauche 2, bas 1) ou octant(0 à 7)\\
+
+Ensemble k-connexe : ensemble de points discret E tels que quelque soit P et Q ∈ E, il existe un chemin discret k-connexes dans E d'extrémités P et Q). La composante connexe d'un ensemble de points discrets est l'ensemble connexe maximal (ou classe d'équivalence pour la relation d'adjacence) E tels que ....
+\vskip 1cm
+
+La convolution : \\
+Soit h : RxR -> R;\\
+Soit f une fonction donnée; f : RxR -> R;\\
+La convolution de f par h est définie : \\
+$(f * h)(x, y) = \int \int_R f(u, v)h(x-u, y - v) dudv$\\
+$(h * f)(x, y) = \int \int_R h(u,v)f(x - u, y -v ) du dv$\\
+$f * h(x, y) = h * f(x, y)$
+
+\vskip 2 cm
+Dans le cas discret :\\
+Soit I le support d'une image, \\
+h : [$m_1$, $m_2$] x[$n_1$, $n_2$] -> R\\
+
+La convolution de I par H est définie par :\\
+$(I * h)(x, y) = \sum^{u=m_2}_{u=m_1}\sum^{v=n_2}_{v=n_1} h(u, v)I(x- u, y-v)$
+
+h est appelé noyau de la convolution. On utilise également le terme de filtre ou masque.\\
+
+$h(u, v) = \frac{1}{5}\mat { 0 & 1 & 0\\ 1 & 1 & 1 \\ 0 & 1 & 0}$\\
+$I(x_0, y_0) = \frac{1}{5}(
+I(x_0 -1, y_0) + I(x_0, y_0+1) + I(x_0, y_0) + I(x_0 +1, y_0) + I(x_0, y_0 -1))$
+
+
+
+\vskip 2cm
+\end{document}
