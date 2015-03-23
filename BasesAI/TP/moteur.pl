@@ -59,3 +59,4 @@ saturer(X):-satisfait(X).
 
 terminal(X):- clause(regle(_), (si(L), alors(_))), not(member(X, L)).
 observable(X):-clause(regle(_), (si(_), alors(L))), not(member(X, L)).
+
