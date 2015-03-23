@@ -57,7 +57,7 @@ Ce qui rend l'intégration difficile, certaines caractéristiques de sources de 
 \end{itemize}
 
 \subsection{découverte des correspondances)
-\texbf{correspondance} : lien sémantique entre deux concepts de sources de données différentes et se représentant par un triplet <c_1, c_2, R>, c_1 et c_2 les concepts et R la relation sémantique (équivalence, susbomption, ..)
+\texbf{correspondance} : lien sémantique entre deux concepts de sources de données différentes et se représentant par un triplet <$c_1, c_2, R$>, $c_1$ et $c_2$ les concepts et R la relation sémantique (équivalence, susbomption, ..)
 
 \vskip 1cm
 On découvre ces correspondances pour construire le schéma global et prépare la fusion de données, permet de réécrire les requêtes.
@@ -84,7 +84,7 @@ Possibilité de reprendre le schéma de l'une des sources de données, soit parc
 
 
 \subsection{Mapping}
-Un mapping m = <c_1, c_2, R, f> est une correspondance qui spécifie en plus la fnct° de transformat° de donnée f entre les deux concepts. Permet de transformer les données sources dans le modèle du schéma global
+Un mapping m = $<c_1$, $c_2$, R, f> est, l'intersection entre deux objets existe-t- une correspondance qui spécifie en plus la fnct° de transformat° de donnée f entre les deux concepts. Permet de transformer les données sources dans le modèle du schéma global
 
 Permettent d'éviter la redondance et la cohésion des données, de résoudre des conflits
 
@@ -115,4 +115,56 @@ Avantages : pas de matérialisat°, effort distribué, données à jour, mais in
 
 \subsection{conclusion}
 Intégration de donnée : fournit un accès uniforme à plusieurs sources hétérogènes stockées sur des sites autonomes.
-\end{Document}
+\end{Document}, l'intersection entre deux objets existe-t-, l'intersection entre deux objets existe-t-
+
+
+\newpage
+
+\section{Évaluation de requêtes réparties}
+
+[...]
+
+Fragmentation des requêtes
+\begin{itemize}
+	\item Construction du plan d'éxécution global
+\end{itemize}
+
+[...]
+
+Réduction de fragmentation verticale : règle : éléminer les accès au relations de bases qui n'ont pas d'attributs utiles pour le résultat final. Cela permet d'éviter des jointures inter-sites
+\vskip 1cm
+
+Réductions pour les fragmentations horizontales dérivées : Règle : distribuer les jointures par rapport aux unions et appliquer les réductions pour la fragmentation horizontale
+
+\vskip 1cm
+[...]
+\vskip 1cm
+Modèle de coup \\
+Estimation d'un cout => fonction de cout.\\
+cout total : coût I/O + coût CPU
+coût CPU négligeable car << coût I/O
+
+Parcours dans l'espace de recherche (des plans d'éxécutions)
+
+Espace de recherche : plan équivalents d'une requête
+\vskip 1cm
+[...]
+\vskip 1cm
+
+Evaluation d'un plan d'éxécution en réparti
+-> modèle de cout réparti : 
+\begin{itemize}
+	\item  la fonction de cout doit, en plus des entrées sorties, considérer le cout induit par les msg échangés et de transfrt des données(TrD)\\
+		cout total : cout I/O plus cout CPU + cout MSG + cout TrD
+	\item on peut négliger les cout CPU et MSG
+\end{itemize}
+
+statistiques sur les relations :
+\begin{itemize}
+	\item cardinalité : card(R)
+	\item largeur
+	\item [...]
+\end{itemize}
+
+Statistique sur les opérateurs : facteur de sélectivité : \\
+Besoin de savoir quelle quantité d'opération peut sortir d'une jointure, se faisant à tel niveau d'un plan d'execution.
