@@ -1,0 +1,66 @@
+\documentclass[11pt]{cours}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[frenchb]{babel}
+
+
+\title{Synthèse d'image}
+
+\begin{document}
+\maketitle
+
+\section{Modèle}
+Modélisation : tte méthode permettant de réprésenter un objet dans le cadre 3D et de le manipuler.
+Un modèle, c'est :
+
+\begin{itemize}
+	\item Un ensemble de données, en deux type
+	\begin{itemize}
+		\item soit des données pour décrire la surface (2D). Les modèles surfaciques sont adaptés à la visualisation temps réel, car les cartes graphiques actuelles en sont capables
+			\item soit des données pour décrire le volume (3D).
+	\end{itemize}
+	\item les algo de manipulation qui vont avec : 
+	\begin{itemize}
+		\item Les requêtes élémentaires : ($pt \in O$?, calculer l'intersection entre une droite $\delta$ et un objet $\sigma$, ...
+		\item Les ensembles : l'intersection entre deux objets existe-t-elle?, déformation, animation...
+		\item conversion. Comme certaines opérations sont plus faciles avec certains modèles et beaucoup plus dur avec d'autres, il est nécessaire de pouvoir convertir les données d'un modèle à un autre.
+	\end{itemize}
+\end{itemize}
+
+\section{modèle surfacique}
+
+\begin{itemize}
+	
+	\item Surfaces paramétrés : $S = {p(u, v)  \quad (u, v) \in \omega \include RxR \\ p(u, v) : \omega  -> R^3\\ (u, v) -> p(u, v)$\\ On travaille avec des pts de contrôle\\
+	exemples: 
+	\begin{itemize}
+		\item $p(u, v) = \mat{ u \\ v \\ 0}$
+	\end{itemize}
+	Souvent, on va travailler avec des $\omega$ simples $[O, 1]^2$ et p(u, v) simple ($R_n[u, v]$\\ On définit des morceaux (patchs) de surfaces 3D. \\ Utilisation de polynômes\\
+	Famille de patches: Bézier, Splines, Coons...\\
+	Ce sont des surfaces ayant de bonnes propriétés (polynomiales, donc contrôles de beaucoup de propriétes). Mais le problème vient du raccord entre plusieurs morceaux (préservation de continuité -> contraintes venant de quatres sources à satisfaire -> le degré du polynôme augmente pour absorber les contraintes -> on peut passer de degré 3 et 4 à des degrés 24.\\
+	Conversion d'une surface paramétré en un ensemble de triangle (maillage).
+	
+	\item Surfaces de subdivision : -> Aller lire ce que sont les surfaces de subdivision -> ultra utilisée dans l'industrie graphique, notemment animation. Pas de polynome, mais analyse spectrale. Passage d'un contrôle grossier à une surface lisse par un processus de subdivision. Gueri's Game Youtube. Subdivision : chaque triangle, à chaque itération, est coupé en quatre triangle, avec un raffinement récursif.
+
+	\item Maillaige : Un maillage est constituée de deux types de données :
+		\begin{itemize}
+			\item des données géométriques, qui permettent le déplacement
+			\item des données topologiques (sommets V, arêtes E, faces F, liés les un aux autres). Elles permettent de savoir qui est connecté à qui, ce qui est utile quand on change de topologie, c-a-d quand on change le nbre d'arete, de sommet ou de face. 
+		\end{itemize}
+		Modèle eulérien  : Relation d'Euler = $V+ F - E = 2$\\ Les faces peuvent être n'importent quel type (triangle, carré, etc).\\
+		Structure minimale pour représenter un maillaige : 
+		\begin{itemize}
+			\item Une structure pour stocker la géométrie : un tableau (QVector<Vector>)
+			\item Une structure pour la topo minimale : un tableau (QVector<int> tcom) pour stocker des triplets, contenant les indices des points dans le tableau de la géométrie.
+		\end{itemize}
+		$\forall$ opération de mvmt solide (trslat°, rotat°, ..) => géom parcours\\
+		L'affichage est un parcours de la topologie (avec un parcours de la géométrie indexée par la topologie)\\
+		Lorsqu'il y a une déformation de maillage (mvmt, par exemple), on surmaille (on rajoute un nmbre de pts) à l'avance la zone destinée à une animation non solide.\\
+		Pour gérer des maillages aux éléments vairables, on stocke la somme du nbre de point par mesh dans un autre tableau.\\
+		On a souvent besoin d'info supplémentaire : la normale au sommet (pour chaque sommet), des textures, ...
+		Pour cela, soit on fait des tableaux supplémentaires de données, soit on entrelace les données.\\ Souvent, on aura besoin de normales au sommet d'un maillage. La normale à un triangle abc : $ n = \frac{(b-a)\^(c-a)}{(b-a)\^(c-a)}$(on redivise par lui-même pour avoir un vecteur unitaire). tous les calculs d'illuminations prenent en compte la normale aux facettes.\\
+		
+\end{itemize}
+
+\end{document}
