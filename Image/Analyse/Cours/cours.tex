@@ -58,11 +58,42 @@ $(I * h)(x, y) = \sum^{u=m_2}_{u=m_1}\sum^{v=n_2}_{v=n_1} h(u, v)I(x- u, y-v)$
 
 h est appelé noyau de la convolution. On utilise également le terme de filtre ou masque.\\
 
+
+exemple :
 $h(u, v) = \frac{1}{5}\mat { 0 & 1 & 0\\ 1 & 1 & 1 \\ 0 & 1 & 0}$\\
 $I(x_0, y_0) = \frac{1}{5}(
 I(x_0 -1, y_0) + I(x_0, y_0+1) + I(x_0, y_0) + I(x_0 +1, y_0) + I(x_0, y_0 -1))$
 
+Dans le cas continu, h est continue {+général que la continuité}
 
+support de $h : [-l, l] : h(x) = 0$ si $x \in [-l, l]$
+
+\vskip 1cm
+
+Si on est dans le domaine discret :\\
+si h et a support fini -> matrice finie(l'évaluation numérique de h): matrice centrée sur un point'$x_0$, $y_0$.\\
+On ne peut pas pas appliquer la convolution sur les points des bords : pas de voisinnage.
+
+
+Quelques propriétés de la convolution :
+\begin{itemize}
+	\item associativité : $f * h * g =(f*h) *g$
+	\item commutativité : $f* h = h * f$
+	\item dist de +/*
+	\item dérivabilité : $(f *h)' = f * h' = f' * h$
+\end{itemize}
+
+\newpage
+
+\section{Traitements à base d'histogramme}
+
+Histogramme : outil de base pour l'étude des capteurs ou de la dynamique d'une scène, il est utilisé par divers opérateurs d'analyse. Permet de voir comment la charge, la dynamique se réparti dans une scène.\\
+
+La manipulation d'un histogramme permmet de changer l'apparence d'une image, de catégoriser des éléments.\\
+
+L'histogramme d'une image réprésente la répartition des pixels en fonctio de leurs valeurs. Il fournit diverses informations (statistiques, , d'ordre, la répartition de la dynamique).\\
+
+H(X) donne le nbre d'élément dont la valeur de la caractéristique est égale à X
 
 \vskip 2cm
 \end{document}
