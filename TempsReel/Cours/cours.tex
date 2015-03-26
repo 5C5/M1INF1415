@@ -1,0 +1,241 @@
+\documentclass{article}
+
+\title{Cours de Système en temps réel\\(enrichie des commentaires du prof)}
+
+\begin{document}
+
+\section{notions :}
+	\begin{itemize}
+	\item QoS (Qualité de Service)
+	\item Temps réel ≠ rapide
+	\item Échéance : moment ou le résultat doit avoir été calculé
+	\item Temps réel dur (Hard real time) : on respecte toutes les échéances.
+	\item Temps réel lache (soft real time) : on peut rater execptionnellement des échéances
+	\item Déterminisme : on sait à l'avance combien de temps au maximum cela peut prendre
+	\item Nécessaire : quand on a des actionneurs et capteurs
+	\item exemple de temp réel
+	\begin{itemize}: 
+		\item gravage de CD -> nécessité de tout reprendre du début en cas de problème car peu de ram dans les lecteurs de cd, donc forcément temps réel
+		\item carte son : immédiateté des sons : tout petit buffer à remplir progressivement (petit buffer à cause de la latence)
+		\item GSM : compression du son, par petit paquets
+		\item routeur réseau -> veut faire passer des paquets le plus vite possible d'un point à un autre
+	\end{itemize}
+\end{itemize}
+
+Système Temps Réel(STR) et Système Généraliste (SG)
+SG : 
+\begin{itemize}
+	\item Objectif : que ça aille le plus vite possible. On optimise le cas moyen
+\end{itemize}
+STR :
+\begin{itemize}
+	\item Objectif : respecter son échéance. On s'intéresse au pire cas, à combien de temps cela prendra dans le pire des cas. On optimise donc le pire cas.
+	\item Algorithmes : 
+	\begin{itemize}
+		\item Pas de Quicksort (O(n²) dans le pire cas); 
+		\item Jamais utiliser de cache : on considère que les calculs sont tous refaits à chaque fois
+		\item Pas de table de hachage : Dans le pire cas, tous les éléments de la table se retrouvent au même endroit
+		\item peu de switch(C) car algo linéaire -> le compilateur lit les cas les uns après les autres
+	\end{itemize}
+\end{itemize}
+
+Qu'est ce qui empêche un système d'être en temps réel?
+\begin{itemize}
+	\item Temps CPU
+	\item les entrées sorties
+	\item les interruptions et exceptions
+	\item les zones critiques (zones à verrous, forçant des processus à attendre si déjà accédées)
+\end{itemize}
+
+Au démarage, le processeur reçoit une interruption Reset -> l'adresse mémoire du Reset contenue dans le vecteur d'inerruption (liste d'adresse mémoire) est stocké dans le compteur ordinal(registre contenant l'@ de la prochaine instruction à éxécuter). Ce programme est le BIOS (Basic Input Output System). Il démarre un autre programme intermédiaire, généralement très court (GRUB, LILO), qui charge tout le système en mémoire et démarre son exécution.
+Le système ((Linux) Noyau + Initrd/Initramfs (système fichier contenant le nécessaire pour faire démarrer le système)) initialise la mémoire. Puis, il initialise le système de fichiers, la mémoire virtuelle (définie par le Memory Management Unit) et l'ordonanceur. Lancement de init, qui démarre la machine. Historiquement, init regarde un fichier nommé /etc/inittab et /etc/init.d/...  (/etc/rc2.d/... -> lien symboliques vers /etc/init.d/..). Lancement de udev qui gère les périphériques.
+
+
+Temps Réel Minimaliste
+(une intro pour montrer qu'on peut pas s'en sortir comme ça)
+
+POSIX 1003.1b norme se résumant à une bibliothèque de fonctions minimales (minimales minimales, genre du sémaphore, le pipe, des timer et des interruptions) pour écrire des applications. Cela représente quelques ko de code. Ce sont des fonctions avec un comportement déterministe.
+
+Boucle de scrutation : le programme regarde les entrées, fait les actions, et recommence.
+On veut pouvoir avoir des actions longues -> thread -> verrous car sections critiques.
+Faire le temps réel dans le gestionnaire d'interruption -> comme le fait le SE.
+
+On veut un système complet temps réel. -> faire des programmes les plus simples possibles
+
+
+\section{Système d'exploitation}
+\subsection{Interruption}
+\begin{itemize}
+	\item périphérique (DMA, données à traiter). Tous les dialogues avec des périphériques se font via des zones mémoires.
+	\item Défaut de page (MMU)
+	\item Real Time Clock, composant programmable envoyant des interruptions à des intervalles ou après des durées choisies. Ce composant est extrêment lent à programmer, donc on y touche au minimum
+	\item Exception (±∞, Nan, /ø)
+\end{itemize}
+
+\subsection{Que se passe t'il quand on reçoit une interruption du RTC?}
+Une interruption déroute le cpu.
+\begin{enumerate}
+	\item Le processeur sauvegarde le compteur ordinal et le registre de status
+	\item le processus passe en mode root
+	\item On met l'@ du code indiqué dans le vecteur d'interruption dans le compteur ordinal
+	\item gestionnaire d'interruption : ordonnanceur
+	\item sauvegarde des registres que l'on va modifier (ceux qui contiennent des entiers)
+	\item Si on change de tâche 
+	\begin{enumerate}
+		\item Sauvegarde la sauvegarde du compteur ordinal et du registre de status dans la taille d'information, ainsi que les autres registres (+ les registres flotantes)
+		\item On récupère les mêmes informations du nouveau processusCours de Système en temps réel(enrichie des commentaires du prof)
+	\end{enumerate}
+\end{enumerate}
+
+
+\section{notions :}
+	\begin{itemize}
+	\item QoS (Qualité de Service)
+	\item Temps réel ≠ rapide
+	\item Échéance : moment ou le résultat doit avoir été calculé
+	\item Temps réel dur (Hard real time) : on respecte toutes les échéances.
+	\item Temps réel lache (soft real time) : on peut rater execptionnellement des échéances
+	\item Déterminisme : on sait à l'avance combien de temps au maximum cela peut prendre
+	\item Nécessaire : quand on a des actionneurs et capteurs
+	\item exemple de temp réel
+	\begin{itemize}: 
+		\item gravage de CD -> nécessité de tout reprendre du début en cas de problème car peu de ram dans les lecteurs de cd, donc forcément temps réel
+		\item carte son : immédiateté des sons : tout petit buffer à remplir progressivement (petit buffer à cause de la latence)
+		\item GSM : compression du son, par petit paquets
+		\item routeur réseau -> veut faire passer des paquets le plus vite possible d'un point à un autre
+	\end{itemize}
+\end{itemize}
+
+Système Temps Réel(STR) et Système Généraliste (SG)
+SG : 
+\begin{itemize}
+	\item Objectif : que ça aille le plus vite possible. On optimise le cas moyen
+\end{itemize}
+STR :
+\begin{itemize}
+	\item Objectif : respecter son échéance. On s'intéresse au pire cas, à combien de temps cela prendra dans le pire des cas. On optimise donc le pire cas.
+	\item Algorithmes : 
+	\begin{itemize}
+		\item Pas de Quicksort (O(n²) dans le pire cas); 
+		\item Jamais utiliser de cache : on considère que les calculs sont tous refaits à chaque fois
+		\item Pas de table de hachage : Dans le pire cas, tous les éléments de la table se retrouvent au même endroit (En donnant des valeurs qui auront les mêmes clés, il est possible de faire un déni de service)
+		\item peu de switch(C) car algo linéaire -> le compilateur lit les cas les uns après les autres
+	\end{itemize}
+\end{itemize}
+
+Qu'est ce qui empêche un système d'être en temps réel?
+\begin{itemize}
+	\item Temps CPU
+	\item les entrées sorties
+	\item les interruptions et exceptions
+	\item les zones critiques (zones à verrous, forçant des processus à attendre si déjà accédées)
+\end{itemize}
+
+Au démarage, le processeur reçoit une interruption Reset -> l'adresse mémoire du Reset contenue dans le vecteur d'inerruption (liste d'adresse mémoire) est stocké dans le compteur ordinal(registre contenant l'@ de la prochaine instruction à éxécuter). Ce programme est le BIOS (Basic Input Output System). Il démarre un autre programme intermédiaire, généralement très court (GRUB, LILO), qui charge tout le système en mémoire et démarre son exécution.
+Le système ((Linux) Noyau + Initrd/Initramfs (système de fichier contenant le nécessaire pour faire démarrer le système)) initialise la mémoire. Puis, il initialise le système de fichiers, la mémoire virtuelle (définie par le Memory Management Unit) et l'ordonanceur. Lancement de init, qui démarre la machine. Historiquement, init regarde un fichier nommé /etc/inittab et /etc/init.d/...  (/etc/rc2.d/... -> lien symboliques vers /etc/init.d/..). Lancement de udev qui gère les périphériques.
+
+reprogrammer le MMU
+
+\begin{enumerate}
+	\item On restaure les registres de la tâche que l'on reprend
+	\item On quitte l'interruption
+	\item le processus récupère le compteur ordinal et le registre de status
+	\item la nouvelle tâche reprend son éxécution
+\end{enumerate}
+
+\subsection{Ordonnancement}
+
+\[Non Exitant\] -création->  <-destruction- \[Non Opérationnel\] -lancement-> <-Arrêt- \[Opérationnel\]
+
+Tous les processus envoient une valeur à leur père quand ils se terminent. SI le père ne peut recevoir la réponse, ils deviennent des zombies en attendant.
+
+\[en attente\] --Réveil--> \[Prêt\]  --Allocation--> <--préemption-- \[courant\]
+     \^						    		    v
+    \|-------------------------------blocage------------------------\|
+
+}
+
+
+\section{Tâches}
+Définies par un PID. Toutes les taches ont un père, sauf \textit{init}.\\ Une tâche ne peut écrire dans la mémoire d'une autre tâche -> mémoire séparées\\ 3 zones mémoires :
+\begin{itemize}
+	\item Code (mémoire exécutable. Le MMU dit si une zone mémoire peut être lue, écrite ou éxécutée)
+	\item Pile
+	\item données
+\end{itemize}
+
+La pile (fifo) est différente du tas (utilisé pour malloc et free, de type lifo).\\ ulimit permet de limiter pour un processus la taille mémoire allouée, le temps d'éxécution, la taille des entrées sorties.\\
+Mémoire verrouillée (sticky bit) Si on veut faire du temps réel, on met le bit t pour qu'un processus ne quitte jamais la mémoire centrale :\\ rwxr\_xrr\_x\\rwsr\_sr\_t\\
+-> chmod 1755 <fichier>
+
+Imprédicabilité de malloc (aucune idée du temps que ça met)
+
+cannaux de communication : Inter Processus Communication, permettant d'utiliser la mémoire partagée, les verrous, les messages. \\Les IPCs ont une API pas terrible. (ne jamais faire kill -9, car les ressources utilisées ne seront pas libérées).\\
+
+La liste des fichier ouverts : File Descriptor -> stockée dans la table des processus coté kernel.
+
+Droit d'un processus : UID/GID. EUID/EGID -> Droits effectifs
+
+Groupes d'éxécutions : nohup déconnecte l'entrée/la sortie standard/d'erreur. Un fichier peut être détruit, mais continuer à exister s'il n'a pas été fermé.\\
+
+Vue personnelle des systèmes de fichiers : originalement destiné à la racine  : chroot <chemin> définit chemin comme la racine.
+
+Inconvénients des processus : lents à démarrer, consommant des ressources. Solution : utilisation des threads (processus légers). Les threads d'un processus partagent tout, sauf la pile. Ça consome beaucoup moins de ressources. L'inconvénient des threads, c'est qu'il n'y a pas de protection mémoire, et qu'on a besoin de section critique partout. Grosso modo, ne pas utiliser de thread. C'est pas la bonne solution en général. Les threads sont un perte de temps -> maximum deux threads par coeur du processeur.\\
+
+Le multi-tâche n'est pas forcément gagnant.
+
+Ordonnanceur : Hors-ligne(décidé à l'avance)  ou en-ligne\\ Préemptif : l'ordonnanceur peut prendre la main et choisir un processus à éxécuter. Non-préemptif : pas d'interruption d'une tâche en cours.
+
+Type : 
+\begin{itemize}
+	\item PAPS : premier arrivé, premier servi
+	\item tourniquet/round robin : chacun son tour
+	\item Priorité : les processus ont une priorité de départ qui évoluent en fonction de leur utilisation.
+\end{itemize}
+
+Un ordonnanceur premptif utile des interruptions. Pendant longtemp, la fréquence de l'ordonnanceur était de 100 Hz.
+
+Exclusion mutuelle : \\
+c++ \\
+\begin{verbatim}
+i++
+LOAD A
+INC 	=> INC A
+STORE A
+\end{verbatim}
+
+Pour un i++, on ne déclare pas int i, mais volatile int i;\\
+Cela dit au compilateur de ne pas garder la variables dans ls registres\\
+Il existe une instruction pour bloquer le bus.\\
+
+Comment faire les sections critiques : en mono-processeur, arrêter les interruptions, demander à l'ordonnanceur de ne pas nous suspendre\\
+Multiprocesseur : il faut un verrou.\\Le verrou le plus simple : spinlock avec test and set. Cela marche pour des ttes petites sections critiques (minimales en temps cpu).\\Dans le cas long, il faut un dialogue avec l'ordonnanceur (et endormir le processus)\\
+Dans Linux depuis quelques années, il existe des verrous spéciaux.
+
+Test and set
+\begin{verbatim}
+boolean test_and_out(volatile int &valeur){
+	if(*valeur)
+		return 1;
+	*valeur = 1;
+	return 0;
+}
+\end{verbatim}
+
+Baker's algorithm (Leslie Lamport)
+
+Spin Lock :\\
+\begin{verbatim}
+void spinlock(Spinlock sl){
+	while(test_and_out (& sl -> valeur)){
+		termine_quantumdetemps();
+	}
+}
+
+unlock sl -> valeur = 0
+\end{verbatim}
+
+Mutex (section longue)=> Il doit gérer l'endormissement et les files d'attentes.\\
+La difficulté d'implémentation, très pénible, est qu'on veut être réveillé lorsque le mutex est libéré. Attention : il ne faut pas être réveillé avant se s'endormir
+
+\end{document}
