@@ -238,4 +238,115 @@ unlock sl -> valeur = 0
 Mutex (section longue)=> Il doit gérer l'endormissement et les files d'attentes.\\
 La difficulté d'implémentation, très pénible, est qu'on veut être réveillé lorsque le mutex est libéré. Attention : il ne faut pas être réveillé avant se s'endormir
 
+
+\vskip 3cm
+Spinlock : attente active, on attend de pouvoir prendre le verrou.\\
+
+Cache Browsing : 
+\begin{enumerate}
+	\item Un processus cherche à accéder à une zone mémoire, constituée de [verrou|données] ou un autre processus met à jour les données. La zone de 64 octets mis en cache. 
+	\item la vitesse d'éxécution du premier processus va mettre dix fois plus de temps.
+\end{enumerate}
+
+\subsection{Mutex vs Semaphore}
+Dead lock : On prends deux tâches A et B. La tache B verrouille X(Lock(X))
+\begin{verbatim}
+Tache A		Tache B
+	|		   Lock(X)
+	|			|
+	Lock(Y)		|
+	|		   Lock(Y)
+	Lock(X)
+\end{verbatim}
+
+Verrouiller et déverrouiller toujours dans le même ordre.
+Valgrind a des outils utiles.\\
+
+Inversion de priorité\\
+On peut se passer de thread
+
+\vskip 1cm
+RCU : Read Copy Update :\\
+"petite" structure de donnée
+
+Celui qui modifie :\\
+Il alloue une nouvelle zone mémoire\\
+Il recopie la structure de données dedans(on stocke la date à laquelle on fait le changement \\
+Il la met à jour\\
+Libération de la mémoire : tt les threads : ...  : je n'ai plus de référence -> le thead qui libère compare les dates\\
+
+\vskip 1cm
+Lecteur/écrivain:\\
+Plusieurs lecteurs, un seul rédacteur.\\
+\begin{verbatim}
+void lock_ecrivain(mutexPC m){
+	lock(m->ecrivain_en_attente);
+	lock(m -> ecrivain);
+	unlock(m->ecrivain_en_attente),
+}
+
+void unlock(MutexPC m){
+	unlock(m->ecrivain);
+
+void lock_lecteur(MutexPC m){
+	lock(m->lecteur);
+	lock(m->ecrivain_en_attente);
+	m->nb_lecteur++;
+	if(m-> nb_lecteur == 1)
+		lock(m->ecrivain);
+	unlock(m->lecteur)
+}
+
+void unlock_lecteur(MutexPC m){
+	lock(m->lecteur)
+	m->nb_lecteur--
+	if(m->nb_lecteur == 0)
+		unlock(m->ecrivain);
+	unlock(m->lecteur);
+	unlock(m->ecrivain_en_attente);
+}
+\end{verbatim}
+
+\vskip 1cm
+Mémoire transcationnelle :\\
+\begin{itemize}
+	\item Début de transcation
+	\item Lire des infos
+	\item Ecrire des infos(tout est tracé
+	\item Fin de transaction. Si une des donnée lue a été modifiées, on efface tt et on recommence
+\end{itemize}
+
+Inconvénients : coute très cher en CPU si fait de manière logicielle : (existe en Hard(CPU) mais la transaction est de taille limitée)\\
+
+\vskip 1cm
+Synchronisation :\\
+Une tâche envoie un signal pour libérer les autres tâches.\\
+\begin{verbatim}
+void cmd_wait(Cmd c, Mutex m){
+	lock(c->mutex);
+	ajouter(c->liste, tache_courante());
+	unlock(c->mutex);
+	unlock(m);
+	sleep();
+	lock(m);
+}
+\end{verbatim}
+\vskip 1cm
+
+Signaux :\\
+Historiquement A\&T System V\\
+
+Inconvénients : 
+\begin{itemize}
+	\item pas de file d'attente
+	\item pas de priorité
+	\item on ne connait pas l'auteur du signal
+	\item on ne connait pas le numéro de signal
+\end{itemize}
+
+\vskip 1cm
+BSD -> sigvec\\
+
+\newpage
+\section{}
 \end{document}
