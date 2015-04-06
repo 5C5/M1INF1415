@@ -1,0 +1,48 @@
+\begin{document}
+Correction du Cylindre : \\
+n points sur le cercle du haut, n pts sur le cercle du bas : 2n + 1 pts\\
+Indice de a : 2n, indice de b : 2n+ 1\\
+
+Utilisation d'une base orthonormé i, j et k, avec :\\
+$k = b-a/||b - a||$\\
+$i = \frac{k}{(orthogonal à k)}$\\
+$j = k ∧ i$
+
+$P_{i \in [0, n-1]} = a + r(cos\frac{2\pi i}{n} i + sin(\frac{2\pi i}{n}j))$\\
+et ainsi de suite pour remplir la geométrie.\\
+
+La topologie :\\
+$i \in[0, n-1]$ la face inférieure : [$(i+1)\%n$|i | 2n]\\
+$i \in[0, n-1]$ la face supérieure : [n + i| $n +(i+1)\%n$| 2n +1]\\
+
+Pour les faces latérales :\\
+[i| $(i+1)\%n$| $n + (i+1)\%n$]\\
+[i| $n+ (i+1)\%n$ | $n + i$]\\
+
+
+Remarque :\\
+On a 4n Triangles et 2n +2 sommets. Si n $\approx$ 10 -> 40T\\
+et si n $\approx$ 20 -> 8OT\\
+Bien approximer les arrondis coute forcément cher!\\
+
+Modélisation :
+\begin{itemize}
+	\item Low Poly : nbre de triangle faible : domaine du temps réel extrêment contraint -> branche du domaine artistique consistant à représenter un obj avec le minimum de triangle -> Permet d'augmenter le nbre d'objet
+	\item High Poly
+\end{itemize}
+
+Remarque : \\
+La sphère est un bon exemple : 2n échantillons pour l'équateur, et 2n pour un méridien :\\
+$2n^2$ Sommets, et $\approx $ O($n^2$).
+
+TODO : \\
+1 page pdf avec shoot des maillages + et nom des f° membres associées. + les statistiques
+
+Exercice d'approfondissement : \\
+comment créer cette forme -> courbe $\gamma$, -> objet de révolution (extrusion). Pour simplifier, la courbe $\gamma$ équation polynomiale de degré faible (cubique spline) -> repère de Fresnet.
+
+Exercice d'approfondissement 2\\
+écrire un pro qui crée 1 temple grec à partir de deux points et d'une hauteur
+
+google Shader Toy
+\end{document}

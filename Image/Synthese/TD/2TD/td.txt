@@ -1,0 +1,10 @@
+TD2 :
+distance d'un point p à une droite \delta.
+
+distance d'un point p à un cercle
+
+distance d'un point à une droite :
+1. trouver équation (p- q(u)).q'(u)
+2. solve -> {u}
+3. {u_i} |_{u [u_- u_+]} U {u-, u+}} (on rajoute la borne de l'intervalle étudiée à la solution)
+4. min(p-q(u_i))^2

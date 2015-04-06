@@ -1,4 +1,4 @@
-\documentclass[11pt]{cours}
+\documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[frenchb]{babel}
@@ -62,5 +62,108 @@ Un modèle, c'est :
 		Pour cela, soit on fait des tableaux supplémentaires de données, soit on entrelace les données.\\ Souvent, on aura besoin de normales au sommet d'un maillage. La normale à un triangle abc : $ n = \frac{(b-a)\^(c-a)}{(b-a)\^(c-a)}$(on redivise par lui-même pour avoir un vecteur unitaire). tous les calculs d'illuminations prenent en compte la normale aux facettes.\\
 		
 \end{itemize}
+
+
+\newpage
+\section{Modèle surfacique}
+Modèles qui s'int au volummes, in/out (bool), type de matière(int).\\
+Exemple de modèle volumique :
+\begin{itemize}
+	\item Enumeration spatiales (voxels)
+	\item Constructive Solide Geometry
+	\item surfaces implictes -> nécessites beaucoup de boulot.
+\end{itemize}
+
+
+\subsection{Voxel}
+Un voxel est un cube 3D (pixel) qui contient des informations (bool in/out, int type\_mat, ...).\\
+Le modèle voxel, c'est du Lego (je cite).\\
+
+selon un abus de langage, un voxel, c'est une grille 3D (souvent régulière) : {une box 3D, int n(subdivision régulière de la boite), un tableau de données de taille $n^3$ représentant}.\\
+
+Remarque : tableau 1D pour stocker 3D : index = $i+ nj +n^2k$. $i= index \%n$. j =$((index - i)(n)\%n)$.
+
+Inconvénients : 
+\begin{itemize}
+	\item cout possiblement très élevé (O$(n^3)$).
+	\item données discrètes -> besoin de lisser
+\end{itemize}
+
+Avantages :
+\begin{itemize}
+	\item in/out immédiat
+	\item accès rapides aux datas
+	\item structure de données très pratiques en simulation
+\end{itemize}
+
+
+Soit $p \in R^3$, comment savoir dans quel cube voxel je suis?\\
+$\mat{u \\ v \\ w} = \mat{\frac{p_x - a_x}{b_x - a_x}\\ ....\\ ...} \in [0, 1]^3$\\
+$\matrix{i\\j\\k} = \matrix{E(u x n)\\ ...\\...}$.
+
+remarque : optimisation technique
+index $= i + nj + n^2k$ peut poser des problèmes d'optimisation. Car accèder à des voxels cote à cote selon i se fait avec un + 1 dans la mémoire, mais accéders à des vocels cote a cote selon j ou k se fait en + n. Et la mémoire n'aime pas. Donc il existe des techniques plus avancées pour gérer ce problème.
+
+-> E.Haine & T.Möller, \textit{Real time Rendering}, 3 eme édition, AK Peters.\\
+\textit{Fundamental of CG}, P. Shirley, A.K Petes.
+
+
+\subsection{CSG}
+définir un objet par un arbre de construction:
+\begin{itemize}
+	\item Noeuds : opérateur booléen (Union, intersection, différence)
+	\item Feuilles : primitives géométriques (celles pour lesquelles on peut determiner si on est dedans (volumme))
+\end{itemize}
+
+exemple : si on fait l'union d'un cylindre et d'un cube, on obtient une masse, et si on y enlève un cylindre couché, on obtient un marteau.\\
+
+On fait du complexe par assemblage simple.
+
+Requête fondamentale sur un mdoèle volumique : bool inside(pt) -> est-ce qu'un pt est à l'intérieur de mon modèle?
+
+exemple d'implémentation : \\
+\begin{verbatim}
+N::inside(p) = 0
+-> Sphère::inside(p)
+-> U::inside(p)
+\end{verbatim}
+Tout noeud doit savoir si un point est à l'intérieur :
+\begin{verbatim}
+class N {
+	public : bool inside(v) const = 0;
+}
+class S : public N{
+	protected :
+		V c;
+		d r;
+	public :
+		bool Inside(v) const;
+}
+class U : public N {
+	protected :
+		N *a;	//Data sous arbre
+		N *b;
+	public :
+		bool Inside(v) const;
+}
+
+bool S::Inside(p) const {
+	return (p-c)(p-c) < r?true:false;
+}
+
+bool U :: Inside(p) const {
+	return a->inside(P) || b->Inside(p);
+}
+\end{verbatim}
+
+\begin{itemize}
+	\item Cube : six tests
+	\item Sphère d(p, c)
+	\item Cylindre : d(p, $\delta$)
+	\item Tore : d(p, $C$)
+	\item Cone : complexe
+\end{itemize}
+
+Tester si je suis à l'intérieur d'un maillage est extrêment compliqué. Il faut que le maillage soit fermé, cohérent, et 2-variété (Manifold). On utilise le théorème de Jordan, en tirant une demi-droite partant du point. Si le nbre d'intersection avec le maillage est pair, le point est en dehors, sinon, il est dedans. Maillage::Inside(p) -> Triangle::Inside(p).
 
 \end{document}

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( Mesh)
+find_package( OpenCV REQUIRED )
+include_directories("/Locals/OpenCV-2.4.10/include")
+add_executable( Mesh td.cpp td.hpp)
+target_link_libraries( Mesh ${OpenCV_LIBS} )

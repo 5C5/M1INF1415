@@ -1,35 +1,47 @@
-namespace std;
-namespace CV;
 
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include "opencv2/features2d/features2d.hpp"
+#include "opencv2/nonfree/nonfree.hpp"
+#include "opencv2/nonfree/features2d.hpp"
 
-#include <QVector3D>
-#include <QVector2D>
+using namespace std;
+using namespace cv;
+
+#ifndef TD_HPP
+#define TD_HPP
+
 
 class Maillage {
 
-    Maillage::Maillage(const Vector<QVector3D> &nGeo, const Vector<int> &nTopo) : geom(nGeo), topo(nTopo) {}
 
 	protected :
-		Vector<V> geom;
-		Vector<Vector3D>
-        Vector<int> topo;
+        vector<Point3f> geom;
+        vector<int> topo;
 
     public:
-        Maillage();
-        ~Maillage();
+        Maillage(){};
+        Maillage(const vector<Point3f> &nGeo, const vector<int> &nTopo) : geom(nGeo), topo(nTopo) {};
+        ~Maillage(){};
+
         void zero();
-        void translate(const V &t);
-        void rotate(const Mat &m);
-        void cube(const V &a, const V &b);
-        void cylindre(const V &a, const V &B);
+        void translate(const Point3f&);
+        void rotate(const Mat&);
+        Maillage cube(const Point3f &, const Point3f &);
+        Maillage cylinder(const Point3f &, const Point3f &, float );
 
-        void loadFromOBJ(const QString&);
-        void writeIntoOBJ(const QString&);
+        void loadFromOBJ(const string&);
+        void writeIntoOBJ(const string&);
 
-        //void box(qreal, qreal, qreal);
-        void cone(const QVector3D&, qreal, const QVector3D&);
-        void cone(const QVector3D&, qreal, qreal);
-        void cylinder(const QVector3D&, qreal, qreal);
-        void sphere(const QVector3D&, qreal);
-        void torus(const QVector3D&, qreal, qreal);
-}
+        //void box(float, float, float);
+        void cone(const Point3f&, float, const Point3f&);
+        void cone(const Point3f&, float, float);
+        Maillage cylinder(const Point3f&, float, float);
+        void sphere(const Point3f&, float);
+        void torus(const Point3f&, float, float);
+};
+#endif

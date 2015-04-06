@@ -1,8 +1,8 @@
-\documentclass[11pt]{cours}
+\documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[frenchb]{babel}
-
+\usepackage{ansmath}
 
 \title{Analyse d'image}
 
@@ -96,4 +96,80 @@ L'histogramme d'une image réprésente la répartition des pixels en fonctio de 
 H(X) donne le nbre d'élément dont la valeur de la caractéristique est égale à X
 
 \vskip 2cm
+
+\section{}
+
+Egalisation d'histogrammes 
+
+\vskip 1cm
+
+Spécification d'histogramme : rendre la distribution d'intensité d'un distribution spécifiée à l'avance\\
+conservation des positions et sens des transistions avec une transformation F -> G croissante\\
+Distribution de référence = image ou région d'une image\\
+
+Filtrage spatial : lissage et réduction du bruit : transformation basée sur le voisinage (spatial) d'un point (x, y) sur la base d'opérateurs et de convolutions.\\
+On évalue et on modifie la valeur d'un point en fonction de celles de ses voisins : $F(x_0, y_0) = f * g(x_0, y_0)$ avec g le masque/noyau : répartition de valeurs de points. Il faut veiller à ce que la somme des valeurs des différents points soit égale à 1.\\
+
+Filtrage par convolution : multiplication dans le domaine fréquentiel -> convolution dans le domaine spatial\\
+
+Filtre de lissage obtient noyau de convolution symétrique et normalisé\\
+somme des coef = 1.
+
+
+\vskip 0.5cm
+Moyenne : $h(x, y) = \frac{1}{M}$ ou $h(x, y) = \frac{1}{\lambda^2}$
+
+M : nbre de pts du voisinage, ou $\lambda * \lambda$.
+\vslip 0.5cm
+Gaussienne : $h(x, y) = \frac{1}{2\pi\sigma^2}exp(\frac{-x^2 - y^2}{2\sigma})$
+
+\vskip 0.5cm
+Exponentielle : $h(x, y) = \frac{\gamma^2}{4}\exp(-\gamma(|x| + |y|))$\\
+
+\newpage
+\section{chapitre 2 : quelques méthodes}
+\subsection{segmentation}
+Def : partitionner l'image en zone homgènes selon un critère déterminé : couleur, texture, niveau de gris, indice...
+
+Il faut que l'union de ts les éléments retrouvés soit le recouvrement total de l'image. Deux zones contigues n'ont en commun que la frontière.\\
+Frontière d'une région 2D : La frontière d'une région 8-connexes (respectivement 4-connexes) R est l'ensemble des points de R dont au moins un des 4-voisins (respectivement 8-voisins) n'est pas élément de R => la frontière est composée de chemin 8-connexes(respectivement 4-connexes).\\
+
+global <---> local : le cerveau humain passe de l'un a l'autre sans arrêt.\\
+
+Plusieurs approches :
+\begin{itemize}
+	\item Approches glbales : on voit globalement comment découper l'image, via les statistiques (histogramme). \\Avantage : méthode très rapides\\
+		Inconvénients : Elles ignorent les informations de proximité
+	\item approches locales : (relaxation, méthodes markoviennes)
+\end{itemize}
+
+Méthodes itératives
+\begin{enumerate}
+	\item Initialisation
+	\item R. Production
+	\item Condition d'arrêt
+\end{enumerate}
+
+Région growing : difficulté d'estimer le nbre de région => initialisation. Méthode classique : 
+\begin{enumerate}
+	\item on sème des germes
+	\item on procède à l'agglomération/accroissement des points autour du germe(pixel(i, j) -> ensemble de pixels $R_i$ -> pts frontières). 
+	\item Un pt frontière devient germe. On obtient un ensemble d'îlot => Une région = plusieurs ilôts
+	\item fusion de sous-région (postulat : une région est maximale). On fusionne les régions adjacentes et semblables.\\
+		Csque (pré-requis )
+\end{enumerate}
+
+stratégie de pose de germes: pose aléatoire, en découpant l'image de façon équilibrée.
+Le critère d'arrêt de l'agglomération des points aux germes (frontière).\\
+un pt frontière est un point final ou point terminal ssi\\
+$\forall p \in $frontière R (aucun pt ne peut être ajouté)\\
+Ou deux régions se rencontrent.
+
+\vskip 1cm 
+
+
+\begin{itemize}
+	\item
+\end{itemize}
+
 \end{document}
