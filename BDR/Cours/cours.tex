@@ -168,3 +168,33 @@ statistiques sur les relations :
 
 Statistique sur les opérateurs : facteur de sélectivité : \\
 Besoin de savoir quelle quantité d'opération peut sortir d'une jointure, se faisant à tel niveau d'un plan d'execution.
+
+\section{Evaluation de requetes}
+
+Niveau physique : lecture et écriture disque.
+
+Définition :
+\begin{itemize}
+	\item Transaction : séquence d'action transformant la BDD d'un état cohérent vers un autre état cohérent : l'ensemble des contraintes d'intégrité sont respecté à la fin de la transaction.\\ Actions de lecture et d'écriture de données de différentes granularité
+	\item Atomicité : opérations entre le début et la fin d'une transaction forme une unité d'éxécution
+	\item Cohérence : chaque trsct° accès et retourne une BDD dans un état cohérent
+	\item isolat° le résultat d'un ensemble de trsct° concurentes et validées correspond à une éxécution successive des mêmes trsct° (les maj concurentes sont invisibles)
+	\item durabilité : les maj des transactions visibles validées persistent
+\end{itemize}
+
+\begin{itemize}
+	\item Éxécution : ordonnancement des opérations d'un ensemble de transacti° (on parle aussi d'histoire)
+	\item Éxécution en série : histoire où il n'y a pas d'entrelacement d'actions dans une transaction.
+	\item Éxécution sérialisable : \\
+		\begin{itemize}
+			\item opérations conflictuelles : deux opérat° sont en conflit si elles accèdent au même granule et qu'au moins l'une d'entre elle est une écriture
+			\item Éxécutions équivalentes : deux éxécutions h1 et H2 d'un ensemble de transact0 sont équivalentes (de conflit) si l'ordre des opérations de chaque transaction et l'ordre des opérations conflictuelles (validées) sond identiques dans H1 et H2.
+			\item Exécution sérialisable 
+		\end{itemize}
+
+\end{itemize}
+
+Résolution des inter blockages :\\
+Prévention : définir des critères de priorité de sorte à ce que le problème ne se pose pas. (estampillage des transactions les plus vieilles, ou des plus jeunes)
+
+\end{document}
