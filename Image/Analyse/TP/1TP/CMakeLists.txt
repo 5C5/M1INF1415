@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( Extraction)
+find_package( OpenCV REQUIRED )
+include_directories("/Locals/OpenCV-2.4.10/include")
+add_executable( Extraction extraction.cpp)
+target_link_libraries( Extraction ${OpenCV_LIBS} )
