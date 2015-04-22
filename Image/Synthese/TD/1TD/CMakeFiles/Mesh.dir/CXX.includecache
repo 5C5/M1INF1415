@@ -17,6 +17,8 @@ stdlib.h
 -
 stdio.h
 -
+math.h
+-
 opencv2/core/core.hpp
 -
 opencv2/imgproc/imgproc.hpp
