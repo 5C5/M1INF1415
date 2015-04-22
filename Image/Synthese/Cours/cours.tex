@@ -4,6 +4,8 @@
 \usepackage[frenchb]{babel}
 
 
+\def\R{\textrm{I\kern-0.21emR}}
+
 \title{Synthèse d'image}
 
 \begin{document}
@@ -166,4 +168,146 @@ bool U :: Inside(p) const {
 
 Tester si je suis à l'intérieur d'un maillage est extrêment compliqué. Il faut que le maillage soit fermé, cohérent, et 2-variété (Manifold). On utilise le théorème de Jordan, en tirant une demi-droite partant du point. Si le nbre d'intersection avec le maillage est pair, le point est en dehors, sinon, il est dedans. Maillage::Inside(p) -> Triangle::Inside(p).
 
-\end{document}
+\newpage
+\section{Texture}
+\subsection{Texture and (Shading ou illumination globale)}
+
+Texture : Carac de surface/volumme du matériau, lui donnant sa couleur propre.\\
+Illumination globale/Shading : interraction entre la lumière, les matériaux et l'oeil. -> Constitura le chap III
+
+Hypothèse : la couleur est représenté dans un système RougeVertBleu : un certain espace de couleur peut-être approximé par un triplet de valeur $ \in[0, 1]^3$. $[0, 0, 0]$ représente le noir, $[1, 1, 1]$ le blanc.\\
+
+Problème : \\
+être capable de définir la couleur $c(p) \forall p \in Obj$. Ce qui nous intéresse plus précisément, c'est la couleur des points à la surface de l'objet : $c(p) \forall p \in Surf(O)$ -> Texture surfacique. Il existe aussi la texture volumique.
+
+Évidement, les texture volumiques sont plus destinées aux modèles volumiques,  mais les textures surfacique peuvent être utilisés avec les deux modèles.\\
+
+Critère de comparaison de méthode de texture : \\
+\begin{itemize}
+	\item rapidité de calcul
+	\item mémoire nécessaire
+	\item réalisme -> critère subjective
+	\item facilité d'usage/de contrôle
+\end{itemize}
+
+\vskip 2cm
+\subsection{Placage de texture}
+Soit un modèle géométrique G (surface maillée). On cherche une correspondance entre tous les points de la surface (en 3D) et les points de ce que serait cette surface en 2D. On travail dans le domaine de la texture $\omega = [0, 1]^2$, qui contiendra une image de résolution n*n.\\
+Pour trouver la correspondance, on travail avec des coordonnées liés à chacun des triangles du modèle géométrique. On rajoute, en prenant par exemple un triangle abc, les coordonnées des points dans la texture -> $a, (u_a, v_a); b(u_b, v_b); c, (u_c, v_c)$.\\
+
+Pour un point p ($ \forall p \in G$, $p \in T_{(abc)} \in \omega$), soit $(\alpha _p, \Beta _p)$ les coordonnées barycentrique de p dans T. $q \in T \in \Theta$ avec les mêmes $(\alpha, \Beta)$.
+
+Problème : \\
+Coment découper la peau et la déplier ?
+
+\vskip 1cm
+Cas simples : formes géométriques élémentaire :\\
+\begin{itemize}
+	\item C'est simple pour un plan
+	\item Pour une sphère, on utilise les coordonnées polaires des points : $v = \frac{C + \frac{\pi}{2}}{\pi}$ et $v = \frac{\theta}{2\pi}$.\\
+\end{itemize}
+
+\vskip 1cm
+Cas réels : \\
+C'est fait à la main : dépliage des (u, v). Il existe des outils d'aide.
+
+Critique:\\
+\begin{itemize}
+	\item temps de calcul : temps réel, (GPU), le calcul des (u, v) est fait en amont (préprocessing)
+	\item coût mémoire : taille d'une image n*n -> coûteux, car $n \approx 1024$, soit 4 Mo
+	\item réalisme : Non applicable
+	\item contrôle : placement très précis -> bcp d'opérations à faire à la main pour être très précis
+\end{itemize}
+
+\subsection{Textures volumiques}
+c(p) va être une fonction math $\R^2 \rightarrow \R^4$\\ $p(x, y, z) \rightarrow (R(x, y, z), V(x, y, z), B(x, y, z), \alpha (x, y, z))$
+void Mesh::append(const Mesh & mToAppend) {
+
+Critique : \\
+\begin{itemize}
+	\item temps de calcul : plus long, mais désormais fait par le GPU Shader -> temps réel désormais
+	\item coût en mémoire : une fonction, donc une texture réprésente quelques ko.
+	\item réalisme : gros inconvénients : seules quelques textures se prêtent bien à leur éxécution sous la forme d'une fonction
+	\item contrôle extrêment difficile : les fonctions ont des paramètres, parfois beaucoup.
+\end{itemize}
+Elles marchent bien dans des "niches" ou les textures procédurales sont très efficaces -> un certain nombre de matériaux, comme la pierre, un certain nombre de métaux, le crépi, le bois, le béton, qui ont comme point commun d'avoir soit des processus aléatoires, ou au contraire des processus réguliers.
+
+\subsection{Bruit de Perlin}
+On a besoin de fonction qui vont "faire" de "l'aléatoire". Travaux de recherches dans les années 82 avec Ken Perlin (Récompensé).\\
+On a besoin de f° qui aille de $\R^3$, $\R^2$ ou $\R$ à $[0, 1]$, qui soient lissent et qui soient lisses et aléatoires.\\
+
+Idée : construire une fonction qui passera par des points $(k, f(k))$ ayant une bonne distribution aléatoire pour $f(k)$ et qui soit lisse. On veut une fonction faisant des montagnes russes, et qui soit continue et dérivable.
+
+Values Noise :
+
+Besoin : \\
+\begin{itemize}
+	\item distribution des valeurs aléatoires $(k, , f(k))$ \\
+		\begin{itemize}
+			\item fonction mathématiques
+			\item tables et permutations
+		\end{itemize}
+	\item lissage : droite de degré 3.
+\end{itemize}
+\vskip 1cm
+Gradient Noise :\\
+On se donne des valeurs aléatoires
+
+
+\vskip 1cm
+Le bruit sert de base à plein de combinaisons :
+\begin{itemize}
+	\item tâches de rouille sur du métal : \\
+		\begin{verbatim}
+		Color Rouille( Vector P){
+			double n = noise(p);
+			//Seuillage
+			if(n < 0.8) {
+				return Color::Metal;
+			}else{
+				return Color::Rouille;
+			}
+		}
+		\end{verbatim}
+	\item Bois avec irrégularités :\\
+		\begin{verbatim}
+		Color Bois(Point3f){
+			double d = sqrt(p*n*n + p*y*y);
+			return mix(Color::Sombre, Color::Clair, cos(d));
+		}
+		\end{verbatim}
+		pb : passer de quelque chose d'extrêment régulier à une forme iréégulière, avec de l'aléatoire. Ce qu'on souhaite faire, c'est de temps en temps, faire une déformation de manière aléatoire : on met un point p dans un point p'.\\
+		\begin{verbatim}
+			Color BoisIrreg (Point3f){
+				Point3f q = p + epsilon * Point3f(noise(p), .., ...);
+				return Bois(q);
+			}
+		\end{verbatim}
+		On ne se sert pas directement de noise pour déterminer la couleur, on s'en sert pour faire une transformation
+	\item Synthèse multi échelle :\\
+		noise(p) prend des échantillons tous les t temps. On souhaite avoir une fonction avec plus de grains, plus irrégulière encore.\\
+		$f(p)= a_1 noise(\frac{p}{T_1}) + a_2 noise(\frac{p}{T_2} + a_3 noise(\frac{p}{T_3}) + ...$ où $T_1$ est une période plus grande, pour obtenir une basse fréquence, et $T_2$ une période plus petite, pour obtenir une fréquence moyenne, et ainsi de suite.\\
+		$f(p) = \sum _{i = 0} ^{n-1} a_i n (\frac{p}{T_i} + \sigma _i$ où $a_i$ est la i-eme amplitude, $T_i$ est la i-eme période$\sigma _i$ est le i-eme offset.
+		C'est le Warping.
+\end{itemize}
+C'est à la base de beaucoup d'algo de génération de texture volumique.
+
+\subsection{Généralisation}
+La texture ne représente pas que la couleur. Il existe bien d'autre paramètres qui serviront à definir la façon dont on doit calculer la couleur en fonction de la lumière :
+\begin{itemize}
+	\item Le coefficient de réflexion
+	\item la brillance
+	\item la transparence $\alpha$
+	\item la rugosité
+	\item ...
+\end{itemize}
+Pour le placage de texture :\\
+En plus de l'image RVB, il faudra des images (map) pour chacun des paramètres => La mémoire nécessaire augmente énormément.
+
+\vskip 1cm
+Le bumpMapping :\\
+encodage de varation de normales "fines" sur un modèle géométrique "grossier".\\
+Prenons un arbre réel, avec de l'écorce avec de très petites variations géométriques, on utilisera énormément de petts triangles ($10^6$). Si on prend un arbre fait de 10 triangles, on estime que l'écorce avec de fines variations est approximativement égale à une écorce lisse, à la différence de la présence de plus de normales. On code alors une fonction qui a perturber la normale.
+
+C'est une utilisation soit d'une fonction, soit d'une carte d'image pour générer de petite variations, en faisant une éconnomie de géométrie.
+\end{document
