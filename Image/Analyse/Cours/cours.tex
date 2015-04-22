@@ -167,9 +167,80 @@ Ou deux régions se rencontrent.
 
 \vskip 1cm 
 
-
+2 Problèmes :
 \begin{itemize}
-	\item
+	\item L'ensemble obtenu ne constitue pas un recouvrement, il restera des points non affectés à des groupes (comp élémentaire)
+	\item l'existence de compo élémentaire adjecents - semblables -> fusion de comp éléments adjacents
 \end{itemize}
+
+
+\vskip 1cm
+Pose des germes : Stratégie
+\begin{itemize}
+	\item Aléatoire
+	\item Régulire( grille) -> aléatoire supervisée
+\end{itemize}
+
+\vskip 1 cm
+Stratégie de la propagation : 2 façons
+\begin{itemize}
+	\item Propagation en profondeur : dès que l'on a un pixel, on suit sa propagation, on part de ce pixel, jusqu'a ce qu'on ne puisse plus propager
+	\item Propagation en largeur : par couronne
+\end{itemize}
+
+
+Région Growing :
+\begin{itemize} 
+	\item Avantage : rapide, conceptuellement très simple
+	\item inconvénients : c'est une méthode locale(pas de vision globale du problème), il faut tenir compte de l'homogénéité globale, algo très senesible au choix du mode de propagation, il faut faire attention au choix des structures de données.
+\end{itemize}
+
+\subsection{Split And Merge}
+On prend l'image, on la découpe autant qu'on peut, puis on remet les éléments ensemble.
+
+Étapes :
+\begin{itemize}
+	\item On subdivise l'image en zones homogènes élémentaires (C1) -> Split
+	\item on fusionne les zones adjacentes (C2) -> Merge
+\end{itemize}
+Pour que la subdvision soit automatique, on utilise une structure de données spécifique et un critère particulier. Il est possible d'utiliser un arbre, mais dans ce cas, la gestion de la fusion sera compliqué (les zones adjacentes ne seront pas forcément voisines dans l'arbre). Il faut le combiner avec un graphe d'adjacence.\\
+
+\vskip 1cm
+Quelques remarques : 
+\begin{itemize}
+	\item Difficulté  : structuration et codage, Gestion des adjacences
+	\item critères : division et fusion
+	\item Finesse de la subdivision (compromis : finesse <-> temps de calcul)
+\end{itemize}
+
+La segmentation par ligne de partage des eaux : famille des méthodes de segmentation d'mage qui consièdrent une image à niveaux de gris comme u relief topographique, dont on simule l'inondation : -> on remplit les creux de l'histogramme (Water Shade) jusqu'au débordement.
+
+
+\vskip 1cm
+\begin{enumerate}
+	\item Décision déterministe
+	\item Hypothèse -> probabiliste\\
+		->confirmer ensuite
+\end{enumerate}
+stochastique : Gibbs, Markov.
+
+\vskip 1cm
+A : ensemble des pixels (i, j)\\
+attribut : niveau de gris (valeur de couleur).\\
+Hypothèse on dispose de N classes(région). Assignation /affect des pixels dans les différentes classes/régions\\
+
+A un pixel(i, j) on associe un vecteur de probabilité de taille N\\
+$(i, j) -> P(i, j) = [P(i, j,1); P(i, j, 2); ...; P(i, j, N)]$\\
+$P(i, j, l)$ : probabilité pour (i, j) d'être dans la classe/région l.\\
+But : de faire évoluer chaque vecteur $ P(i, j) \approx \alpha$ -> itérative\\
+$0 << P(i, j, l) << 1$ soit $ \sum_l P(i, j, l) = 1$
+
+\vskip 1cm 
+Règles de production/ Mise à jour (Rosenfeld)\\
+On donne une quotation négative/très faible à certains éléments pour pondérer leur probabilité en fonction de leur cohérence : on tient compte de la connaissance que l'on a.\\
+Rosenfeld propose de soit calculer la corrélation entre ttes les classes, soit de calculer une estimation
+
+$r((i, j) \in l, (u, v) \in k)$ compatibilité $\in [-1, 1]$\\
+
 
 \end{document}
