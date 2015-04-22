@@ -197,4 +197,102 @@ Définition :
 Résolution des inter blockages :\\
 Prévention : définir des critères de priorité de sorte à ce que le problème ne se pose pas. (estampillage des transactions les plus vieilles, ou des plus jeunes)
 
+
+\newpage
+
+\section{passage à l'échelle}\begin{itemize}
+	\item 
+\end{itemize}
+
+Paradigme P2P, Paradigme Map-Reduce.
+
+P2P : besoin de répartir la charge des traffics réseaux (Internet était du P2P à ses débuts).
+\begin{itemize}
+	\item à l'Échelle de l'internet
+	\item contribution pas simple présence
+	\item Totale décentralisation
+	\item Réseau dynamique
+	\item Autonomie des pairs
+\end{itemize}
+Dans l'esprit du P2P, on cherche à éviter tte concentration de donnée\\
+On obtient un réseau dynamique -> effet dynamique de churn (arrivée et sortie de noeuds).\\
+Un noeud contribue, mais gère lui même les ressources qu'il met à disposition du système : il n'a pas besoin des autres pour fonctionner.
+
+
+Principe fondamental :
+\begin{itemize}
+	\item coopération pour le partage des ressources : on utilise les ressources des autres pour que cela fonctionne, et on offre ses ressources locales : (fichiers, CPU, stockage, bande passante) -> on remplit un contrat moral
+	\item SI l'on rompt se contrat -> déséquilibre du système -> on revient un système client-serveur
+\end{itemize}
+
+Propriétés du P2P : chaque noeud est à la fois client et serveur. Il n'existe pas de connaissance globale du réseau, il y a juste besoins de connaître ses voisins.\\
+Les services délivrés par un noeuds sont accessibles par n'importe quel autre noeud (pas de restriction).\\
+
+Un noeud se doit d'être autonome pour fournir des services : pas besoin d'un autre pair.
+
+Les voisins logiques (en lien) ne sont pas forcément voisins physiquement.
+
+Les différents types d'architectures P2P :
+\begin{itemize}
+	\item non structurés
+	\item hiérarchiques
+	\item structurés : les réseaux à bases de Distributed Hash Table (DHT)
+\end{itemize}
+
+Non-structuré :
+\begin{itemize}
+	\item Principe d'égalité entre le noeuds (même capacité : bande passante, puissance), même comportement (également client et serveur) et bon comportement (pas de "mensonge")
+	\item Principe de requêtes/données populaires : 
+\end{itemize}
+
+On a besoin de table de voisinages : associée à chaque noeud, représentant la seule connaissance disponible du réseau : on ne connaît que son voisinnage, car on a besoin de rien d'autre pour fonctionner.\\
+Localisation des ressources : propagation en aveugle des messages, chaque noeud propageant la requête à ses voisin, avec un TTL, souvent approximé autour de 7 (théorème de Milgramm)\\
+
+La réponse à une requête passe par le chemin qu'a emprunté la requête, pour assurer l'anonymité, et pour limiter le nombre de connexions ouvertes au nombres de voisins directs.
+
+Avantages :
+\begin{itemize}
+	\item Chaque pair est autonome
+	\item pas de cout d'indexation des données
+\end{itemize}
+
+inconvénients :
+\begin{itemize}
+	\item Pas de garantie de trouver une ressource qui est pourtant stockée sur le réseau (données disponibles mais non accessibles).
+	\item Mulitplication des msgs échangés.
+\end{itemize}
+
+
+Hiérarchisation des pairs : lévée de la contrainte d'égalité des pairs.\\
+On donne a certains noeuds un rôle spécifique (rôle de représentation, de routage). Certains noeuds se substituent à des pairs de faible capacité dans le processus de localisation. Ces "supers"pairs disposent d'un index de ressources des pairs qu'ils représentent.
+
+On combinent deux architectures : Les Supers-pairs sont organisés en P2P, et les pairs sont rattachés en mode client/serveur à un Super-Pair.
+
+Super-peer : on retire les pairs du système (ils ne voient pas passer les requêtes) $\diff$ ultra-pair : les pairs voient passer les requêtes mais elles rebondissent dessus.
+
+Avantages :
+\begin{itemize}
+	\item retrait des pairs de faibles capacités du processus de localisation de l'information
+	\item localisation plus rapides des ressources
+\end{itemize}
+
+Inconvénients :
+\begin{itemize}
+	\item création d'un index sur les super pairs susceptibles de résoudre des requêtes
+	\item centralisation rendant le système moins robuste aux défaillances des supers-pairs
+	\item redondance des supers-pairs couteuses
+\end{itemize}
+
+
+P2P structurés (CHORD) : utilisation de DHT pour valoriser l'efficacité du processus de localisation => indexation des données\\
+
+Ajout d'un noeud repose sur un certain nombre d'opérations élémentaires
+
+\begin{itemize}
+	\item N.Join(N') -> N annonce à N' qu'il rentre dans le réseau et lui demande de fournir un successeur.
+	\item N.stabilize -> permet à N et son successeur de vérifier qu'ils forment un couple correct (qu'il n'y a pas de noeuds entre eux)
+	\item 
+\end{itemize}
+
+
 \end{document}
