@@ -310,4 +310,61 @@ encodage de varation de normales "fines" sur un modèle géométrique "grossier"
 Prenons un arbre réel, avec de l'écorce avec de très petites variations géométriques, on utilisera énormément de petts triangles ($10^6$). Si on prend un arbre fait de 10 triangles, on estime que l'écorce avec de fines variations est approximativement égale à une écorce lisse, à la différence de la présence de plus de normales. On code alors une fonction qui a perturber la normale.
 
 C'est une utilisation soit d'une fonction, soit d'une carte d'image pour générer de petite variations, en faisant une éconnomie de géométrie.
+
+
+%Notes sur les textures
+% pour avoir une meilleure granularité, faire la somme de bruit à différentes fréquences
+% pour avoir des veinures, ajouter une valeur absolue T. On prend la valeur absolue de |f - T| (f1)et la valeur absolue de |T-f|, f la fréquence du signal, qu'on divise par  1 - T (f2). Pour obtenir des pics et le reste aplati, on utilise 1 - (1 - x^2)^2
+
+\newpage
+\section{Shading}
+
+\subsection{intro}
+Le Shading, c'est simple. Enfin non. Le Shading est l'une des deux techniques qui s'opposent en synthèse pour créer un objet à partir de sa description, de la lumière, etc. \\
+L'autre est la global Illumination, qui simule les interractions physiques entre les photons et les matériaux, avec toute l'optimisation des structures de données et des algorithmes pour gérer les M de photons envoyés. Ce ne peut pas être utilisé en temps réel.
+
+Si on veut travailler en temps réel, on ne simule pas, on triche. Le but est que ça fasse réaliste à la fin.
+
+\subsection{Concepts de base}
+Deux branches du Shading : réaliste, et NPR/NPS : Non PhotoRealistic Shadering
+
+Modèle de Phong :\\
+Pb : voir feuilles
+
+La couleur c du point p de normale $\overrightarrow{n}$ vue par $\overrightarrow{e}$ éclairé par $\overrightarrow{l}$vaut :\\
+$ c = C_a + C_d + C_s $ (1)\\
+avec $C_a$ la couleur ambiante : $ C_a = cste$ (2),\\
+$C_d$ la couleur diffuse : $ C_d = (l\dot n) . m$ (3), très bonne approximation pour les matériaux mats\\
+et $C_s$ la couleur spéculaire : $C_s = (r \dot e)^{n_\sigma} . m$, utilisé pour les matériaux brillants. Cet indice contrôle le cône d'éblouissement, choisi en fonction de $n_\sigma$. $r = 2(n\dot l). n - l$
+
+Modèlé de Phong complet (avec couleur) :\\
+$c = C_a * C_{al} + n\dot l) C_d * C_{dl} + (e\dot r)^{n_\sigma} C_s * C_{sl}$\\
+avec $C_a$ mat, $C_{al}$ light, $C_d$ couleur mat, $C_{dl}$ light, $C_s$ couleur mat, $C_{sl}$ light, \\
+avec (par exemple) $C_a * C_{al} = \mat{R_1\\V_1\\B_1}\mat{R_2\\V_2\B_2} = \mat{R_1R_2\\V_1V_2\\B_1B_2\\}$.\\
+
+\vskip 1cm
+\subsection{effets spéciaux imposteurs}
+Le rendu s'appui nsur le calcul de la couleur des pts d'un triangle avec sa texture et 1 prog de shading. En gros, la seule chose dont on dispose sur une carte graphique, c'est un système capable de coller de petits bout de trinagle colorés un peu partout. Comment gérer tous les effets volumiques? \\
+La transparence alpha va permettre une infinité d'effets par application de couches successives. Un imposteur, c'est une géométrie minimale (triangle, quad), avec une apparence en générale très très complexe (Texture, éclairage, transparence complexe).\\
+Énorme économie en mémoire.
+
+Type d'effets disponibles pour la géométrie complexe simplifiée :\\
+\begin{itemize}
+	\item un arbre : Le tronc, ayant un gros volume, est représenté par un maillage, et le feuillage est un entremelement de quad avec des dessins de brances dessus. À l'affichage, les parties transparentes s'effacent, et il ne reste plus que les dessins de branches.
+\end{itemize}
+
+On a des programmes qui font des approximations.
+
+\subsections{effets de volume semi transparents}
+\begin{itemize}
+	\item fumée
+	\item feu
+	\item glow
+\end{itemize}
+-> utilisations de nuage d'imposteur. On fait un quad avec une texture au dessin opaque et au reste transparent. Pour une fumée, il s'agit juste de faire monter les quad, en diminuant l'opacité au fur et à mesure que le quad monte.
+
+\subsection{effets de lumière}
+On peut gérer les effets de lumière de la même lumière. Par exemple, pour des rayons de lumières traversant une canopée et atteignant des grains de poussière. Normalement, il faudrait calculer la trajectoire des rayons à travers le feuillage. EN utilisant les imposteurs, on utilise des quads représentant les rayons fantomatiques
+
+
 \end{document
