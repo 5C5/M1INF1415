@@ -291,8 +291,84 @@ Ajout d'un noeud repose sur un certain nombre d'opérations élémentaires
 \begin{itemize}
 	\item N.Join(N') -> N annonce à N' qu'il rentre dans le réseau et lui demande de fournir un successeur.
 	\item N.stabilize -> permet à N et son successeur de vérifier qu'ils forment un couple correct (qu'il n'y a pas de noeuds entre eux)
-	\item 
+	\item
 \end{itemize}
+
+\newpage
+\textbf{Partie Déductive}
+
+\newpage
+\section{Notions et rappels}
+\begin{itemize}
+	\item Optimisation algébrique (fondée sur la propriété des opérateurs)
+	\item Optimisation sémantique : s'appuie sur les opérateurs, nécessite connaissance du schéma (attributs, entités et contraintes d'intégrité).
+	\item La réécriture : à base de vue, optimise les requêtes, intégration de données. Les vues sont des vues matérialisées : on a déjà calculé le résultat et on l'a stocké. -> Utilisé pour les entrepôts de données, BIG data, etc.
+\end{itemize}
+
+\vskip 2 cm
+Exemple :\\
+Requete ->
+\begin{itemize}
+	\item cas ou des vues (de 1 à N, combinées entre elles ou non) suffisent à répondre à la requête
+	\item cas ou il faut accéder à des vues et aux données de la table pour répondre à la requête
+\end{itemize}
+
+\vskip 2cm
+Soit le schéma S, avec :\\
+Prof(nom, domaine)\\
+Cours(n\_cours, titre, univ)\\
+Enseigne(prof, n\_cours, trimestre, étudiants, univ)\\
+Inscrit(étudiants, n\_cours, trimestre)\\
+Major(étudiant, dépt)\\
+Exerce(Prof, dept)\\
+Conseil(Prof, étudiant)\\
+
+\begin{verbatim}
+SELECT I.étudiants, C.titre
+FROM E, P, I, C
+WHERE P.nom = E.prof AND
+E.n_cours = I.n_cours AND
+E.trimestre = I.trimestre AND
+I.n_cours = C.n_cours
+AND C.n_cours >= 500 AND
+P.domaine = "BD"
+
+CREATE VIEW C2P AS
+SELECT I.etudiants, C.titre, C.n_cours, I.trimestre
+FROM I, C
+WHERE I.n_cours = C.n_cours AND C.n_cours >= 400
+
+\end{verbatim}
+
+On retrouve I et C dans la vue comme dans la requête. On peut considérer que ce que demande la requête de ces deux tables est contenue dans la vue. À partir de cette hypothèse, on pourrait remplacer I et C par C2P
+\begin{verbatim}
+SELECT C2P.etudiant, C2P.titre
+FROM E, P, C2P
+WHERE P.nom = E.prof AND
+E.n_cours = C2P.n_cours  AND
+E.trimestre = C2P.trimestre AND
+C2P.n_cours >= 500 AND
+P.domaine = "BD"
+\end{verbatim}
+
+\vskip 2cm
+Suite :
+\begin{verbatim}
+CREATE VIEW CBD AS
+SELECT C.titre, E.prof, C.n_cours
+FROM E, C
+WHERE E.n_cours = C.n_cours AND
+	E.univ = C.univ AND
+	C.titre = "BD"
+
+CREATE VIEW ULAC3 AS
+SELECT C.titre, E.prof, C.n_cours, C.univ
+FROM E, C
+WHERE E.n_cours = C.n_cours AND
+	C.univ = "ULA" AND
+	E.univ = "ULA" AND
+	C.n_cours >= 500
+
 
 
 \end{document}
