@@ -55,9 +55,9 @@ void Maillage::merge(Maillage &m){
     bool vertex = true ;
 
     for(it = m.geom.begin(); it != m.geom.end(); ++it) {
-		cout << "avant ajout : " << (*it) << endl;
+		//cout << "avant ajout : " << (*it) << endl;
         geom.push_back(*it);
-		cout << "apres ajout : " << geom.back() << endl;
+		//cout << "apres ajout : " << geom.back() << endl;
     }
 
     for(it2 = m.topo.begin(); it2 != m.topo.end(); ++it2) {
@@ -193,32 +193,33 @@ Maillage Maillage::cylinder(const Point3f &a, const Point3f &b, float r){
 
 	Point3f i, j, k, orth;
 	k = (b - a);
-	if( norm(b-a)!=0){
-		k.x /= norm(b-a);
-		k.y /= norm(b-a);
-		k.z /= norm(b-a);
+
+
+	if( k.x != 0 && k.y !=0){
+		orth = Point3f(-k.y, k.x, 0);
+	}
+	else {
+		orth = Point3f(1, 0, 0);
 	}
 
-	orth = Point3f(-k.y, k.x, 0);
+	k.x /= norm(b-a);
+	k.y /= norm(b-a);
+	k.z /= norm(b-a);
+
 	i = orth;
-	if(norm(orth) != 0){
-		i.x /= norm(orth);
-		i.y /= norm(orth);
-		i.z /= norm(orth);
-	}
-	if(i.x == 0) i.x = 1;
-	if(i.y == 0) i.y = 1;
-	//if(i.z == 0) i.z = 1;
 
+
+	i.x /= norm(orth);
+	i.y /= norm(orth);
+	i.z /= norm(orth);
 	j = k.cross(i);
-	if(j.x == 0) j.x = 1;
-	if(j.y == 0) j.y = 1;
-	//if(j.z == 0) j.z = 1;
+
+		//if(j.z == 0) j.z = 1;
 
 	int s;
 	for(s = 0; s < n; s++){
 		g.push_back(Point3f(a + r * (cos((2 *PI * s)/n)) * i + r * (sin((2 * PI * s)/n)) * j));
-		cout << "points : " << g.back() << endl;
+		//cout << "points : " << g.back() << endl;
 	}
 
 	for(s = n; s < (2 * n); s++){
@@ -389,26 +390,31 @@ Maillage Maillage::temple(Point3f &a, Point3f &b){
 	Maillage base, colonne, toit;
 	base = base.cube(a, b);
 
-	for(i = 1; i < 8; i++){
+	for(i = 2; i < 9; i++){
 		toit.zero();
-		toit = toit.cube(Point3f(a.x, a.y, a.z - i), Point3f(b.x, (b.y + i*ecartY/20), b.z - i));
+		toit = toit.cube(Point3f(a.x, a.y - i, a.z - i + 1), Point3f(b.x, (b.y + i*ecartY/20), b.z - i));
 		base.merge(toit);
 	}
 
 	cout << endl << endl << endl;
 	//base.writeIntoOBJ("temple.obj");
-	colonne = colonne.cylinder(Point3f(a.x + 2 * ecartX/20, a.y + 2 * ecartY/20, b.z), Point3f(a.x + ecartX/20, a.y + ecartY/20, b.z + ecartZ*4), ecartX/20);
-	base.merge(colonne);
+	//colonne = colonne.cylinder(Point3f(a.x + 2 * ecartX/20, a.y + 2 * ecartY/20, b.z), Point3f(a.x + 2 *ecartX/20, a.y + 2 * ecartY/20, b.z + ecartZ*4), ecartX/20);
+	//base.merge(colonne);
 	//cout << "têtes des points de la colonne : " << colonne.getGeom() << endl;
-	colonne.writeIntoOBJ("colonne.obj");
+	//colonne.writeIntoOBJ("colonne.obj");
 
-	/*for(j = 1; j < 20; j+=18){
+	for(j = 1; j < 20; j+=18){
 		for(i = 1; i < 20; i+=3){
-			colonne = colonne.cylinder(Point3f(i, j, 2), 10, 2);
+			colonne = colonne.cylinder(Point3f( j, i, 2), 10, 1);
 			base.merge(colonne);
-			//colonne.zero();
+			colonne.zero();
 		}
-	}*/
+	}//*/
+
+	toit.zero();
+	toit.cube(Point3f(a.x, a.y, a.z + 12), Point3f(b.x, b.y, b.z + 12));
+	base.merge(toit);
+
 	printf("Temple terminé\n");
 	base.writeIntoOBJ("temple.obj");
 	return base;
