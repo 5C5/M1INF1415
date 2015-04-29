@@ -28,7 +28,6 @@ Vec3b traitement(Vec3b a, Vec3b b, Vec3b c, int e){
 	if(abs((int)a[0] - (int)b[0]) >e||abs((int)a[1] - (int)b[1]) >e||abs((int)a[2] - (int)b[2]) >e){
 	//if(a[0] != b[0] || a[1] != b[1] || a[2] != b[2]) {
 		result=c;
-		//cout << "Test d entree dans la copie de l image" << endl;
 	}
 	else{
 		result=Vec3b(0,255,0);
@@ -43,6 +42,7 @@ Vec3b traitement(Vec3b a, Vec3b b, Vec3b c, int e){
  * @params : Deux matrices à différencier et un entier représentant l'écart de valeur accepté
  * @return : Matrice contenant la différence entre les deux matrices en entrées et des points vers pour combler
  */
+			resu.at<Vec3b>(i,j)=traitement(a.at<Vec3b>(i,j),temp.at<Vec3b>(i,j), temp.at<Vec3b>(i, j), e);
 Mat traitement(Mat a,Mat b, int e){
 	Mat temp;
 	Size taille(3, 3);
@@ -56,6 +56,30 @@ Mat traitement(Mat a,Mat b, int e){
 
 	return resu;
 }
+
+Mat doThings(Mat &a){
+	
+	//cout << "types : " << a.type() << " et nbre de cannaux " << a.channels() << endl;
+
+	Mat hls;
+	Mat splitted[3];
+	Mat res;
+
+	cvtColor(a, hls, CV_BGR2HLS);
+	
+	for(int i=0; i<a.rows;i++){
+		for(int j=0; j<a.cols;j++){
+			Vec3b hlsij=hls.at<Vec3b>(i,j);
+			hlsij[1]=255;
+		}
+	}
+
+
+	cvtColor(hls, res, CV_HLS2BGR);
+	
+	return res;
+}
+
 
 /*
  * Programme principal
@@ -82,7 +106,7 @@ int main(int argc, char ** argv){
 
 	//Récupération du décor
 	film >> bg;
-	
+	bg = doThings(bg);
 	//Floutage du décor
 	Size taille(11, 11);
 	GaussianBlur(bg, bgflou, taille, 0, 0);
@@ -100,6 +124,7 @@ int main(int argc, char ** argv){
 	//Boucle de traitement
 	while(key != 'q' && !frame.empty()){
 		
+		frame = doThings(frame);
 		//extraction dans obj de la différence entre bg et frame
 		obj = traitement(bgflou,frame, 50) ;
 		
@@ -118,6 +143,8 @@ int main(int argc, char ** argv){
 		else
 			return EXIT_FAILURE;
 	}
+
+	film.release();
 
 	return EXIT_SUCCESS;
 }
