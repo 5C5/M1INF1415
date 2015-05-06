@@ -369,6 +369,41 @@ WHERE E.n_cours = C.n_cours AND
 	E.univ = "ULA" AND
 	C.n_cours >= 500
 
+\end{verbatim}
 
+Algorithme Bucket\\
+Alternative MiniCon
+
+Soit deux Tables R (A, B) et S(B, C)
+
+\begin{verbatim}
+SELECT A, B
+FROM R, S
+WHERE R.B = S.B AND C < 10
+\end{verbatim}
+
+Soit :
+\begin{verbatim}
+Q(A, B) <- S(B, C), R.B = S.B, C < 10
+\end{verbatim}
+Comme en Prolog, sauf que les données ne sont pas en mémoire centrale. Du coup, on ne fait pas une reconstruction top-down, mais bottom-up. On fait remonter les données. En format algébrique, cela correspond à un sélection ou une jointure. Les "prédicats" Prolog sont maintenant des sous-but. On découpe les requêtes en sous but, et on essaye d'optimiser.
+
+\section{optimisation Sémantique des données}
+
+\begin{verbatim}
+Navire(nom_navire, propriétaire, type, poids_a_vide_capacité, numero)
+Propriétaire(nom_propriétaire, adresse, chiffre_affaire, type_commerce)
+\end{verbatim}
+C'est le schéma. On a deux contraintes d'intégités :\\
+CI1 <- Proprietaire(X1, iceland, X3, X4).\\
+CI2 : X2 = onassis: <- navire(X1, X2, Sp, X4, X5, X6)\\
+
+Q1 : <- Propriétaire(X1, iceland, X3, )......
+
+
+
+\vskip 3cm
+Susbsomption Partielle :\\
+Une clause C subsomptionne une clause D s'il existe une substitution $\sigma$ tel que $C_\sigma$ est une sous clause de D.
 
 \end{document}
