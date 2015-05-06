@@ -42,7 +42,7 @@ Vec3b traitement(Vec3b a, Vec3b b, Vec3b c, int e){
  * @params : Deux matrices à différencier et un entier représentant l'écart de valeur accepté
  * @return : Matrice contenant la différence entre les deux matrices en entrées et des points vers pour combler
  */
-			resu.at<Vec3b>(i,j)=traitement(a.at<Vec3b>(i,j),temp.at<Vec3b>(i,j), temp.at<Vec3b>(i, j), e);
+			//resu.at<Vec3b>(i,j) = traitement(a.at<Vec3b>(i,j),temp.at<Vec3b>(i,j), temp.at<Vec3b>(i, j), e);
 Mat traitement(Mat a,Mat b, int e){
 	Mat temp;
 	Size taille(3, 3);
@@ -50,7 +50,7 @@ Mat traitement(Mat a,Mat b, int e){
 	Mat resu(a.rows,a.cols,a.type());
 	for(int i=0; i<a.rows;i++){
 		for(int j=0; j<a.cols;j++){
-			resu.at<Vec3b>(i,j)=traitement(a.at<Vec3b>(i,j),temp.at<Vec3b>(i,j), temp.at<Vec3b>(i, j), e);
+			resu.at<Vec3b>(i,j) = traitement(a.at<Vec3b>(i,j),temp.at<Vec3b>(i,j), temp.at<Vec3b>(i, j), e);
 		}
 	}
 
@@ -71,6 +71,7 @@ Mat doThings(Mat &a){
 		for(int j=0; j<a.cols;j++){
 			Vec3b hlsij=hls.at<Vec3b>(i,j);
 			hlsij[1]=255;
+			hls.at<Vec3b>(i,j)[1] = 255;
 		}
 	}
 
@@ -89,8 +90,10 @@ int main(int argc, char ** argv){
 
 	string filename = String(argv[1]);
 	int device = -1;
-	if(filename.length() == 1)
+	if(filename.length() == 1){
 		device = atoi(argv[1]);
+		printf("Utilisation d'une caméra\n");
+	}
 	VideoCapture film;
 	printf("Valeur de device : %d\n", device);
 	if(device > 0)
