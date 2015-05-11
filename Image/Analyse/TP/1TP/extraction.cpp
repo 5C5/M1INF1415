@@ -10,6 +10,82 @@
 using namespace cv;
 using namespace std;
 
+
+bool bordEcrans(int x, int y, int maxX, int maxY, int ecart){
+
+	if(x < ecart || y < ecart || x > (maxX - ecart) || y > (maxY - ecart))
+		return true;
+	return false;
+}
+
+/*
+ *
+ */
+Mat filtrePerso(Mat a, Vec3b valeur, int seuil){
+	
+	Mat resu = Mat(a.size(), a.type());
+	int temp = 0;
+
+	for(int i = 0; i < a.rows - 0; i++){
+		for(int j = 0; j < a.cols - 0; j++){
+
+			temp = 0;
+			if(a.at<Vec3b>(i, j) != valeur){
+				if(!bordEcrans(i, j, a.rows -1, a.cols -1 , 2)){
+
+					for(int k = i -2; k < i + 2; k ++){
+						for(int l = j - 2; l < j + 2; l++){
+							
+							if(a.at<Vec3b>(k, l) != valeur)
+								temp++;
+						}
+					}
+					if(temp < seuil)
+						resu.at<Vec3b>(i, j) = valeur;
+					else
+						resu.at<Vec3b>(i, j) = a.at<Vec3b>(i, j);
+						//*/
+				}
+			}
+			else{
+				resu.at<Vec3b>(i, j) = valeur;
+			}
+		}
+	}
+	return resu;
+}
+
+/*
+ * Méthodes prenant deux vecteurs en paramètre, créant un troisième avec comme couleur la moyenne/différence des différences entre les deux premiers
+ * @params vec2b a et c, deux "pixels"
+ * @return vec2b , vecteur résultat de la différence
+ */
+Vec3b difference(Vec3b a, Vec3b b){
+	
+	Vec3b result;
+	//int color = (abs((int)a[0] - (int)b[0]) + abs((int)a[1] - (int)b[1]) + abs((int)a[2] - (int)b[2]))/3;
+	int color = max(max(abs((int)a[0] - (int)b[0]), abs((int)a[1] - (int)b[1])), abs((int)a[2] - (int)b[2]));
+	result= Vec3b(color, color, color);
+
+	return result;
+	
+}
+
+/*
+ * Méthodes prenant deux matrices en paramètres et renvoyant una matrice après avoir passé chaque pixel des deux premières par Vec3b difference(Vec3b, Vec3b)
+ */
+Mat difference(Mat a,Mat b){
+
+	Mat resu(a.rows,a.cols,a.type());
+	for(int i=0; i<a.rows;i++){
+		for(int j=0; j<a.cols;j++){
+			resu.at<Vec3b>(i,j) = difference(a.at<Vec3b>(i,j), b.at<Vec3b>(i,j));
+		}
+	}
+
+	return resu;
+}
+
 /*
  * Traitement : extrait la différence entre deux points/couleurs
  * @params : trois points, un pour le décor, un pour l'image floutée, et un pour l'image à afficher, un entier pour la différence acceptée
@@ -17,16 +93,8 @@ using namespace std;
  */
 Vec3b traitement(Vec3b a, Vec3b b, Vec3b c, int e){
 	Vec3b result;
-	/*for(int i = 0; i < 3; i ++){
-		if(abs(a[i] - b[i]) >e)
-			result[i] = b[i];
-		else
-			result[i] = 0;
-	}*/
-
-	//cout << "Affichage de a[0] : " << a[0] << " et de b[0] : " << b[0] << "et la soustraction : " << a[0] - b[0] << endl;
+	
 	if(abs((int)a[0] - (int)b[0]) >e||abs((int)a[1] - (int)b[1]) >e||abs((int)a[2] - (int)b[2]) >e){
-	//if(a[0] != b[0] || a[1] != b[1] || a[2] != b[2]) {
 		result=c;
 	}
 	else{
@@ -42,7 +110,7 @@ Vec3b traitement(Vec3b a, Vec3b b, Vec3b c, int e){
  * @params : Deux matrices à différencier et un entier représentant l'écart de valeur accepté
  * @return : Matrice contenant la différence entre les deux matrices en entrées et des points vers pour combler
  */
-			//resu.at<Vec3b>(i,j) = traitement(a.at<Vec3b>(i,j),temp.at<Vec3b>(i,j), temp.at<Vec3b>(i, j), e);
+
 Mat traitement(Mat a,Mat b, int e){
 	Mat temp;
 	Size taille(3, 3);
@@ -50,7 +118,7 @@ Mat traitement(Mat a,Mat b, int e){
 	Mat resu(a.rows,a.cols,a.type());
 	for(int i=0; i<a.rows;i++){
 		for(int j=0; j<a.cols;j++){
-			resu.at<Vec3b>(i,j) = traitement(a.at<Vec3b>(i,j),temp.at<Vec3b>(i,j), temp.at<Vec3b>(i, j), e);
+			resu.at<Vec3b>(i,j) = traitement(a.at<Vec3b>(i,j),temp.at<Vec3b>(i,j), b.at<Vec3b>(i, j), e);
 		}
 	}
 
@@ -59,7 +127,6 @@ Mat traitement(Mat a,Mat b, int e){
 
 Mat doThings(Mat &a){
 	
-	//cout << "types : " << a.type() << " et nbre de cannaux " << a.channels() << endl;
 
 	Mat hls;
 	Mat splitted[3];
@@ -71,7 +138,6 @@ Mat doThings(Mat &a){
 		for(int j=0; j<a.cols;j++){
 			Vec3b hlsij=hls.at<Vec3b>(i,j);
 			hlsij[1]=255;
-			hls.at<Vec3b>(i,j)[1] = 255;
 		}
 	}
 
@@ -101,7 +167,7 @@ int main(int argc, char ** argv){
 	else
 		film = VideoCapture(filename);
 
-	Mat frame, bg, obj, bgflou;
+	Mat frame, bg, obj, bgflou, diff, hist, diffhist;
 	char key;
 
 	namedWindow("Image normale", 1);
@@ -109,7 +175,6 @@ int main(int argc, char ** argv){
 
 	//Récupération du décor
 	film >> bg;
-	bg = doThings(bg);
 	//Floutage du décor
 	Size taille(11, 11);
 	GaussianBlur(bg, bgflou, taille, 0, 0);
@@ -121,28 +186,36 @@ int main(int argc, char ** argv){
 	//récupération de la première image
 	if(film.isOpened())
 		film >>frame;
-	else
+	elsdiffhist = difference(hist, frame);
 		return EXIT_FAILURE;
 
 	//Boucle de traitement
+	//
+	hist=bg.clone();
 	while(key != 'q' && !frame.empty()){
 		
-		frame = doThings(frame);
 		//extraction dans obj de la différence entre bg et frame
 		obj = traitement(bgflou,frame, 50) ;
-		
+		diffhist = difference(frame, hist);
+		//obj = filtrePerso(obj, Vec3b(0, 255, 0), 9);
+		diff = difference(bg, frame);
 		//affichage de l'image et de l'obj extrait
 		imshow("Image normale", frame);
 		imshow("objet extrait", obj);
 
+		imshow("Test difference", diffhist);
+
+		imshow("Diff background", diff);
 		key = (char)waitKey(30);
 		
 		while(key != 'g' && key != 'q' && device < 1){
 			key = (char)waitKey(30);
 		}//*/
 
-		if(film.isOpened())
+		if(film.isOpened()){
+			hist = frame.clone();
 			film >>frame;
+		}
 		else
 			return EXIT_FAILURE;
 	}
