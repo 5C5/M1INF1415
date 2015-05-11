@@ -1,0 +1,73 @@
+#Abbréviations :
+Ra = représentant
+Re = représenté
+ø = non indexé
+
+----------------------------
+
+Triplet (X, Y, valeur)
+
+----------------------
+
+AddNewRa(X, L) -> ajoute X dans l'index des représentés avec L la liste des représentés
+AddNewRe(X, Y) -> ajoute Y dans l'index des représentés avec X comme représentant 
+
+AddRe(X, Y) 		-> ajoute Y dans la liste des représentés de X
+
+SetRa(X, Y) 		-> change le représentant de X en le remplaçant par Y
+GetRa(X) 			-> renvoie le représentant de X
+GetRe(X)			-> renvoie la liste des représentés de X
+Remove(X, Y) 	-> supprime Y de la liste des représentés de X
+
+DropRe(X) 		-> Supprime X de l'index des représentés (et le supprime de la liste de son représentant)
+DropRa(Y)			-> Supprime X de l'index des représentants (Possible si sa liste de représentés est vide)
+
+------------------------------------------
+
+9 cas :
+1) (ø, ø, __) 	
+				-> AddNewRa(X, Y);
+					 AddNewRe(Y, X);
+	 	
+2) (ø, Ra, __)	
+				-> AddNewRe(X, Y);
+					AddRe(Y, X);
+
+3) (ø, Re, __)	
+				-> AddNewRe(X, getRa(Y));
+					AddRe(
+
+4) (Ra, ø, __)	
+				-> AddNewRe(Y, X);
+					 AddRe(X, Y);
+
+5) (Ra, Ra, __)
+				-> L = GetRe(Y);
+					SetRa(X, L);
+					AddRe(X, L);
+					 Remove(Y, L);
+					 DropRa(Y);
+					 AddNewRe(Y, X));
+					 AddRe(X, Y);
+
+6) (Ra, Re, __)
+				-> Remove(getRa(Y), Y);
+					SetRa(Y, X);
+					
+7) (Re, ø, __)
+				-> AddNewRe(Y, GetRa(Y)), AddRe(X, Y);
+				
+8) (Re, Re, __)
+				-> Remove(GetRa(Y), Y);
+					SetRa(Y, getRa(X));
+					AddRe(GetRa(X), Y);
+					
+9) (Re, Ra, __)
+				-> Remove(getRa(X), X);
+					SetRa(X, Y);
+					AddRe(Y, X);
+					
+					
+Calculs de statistiques Intersources :
+(X.Sn, Y.Sm, V) -> AddValue(Sn, Sm, V)
+
