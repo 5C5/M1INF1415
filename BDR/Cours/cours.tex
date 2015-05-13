@@ -1,4 +1,100 @@
-%Espace pour le cours du lundi 9/03
+Notions :
+-Contention : ressource partagée entre plusieurs utilisateurs
+-passage à l'échelle : partage d'un nbre important de données entre un nbre très important d'utilisateurs.
+
+-Utilisation de plusieurs bases en réseau, améliorant la disponibilité de données, la répartition de la charge, et facilitant la gestion locale
+
+-Base de données réparties : système gérant de manière transparente un ensemble de BD logiquement reliées et réparties sur différents sites -> Solution reposant sur un schéma global
+	->Système homogènes
+
+-> Contexte de données hétérogènes.
+	->Base de données Fédérées : Système gérant plusieurs BD hétérogènes capables d'interopérer via un modèle commun -> On se met d'accord sur une vue commune pour interroger les données
+
+	-Dans le cas ou certaines données n'exploitent pas la puissance d'un SGBD (fichier texte, autre). Nécessité d'utiliser une surcouche logicielle(médiateur, wrappeur) pour palier
+
+-Architecture de médiation : Système gérant plusieurs sources de données hétérogènes capables d'interopérer via une architecture de médiation (Via un langage pivot)
+
+Centralisée -> Distribué (Fédéré, médiation)
+
+
+·Passage à l'échelle
+-Système multi-Base : système gérant plusieurs ND (hétérogène ou non) capables d'interopérer sans modèle commun.
+
+
+Problème : Comment offrir aux utilisateurs une vue sur l'ensemble des données en faisant abstraction de leur localisation physique en garantissant de bonnes performances de traitement de requêtes (tps de traitement, passage à l'échelle).
+
+Fin de l'introduction
+----------------------------------------------------------------
+Pré-requis : Algèbre relationnelle
+	Def : une lagèbre relationnele est un ensemble d'opérations agissant sur des relations et produisant des relations. Langage fermé
+	Opérateurs : Union, intersection, Difference, Produit Carthésien, Projection, Sélection, Jointure, Semi-Jointure, Renommage
+
+
+Scenarii possibles :
+-Données centralisées -> doivent être répartie sur différents sites (comment découper logiquement)
+-Données réparties -> doivent être interrogeables depuis n'importe quel site(comment offrir un moyen d'accès transparent à ces données)
+
+·Premier scénario
+	-Dans un contexte centralisé, Analyse des données, Conception du modèle conceptuel, Conception du modèle logique
+	-Dans un contexte décentralisé, même chose que ci-dessus, puis processus de distribution : Migration/Décomposition/Réplication, Allocation/Placement
+
+	Le schéma global est constitué d'un schéma conceptuel global (contenant la description glob et unifiée de toutes les données de la BDR, indépendant de la répartition des données) et d'un schéma de placement/allocation(contenant lkes règles de correspondances avec les données locales)
+
+
+-La migration : Transfert de données d'une base source sur une base cible (Copie puis suppression source), permet de rapprocher les données
+
+-La réplication : Création d'une copie conforme des données -> copies secondaires (Copie, puis synchronisation pour garder les mêmes données sur les 2 sites). Permet d'avoir les mêmes données sur différents sites
+
+-La décomposition : Fragmenter, décomposer la base initiale en fragments, qui sont répartis, alloués à différentes bases
+
+Les différentes fragmentations :
+	-fragmentations horizontale 		-> sélection d'un ensemble de tuples
+	-fragmentation horizontale dérivée	-> sélection dépendant d'un fragment
+	-fragmentaton verticale				-> projection sur un ensemble d'attributs
+	-frag mixte
+
+/!\ Pour les fragmentions verticales, obligations de s'assurer que la clé primaire appartient à chacun des fragments
+
+-Si R=(A1, ..., Ak) la table originale, la fragmentation est dite correcte si elle est :
+	-complète (chaque élément de R se retrouve dans un fragment)
+	-reconstructible (R doit pouvoir être recomposer depuis ses fragments)
+	-disjointe (chaque élément de R (hormis les clés) ne doit pas être dupliqué (present plusieurs fois)
+
+
+
+Fragmentation horizontale ≃ Sharding (permet le stockage et l'indexation de grandes masses de données)
+	Intéret : ttes les données ne peuvent être stockés sur un seul serveur; La capacité en mémoire du serveur ne perment pas de garantir un service satisfaisant; Le volume de m-à-j de données est trop important
+
+
+Méthodlogies :
+stratégies de fragmentation :
+	-en fction des hypothèses (informations sur les contraintes de placement)
+	
+	-en fction des besoins (Informations sur les requêtres généralement posées)
+
+
+Réplication :
+-Principe : créer des copiées conformes aux tables sur des sites distants se synchronisant en fct° des m-à-j
+	->Améliore la disponibilité des données en local
+	-> est avantageux si il y a plus de lectures que d'écriture
+
+	-Fonctions d'un réplicateur :
+		·def des objets répliqués
+		·def de la fréquence de rafraichissement(immédiat, à intervalle régulier, à partir d'un évennement)
+		·Rafraichissement(complet/partiel, push(primaire->secondaire)/pull(secondaires->primaire)).
+
+	-Gestion partagée des maj des répliques : une donnée appartient à plusieurs sites qui peuvent chacun mettre à jour et modifier.
+
+	Détection des modifications (pour le rafraichissement)
+		-solution 1 : utilisation d'un journal (transactions modifiantes marquent le journal, détection périodique ds le journal, indépendemment de la transac, modif de la gest° du journal)
+		-solution 2 : utilisation de triggers (de - en - utilisés)
+
+
+CREATE DATABASE LINK <nom> CONNECT TO <loginUser> IDENTIFIED BY <psswd> USING <orapeda1|orapeda2|orapeda3>
+CREATE MATERIALIZED VIEW <nom> REFRESH {on commit| on demand| start with ... next ...][complete}
+%
+%
+%
 
 \section{Intégration de données}
 
@@ -405,5 +501,110 @@ Q1 : <- Propriétaire(X1, iceland, X3, )......
 \vskip 3cm
 Susbsomption Partielle :\\
 Une clause C subsomptionne une clause D s'il existe une substitution $\sigma$ tel que $C_\sigma$ est une sous clause de D.
+
+
+\subsection{Optimisation sématique de requête}
+Compilation sématique : génération d'un schéma S' à partir du schéma S et des contraintes d'intégrité CI. Cette compilation sématique est réalisée par subsomption partielle -> S + CI = S'\_
+
+ø -> clause vide
+\begin{verbatim}
+	[NAVIRE(Z1, Z2, Z3, Z4, Z5, Z6)	<- Navires(Z1, Z2, Z3, Z4, Z5, Z6)
+S	|
+EDB	|
+	]PROPRIETAIRE(Y1, Y2, Y3, Y4)
+
+	[I1 : ø<- Propriétaire(Y1, iceland, Y3, Y4).
+CI	|
+	]I2 : Z2 = onassis <- Navire(Z1, Z2, SP, Z4, Z5, Z6)
+	
+	[I1+ :  ø <- Propriétaire(Y1, X1, Y3, Y4), X1 = iceland
+	|
+	]I2+ : Z2 = onassis <- navire(Z1, Z2, X2, Z4, Z5, Z6)
+
+
+	En réécrivant les CI+ :
+	I2+
+	 Z2 = Onassis <- Navires(Z1, Z2, X2, Z4, Z5, Z6), X2 = SP.
+
+On fait la preuve par réputaton entre I2+ et A1.
+
+Z2 = Onassis <- Navires(Z1, Z2, X2, Z4, Z5, Z6), X2 = SP  Navires(k1, k2, k3, k4, k5, k6)
+|
+k1 = Z1
+k2 = Z2
+k3 = X2
+k4 = Z4
+k5 = Z5
+k6 = Z6
+
+\end{verbatim}
+On a donc un reste/résidu\\
+k2 = onassis <- k3 = sp
+
+
+A1+ : Navires(Z1, Z2, Z3, Z4, Z5, Z6) <- Navires(Z1, Z2, Z3, Z4, Z5, Z6),\{Z2 = onassis <- Z3 = SP\}\\
+La dernière partie représente la contrainte.
+
+A2+ : Propriétaire(Y1, Y2, Y3, Y4) <- Propriétaires(Y1, Y2, Y3, Y4), \{ø <- Y2 = iceland\}
+
+
+\subsection{réécriture de requêtes avec agrégats}
+\begin{verbatim}
+CLIENT(num_tel, nom_c)
+PLANS_APPELS(id_plan, nom_plan)
+APPELS(de, vers, temps, jour, mois, Annee, durée, id_plan, cout)
+
+
+Q1 : 
+SELECT annee, nom_plan, SUM(cout)
+FROM APPELS, PLAN_APPELS
+WHERE APPELS.id_plan = PLAN_APPELS.id_plan 
+	AND annee >= 1990
+	AND annee =< 1995
+GROUP BY annee, nom_plan
+HAVING SUM(cout) > 1000000
+
+V(id_plan, mois, annee, gain)
+SELECT id_paln, mois, annee, SUM(cout)
+WHERE FROM APPELS
+GROUP BY id_plan, mois, annee
+
+
+hiérachie : annee > mois > jour
+
+Il est possible d'utiliser V pour répondre à Q1, en partie : il faut remplacer SUM(cout) par gain.
+\end{verbatim}
+Il faut trouver l'algo qui fait ça (ça, tel est la question je n'en n'ai pas la moindre idée).\\
+
+Example :
+\begin{verbatim}
+Q :
+SELECT A, MAX(D), SUM(E)
+FROM R(A, B), S(C, D E)
+WHERE B= C
+GROUP BY A, B
+HAVING SUM(B) > 1000
+
+
+Tables(Q) = {R(A, B), S(C, D, E)}
+Cols(Q) = {A, B, C, D, E}
+Sel(Q) = {A, MAX(D), SUM(E)}
+ColSel(Q) = {A}
+AggSel(Q) = {D, E}
+GROUPS(Q) = {A, B}
+Conds(Q) = {B =C}
+GConds(Q) = {SUM(D) > 1000}
+
+
+Tables(V) = {} -> On regarde pour chacune des tables(Q) si elles sont dans Table(V). SI une n'en fait pas partie, on arrête.
+On découpe la requête, et on compare le découpage à celui de la vue.
+\end{verbatim}
+Étape 1 :Remplacer ttes les tables dans  \varnothing(Tables(V)) par  \varnothing(V)\\
+Étape 2 : Remplacer chaque colonne A $\in$ Groupes(Q) OU ColSel(Q) OU AggSel(Q) pour  \varnothing(B) avec B satisfaisant les conditions C2 et C3\\
+Étape 3 : Déterminer une combinaison de prédicats prédéfinis CONDS' satisfaisant la condition C4. Remplace CONDS(Q) par CONDS'\\
+Étape 4 : Considérons un aggrégat COUNT(A) $\in$ Sel(Q) tel que A $\in$ $ \varnothing$(Cols(V)) et A $\notin$(Sel(V)). Remplacer COUNT(A) par COUNT(B) avec B$\in \varnothing$ (V) pour B quelconque.\\
+
+
+
 
 \end{document}
