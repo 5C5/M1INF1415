@@ -156,6 +156,7 @@ int main(int argc, char ** argv){
 
 	string filename = String(argv[1]);
 	int device = -1;
+	int compteur = 0, decaleur;
 	if(filename.length() == 1){
 		device = atoi(argv[1]);
 		printf("Utilisation d'une caméra\n");
@@ -167,7 +168,7 @@ int main(int argc, char ** argv){
 	else
 		film = VideoCapture(filename);
 
-	Mat frame, bg, obj, bgflou, diff, hist, diffhist;
+	Mat frame, bg, obj, bgflou, diff, hist, diffhist, tmp;
 	char key;
 
 	namedWindow("Image normale", 1);
@@ -186,7 +187,7 @@ int main(int argc, char ** argv){
 	//récupération de la première image
 	if(film.isOpened())
 		film >>frame;
-	elsdiffhist = difference(hist, frame);
+	else
 		return EXIT_FAILURE;
 
 	//Boucle de traitement
@@ -196,23 +197,33 @@ int main(int argc, char ** argv){
 		
 		//extraction dans obj de la différence entre bg et frame
 		obj = traitement(bgflou,frame, 50) ;
-		diffhist = difference(frame, hist);
-		//obj = filtrePerso(obj, Vec3b(0, 255, 0), 9);
+		
+		diffhist = difference(hist, frame);
 		diff = difference(bg, frame);
-		//affichage de l'image et de l'obj extrait
+		
+		//Affichage des différentes images
 		imshow("Image normale", frame);
 		imshow("objet extrait", obj);
+		
+		imshow("Différence background in grayscale", diff);
+		imshow("Current Test", diffhist);
 
-		imshow("Test difference", diffhist);
-
-		imshow("Diff background", diff);
 		key = (char)waitKey(30);
 		
 		while(key != 'g' && key != 'q' && device < 1){
 			key = (char)waitKey(30);
 		}//*/
 
+		compteur ++;
+
 		if(film.isOpened()){
+			
+			/*if(compteur%10 == 0){
+				tmp = obj.clone();
+				decaleur = compteur;
+			}
+			if(compteur == decaleur + 10)
+				hist = tmp.clone();//*/
 			hist = frame.clone();
 			film >>frame;
 		}
