@@ -5,12 +5,15 @@
 #include <string.h>
 #include <iostream>
 #include <math.h>
+#include <list>
 
 
 using namespace cv;
 using namespace std;
 
-
+/*
+ * Retourne si le pixel est situé à proximité du bord de l'image
+ */
 bool bordEcrans(int x, int y, int maxX, int maxY, int ecart){
 
 	if(x < ecart || y < ecart || x > (maxX - ecart) || y > (maxY - ecart))
@@ -147,6 +150,36 @@ Mat doThings(Mat &a){
 	return res;
 }
 
+int zone(Mat & resu, int row, int col, Mat & base, int seuil) {
+    if(bordEcrans(col, row, base.cols, base.rows, 0))
+        return 0;
+    if(base.at<Vec3b>(row,col)[0] > seuil) {
+        resu.at<Vec3b>(row,col) = base.at<Vec3b>(row,col);
+        base.at<Vec3b>(row,col) = Vec3b(0,0,0);
+        return 1 + zone(resu, row+1, col, base, seuil) + zone(resu, row-1, col, base, seuil) + zone(resu, row, col +1, base, seuil) + zone(resu, row, col - 1, base, seuil);
+    }
+    else
+        return 0;
+}
+
+Mat smoothenNoise(Mat& m, int seuilNombreZone, int seuilPriseEnCompte) {
+
+    Mat mtemp=m.clone();
+    Mat resu = Mat::zeros(m.rows,m.cols,m.type());
+    Mat temp;
+    for(int i=0; i<m.rows;i+= 10){
+        for(int j=0; j<m.cols;j+= 10){
+            temp = Mat::zeros(m.rows,m.cols,m.type());
+            int nb=zone(temp,i,j,mtemp, seuilPriseEnCompte);
+            if(nb>seuilNombreZone){
+                resu+=temp;
+            }
+        }
+    }
+
+    return resu;
+}
+
 
 /*
  * Programme principal
@@ -186,7 +219,7 @@ int main(int argc, char ** argv){
 	//récupération de la première image
 	if(film.isOpened())
 		film >>frame;
-	elsdiffhist = difference(hist, frame);
+	else 
 		return EXIT_FAILURE;
 
 	//Boucle de traitement
@@ -206,6 +239,8 @@ int main(int argc, char ** argv){
 		imshow("Test difference", diffhist);
 
 		imshow("Diff background", diff);
+        diff = smoothenNoise(diff,1000,75);
+        imshow("Diff zones", diff);
 		key = (char)waitKey(30);
 		
 		while(key != 'g' && key != 'q' && device < 1){
