@@ -13,8 +13,8 @@ AddNewRa(X, L) -> ajoute X dans l'index des représentés avec L la liste des re
 AddNewRe(X, Y) -> ajoute Y dans l'index des représentés avec X comme représentant 
 
 AddRe(X, Y) 		-> ajoute Y dans la liste des représentés de X
-
 SetRa(X, Y) 		-> change le représentant de X en le remplaçant par Y
+
 GetRa(X) 			-> renvoie le représentant de X
 GetRe(X)			-> renvoie la liste des représentés de X
 Remove(X, Y) 	-> supprime Y de la liste des représentés de X
@@ -45,14 +45,13 @@ DropRa(Y)			-> Supprime X de l'index des représentants (Possible si sa liste de
 				-> L = GetRe(Y);
 					SetRa(X, L);
 					AddRe(X, L);
-					 Remove(Y, L);
-					 DropRa(Y);
-					 AddNewRe(Y, X));
-					 AddRe(X, Y);
+					Remove(Y, L);
+					DropRa(Y);
+					AddNewRe(Y, X));
+					AddRe(X, Y);
 
 6) (Ra, Re, __)
-				-> Remove(getRa(Y), Y);
-					SetRa(Y, X);
+				-> 
 					
 7) (Re, ø, __)
 				-> AddNewRe(Y, GetRa(Y)), AddRe(X, Y);
