@@ -5,12 +5,15 @@
 #include <string.h>
 #include <iostream>
 #include <math.h>
+#include <list>
 
 
 using namespace cv;
 using namespace std;
 
-
+/*
+ * Retourne si le pixel est situé à proximité du bord de l'image
+ */
 bool bordEcrans(int x, int y, int maxX, int maxY, int ecart){
 
 	if(x < ecart || y < ecart || x > (maxX - ecart) || y > (maxY - ecart))
@@ -147,6 +150,52 @@ Mat doThings(Mat &a){
 	return res;
 }
 
+/*
+ *
+ */
+void zone(Mat & resu,int & count,int tailleMax, int row, int col, Mat & base, int seuil) {
+    
+	if(bordEcrans(col, row, base.cols, base.rows, 0))    
+		return;
+    
+	if(base.at<Vec3b>(row,col)[0] > seuil) {
+        
+		resu.at<Vec3b>(row,col) = base.at<Vec3b>(row,col);
+        base.at<Vec3b>(row,col) = Vec3b(0,0,0);
+		++count;
+		//if(++count>tailleMax)
+			//return;
+        zone(resu, count,tailleMax, row+1, col, base, seuil); 
+		zone(resu, count, tailleMax, row-1, col, base, seuil);
+		zone(resu, count, tailleMax, row, col +1, base, seuil); 
+		zone(resu, count, tailleMax, row, col - 1, base, seuil);
+    }
+}
+
+/*
+ *
+ */
+void smoothenNoise(Mat& resu, Mat& m, int seuilNombreZone, int seuilPriseEnCompte) {
+
+    Mat mtemp=m.clone();
+    Mat temp;
+
+	resu=Mat::zeros(mtemp.rows,mtemp.cols,mtemp.type());
+	int i, nb, j;
+	for(i=0; i<m.rows;i+= 10){
+        for(j=0; j<m.cols;j+= 10){
+            
+			temp = Mat::zeros(m.rows,m.cols,m.type());
+            nb = 0; 
+			zone(temp, nb, seuilNombreZone+1, i, j, mtemp, seuilPriseEnCompte);
+            
+			if(nb>seuilNombreZone){
+                resu+=temp;
+            }
+        }
+    }
+}
+
 
 /*
  * Programme principal
@@ -187,43 +236,41 @@ int main(int argc, char ** argv){
 	//récupération de la première image
 	if(film.isOpened())
 		film >>frame;
-	else
+	else 
 		return EXIT_FAILURE;
 
-	//Boucle de traitement
-	//
+	
 	hist=bg.clone();
+	
+	//Boucle de traitement
 	while(key != 'q' && !frame.empty()){
 		
 		//extraction dans obj de la différence entre bg et frame
-		obj = traitement(bgflou,frame, 50) ;
+		//obj = traitement(bgflou,frame, 50) ;
 		
 		diffhist = difference(hist, frame);
 		diff = difference(bg, frame);
 		
 		//Affichage des différentes images
 		imshow("Image normale", frame);
-		imshow("objet extrait", obj);
+		//imshow("objet extrait", obj);
 		
 		imshow("Différence background in grayscale", diff);
-		imshow("Current Test", diffhist);
+		//imshow("Current Test", diffhist);
 
-		key = (char)waitKey(30);
+
+        smoothenNoise(diff, diff, 1000, 75);
+        imshow("Diff zones", diff);
+		//key = (char)waitKey(30);
 		
-		while(key != 'g' && key != 'q' && device < 1){
+		/*while(key != 'g' && key != 'q' && device < 1){
 			key = (char)waitKey(30);
-		}//*/
+		}*/
 
 		compteur ++;
 
 		if(film.isOpened()){
 			
-			/*if(compteur%10 == 0){
-				tmp = obj.clone();
-				decaleur = compteur;
-			}
-			if(compteur == decaleur + 10)
-				hist = tmp.clone();//*/
 			hist = frame.clone();
 			film >>frame;
 		}

@@ -1,0 +1,5 @@
+set output "data.png"
+set title "Nombre d'incrémentations en fonction de X"
+set xlabel "X -> ecart entre les deux threads"
+set ylabel "Nombre d'incrémentations"
+plot "data.txt" u 1:2 with lines lc 3, "data.txt" u 1:3 with lines lc 1
