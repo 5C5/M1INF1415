@@ -366,5 +366,184 @@ On a des programmes qui font des approximations.
 \subsection{effets de lumière}
 On peut gérer les effets de lumière de la même lumière. Par exemple, pour des rayons de lumières traversant une canopée et atteignant des grains de poussière. Normalement, il faudrait calculer la trajectoire des rayons à travers le feuillage. EN utilisant les imposteurs, on utilise des quads représentant les rayons fantomatiques
 
+[...]
 
+\section{Terrains}
+\subsection{Data}
+Beaucoup de chose possible mais taille grande (O($n^2$)) et traitement idem.
+\subsection{Fonctions}
+
+\subsection{Erosion}
+SI on regarde bien, un terrain modélisé par des données se prête bien à l'édition. Un terrain modélisé par des fonctions procédurales simule quelque chose de réaliste. Un terrain modélisé par erosion consiste à simuler un phénomène présent dans la nature :
+\begin{itemize}
+	\item Éolien
+	\item Thermique
+	\item hydrolique
+	\item climatique
+\end{itemize}
+Tous ces phénomènes sont commentés en géomorpholige. EN informatique, on s'en inspire et on essaye de les imiter. \\
+
+On veut des algos d'imitation des phénomènes -> En Computer Graphics, c'en est une application grossière, et on l'applique à nos structure de données pour obtenir des modèles de terrains un peu plus réaliste.
+
+\textbf{Érosion thermique}\\
+Principe : cycle jour nuit avec forte amplitude de température : $\detla \theta$ important sur les reliefs (moins coté nord, plus coté Ouest Est). Une partie du BedRock se transforme en rocher. Sous l'action de la température, ces rochers vont se transformer en sédiment, et dans une deuxième phase, ils seront transportés le long de la pente.\\
+Deux phases :
+\begin{itemize}
+	\item bedrock -> sédiment (arrachement)
+	\item sediment -> transport, mvmt. Déplacement tt que l'angle au repos n'est pas atteint. Une fois que le rocher atteint un endroit suffisement plat, il s'arrête. L'angle au repos est l'angle à la base du tas lorsque qu'on accumule des grains.
+\end{itemize}
+
+Implémentation : au niveau des structure de données, il ne faut pas travailler avec un modèle monocouche, mais un modèle à deux couches de matériaux.
+
+\begin{verbatim}
+class T{
+	Vector a, b;
+	int n;
+	Vector<double> br;	//Vecteur pour la roche
+	Vector<double s;	//Vecteur pour le sédiment;
+}
+\end{verbatim}
+SUr tous les pts d'échantillonnage Pi, on a une couche $br_i$, et une surcouche $s_i$.
+
+Au niveau des algos, besoins de deux algo : un qui dise 
+\begin{verbatim}
+T::ImpactThermique(){
+	$\forall_{ij}
+	orientation N S E W en ij;
+	//plus la pente est élevé, , plus on a une orientation sud, et plus l'impact thermique sera fort. Au contraire, il sera d'autant plus faible avec une plus grande épaisseur de sédiment.
+	//Il existe un épuiseur de sed :
+	br[i] -= e;
+	s[i] += e;
+}
+
+T::Stabilize(){
+	//Pour trois points d'échantillonnage i, i+1 et i-1, on a trois valeurs de br différentes. Pour savoir si des sédiments doivent tomber, il faut calculer l'angle entre les br adjacents. On peut avoir un déplacement sur les huits voisins.
+	$\forall$ i j {
+		calculer pour tous les (k, l) des 8 Voisins
+			la pente/ l'angle $\alpha$
+			tester si éboulement ou non
+		si 0 éboulement return;
+		choisir \epsilon = cste choisie. On prend \epsilon en ij, et on le répartit sur les voisions proportionnellement à la pente.
+		s[i, j] -= \epsilon;
+		s[h, l] += fraction(\epsilon);
+	}
+	//Il faut calculer une map $\delta$ s, puis calculer d'un coup pour cette map $\delta$ s
+}
+\end{verbatim}
+L'érosion thermique modélise relativement bien les accumulutations en rocher en bas de pentes fortes. Cet algo de stabilisation a besoin de plusieurs passes pour stabiliser le terrain. Tant que stabilize signale qu'il faut continuer, on continuer.
+
+\vskip 1cm
+\textbf{Érosion hydrolique :}\\
+Bcp plus complex, bien meilleurs résultats -> car permet de modéliser les effets du ruissellement, des crêtes et des vallées.\\
+Deux stratégies -> simulation temps réel(prise en compte de la dynamique des fluides) OU simulation d'effet géologique (quasi statique -> moyenne par siècle de transmission d'écoulement d'eaux).\\
+
+On rajoute, en plus d'un matériau sédiment, un matériau eau plus ou moins virtuel. Cette eau s'écoule avec une certaine vitesse v. En fonction de la vitesse, il y aura un arrachement en fction de la vitesse, et un dépôt partiel en fonction de la vitesse.\\
+Il y a un certain nombre de conditions (présence de bedrock, de sédiment, vitesse de d'écoulement).\\
+
+From Dust(goole).
+\vskip 2cm
+\subsection{Modèles volumiques}
+Pb bcp + coteux en terme de mémoire : data -> 3D -> O($n^3$).\\
+Utilisé pour modéliser des grottes, des surplombs, etc. Voxels existent mais ont un cout très très élevé en mémoire.\\
+Une solution : pile de matières -> tableau 2D de piles. Utilisation d'une grille, avec, au lieu d'un voxel, on dit qu'il y une certain hauteur de rocher. Puis une certaine hauteur d'air. Puis de nouveau une certaine hauteur de rocher. Cela permet de faire des surplombs, des grottes. Toute l'astuce consiste en une certaine épaisseur d'air.
+
+
+
+
+Conclusion :\\
+Perspectives d'avenir -> Terrains 3D (fonctions) ET mutlimatériaux (couche{rochers, branches, feuilles, débris}).\\
+Deuxième gros défi : terrains immenses avec précisions. Comment générer des kilomètres carrés de terrains à la précsion du centimètre.
+
+
+\vskip 2cm
+\subsection{Végatation}
+$\approx$ arbre.
+
+Intro :\\
+arbes et herbes (buissons et arbustes assimilés aux arbres)\\
+\begin{itemize}
+	\item Modélisation des formes des plantes (forme et texture) -> modélisation  + animation de la végétation(vent)\\
+	\item modélisation de la répartition/distribution. -> simulation d'écosystème\\
+\end{itemize}
+
+EN fait, ces deux phénomènes sont liés.\\
+
+Modélisation :\\
+deux gros problèmes :
+\begin{itemize}
+	\item Quelle structure de données?
+	\item comment créer/générer
+\end{itemize}
+
+\paragraph(Structure de Données)
+Maillages plus ou moins précis.
+
+Selon le niveau de détail, on peut avoir :
+\begin{itemize}
+	\item 1 Quad avec une image d'arbre dessus, qu'on fait tourner face à la caméra
+	\item 2 Quad composant un arbre, sans avoir besoin de la faire tourner, simulant un arbre un tant soit peu plus réaliste. $=< 4 $ Triangles max.\\Imposteurs
+	\item Un base Mesh low Poly pour le tronc (200 T), et 100 Quad pour le feuillage -> Billboard cloud. Il est possible de monter à 1000 ou 2000T.
+	\item Un high Poly pour le tronc (très précis, quelques 100k Triangles), et on modélise 1 Quad par feuille (de l'ordre de 40 000 feuilles), ou mieux, une feuille maillée. Facilement $10^6$ Triangles.
+\end{itemize}
+Les premiers modèles sont généralement statiques. Le dernier est adapté à l'animation.
+
+\paragraph{Génération}
+\begin{itemize}
+	\item Édition à la main : + long, + précis, capable de conserver un certain style
+	\item SpeedTree : référence dans la création d'arbre pour le temps réel
+	\item Création automatique : comment créer de la masse de façon générique.
+\end{itemize}
+
+Comment faire de la création automatique d'arbre :
+\begin{itemize}
+	\item L-Systems (Lindemeyer 1965) : un arbre respecte un processus de croissance; on l'imite cette structure par 1 algorithme/grammR.\\
+		Axiome : tige |\\
+		Règle : tiges | -> Y\\ 
+		et ainsi de suite. On peut enrichir la gramR de paramètre -> gramR paramétrée.\\
+		On peut y intégrer des choix aléatoires -> gramR stochastique : une gramR peut offrir une variété. Deux arbres ne seront jamais exactement les mêmes.\\
+		gramR ouverte : la gramR n'est pas fermée, elle dépend d'une requête vers l'extérieur, sur l'environnement. On bloque la génération si il n'est pas possible de générer des branches quelques part.\\
+		+ varié, + générique, + automatique, + adapté à l'émulation, - gramR, + bio conforme/inspiré (CIRAD/CRIRAD Montpellier).\\
+		pb : Comment passer de la structure en battonnet à une surface de tronc réaliste? Non résolu.
+	\item 
+\end{itemize}
+
+\paragraph{Comment distribuer de la végétation}
+\begin{itemize}
+	\item à la main
+	\item automatiquement :
+		\begin{itemize}
+			\item procédural -> règles ad hoc de placement.\\
+				En général, sur un terrain, on définit une zone (cercle) dans laquelle on place la forêt. Pour la générer automatiquement au sein de ce cercle :
+				\begin{itemize}
+					\item solution 1 : \begin{verbatim}
+						for(i = 0; i < n; i ++)	// générer n arbres
+						{
+							a[i] = Cercle(c, r).randomInside();
+						}
+					\end{verbatim}
+					Pb : arbres trop proches, arbres sur des zones trop pentues.
+				\item solution 2 : faire un tirage en ne créant a[i] que s'il n'est pas trop proche de a[k] avec k < i.\\
+					Faire un check de pente sur le terrain.
+				\item moduler le développement de l'arbre a[i] à son environnement.
+				\end{itemize}
+				Il s'agit de regarder l'environnement avant de créer un arbre.
+			\item simulation écologique : évolution d'une population
+		\end{itemize}
+\end{itemize}
+Pb : comment faire cohabiter des espèces?\\
+Exemple : une zone partagée entre des sapins(denses), et des platanes (denses).\\
+Si par exemple, les platanes sont arrivés en premier, alors les sapins écrasent les platanes.\\
+
+Simulation d'écosystème :\\
+Distribution sous la forme d'un jeu de la vie : règles de developpement, de reproduction et de mort des plantes.\\
+En général, 1 itération = 1 an.
+
+L'algo est en deux étapes : Initialiser une distrib de démarrage T0. Puis itérer n fois.\\
+Pour chaque type/espèce d'arbre, et à chaque itération :\\
+Chaque arbre a un cercle avec un rayon (ressources nécessaire). L'arbre peut :
+\begin{itemize}
+	\item mourir, en fonction de l'espérance de vie, avec des lois de probabilités indiquant ses chances de survie.
+	\item se reproduire, et où. En général, dans un rayon Rs autour de lui, de façon aléatoire.
+	\item tester sa compétion avec ses voisins, sa compatibilité avec son environnement. Cela influe sur ses capacités.
+\end{itemize}
 \end{document
