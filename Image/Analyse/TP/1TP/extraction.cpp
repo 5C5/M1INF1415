@@ -220,8 +220,8 @@ int main(int argc, char ** argv){
 	Mat frame, bg, obj, bgflou, diff, hist, diffhist, tmp;
 	char key;
 
-	namedWindow("Image normale", 1);
-	namedWindow("objet extrait", 1);
+	//namedWindow("Image normale", 1);
+	//namedWindow("objet extrait", 1);
 
 	//Récupération du décor
 	film >> bg;
@@ -246,26 +246,26 @@ int main(int argc, char ** argv){
 	while(key != 'q' && !frame.empty()){
 		
 		//extraction dans obj de la différence entre bg et frame
-		//obj = traitement(bgflou,frame, 50) ;
+		obj = traitement(bgflou,frame, 50) ;
 		
-		diffhist = difference(hist, frame);
+		diffhist = difference( frame, hist);
 		diff = difference(bg, frame);
 		
 		//Affichage des différentes images
 		imshow("Image normale", frame);
-		//imshow("objet extrait", obj);
+		imshow("objet extrait", obj);
 		
 		imshow("Différence background in grayscale", diff);
-		//imshow("Current Test", diffhist);
+		imshow("Current Test", diffhist);
 
 
-        smoothenNoise(diff, diff, 1000, 75);
-        imshow("Diff zones", diff);
-		//key = (char)waitKey(30);
+        //smoothenNoise(diff, diff, 1000, 75);
+        //imshow("Diff zones", diff);
+		key = (char)waitKey(30);
 		
-		/*while(key != 'g' && key != 'q' && device < 1){
+		while(key != 'g' && key != 'q' && device < 1){
 			key = (char)waitKey(30);
-		}*/
+		}
 
 		compteur ++;
 
