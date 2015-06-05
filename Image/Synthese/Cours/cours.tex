@@ -538,7 +538,7 @@ Simulation d'écosystème :\\
 Distribution sous la forme d'un jeu de la vie : règles de developpement, de reproduction et de mort des plantes.\\
 En général, 1 itération = 1 an.
 
-L'algo est en deux étapes : Initialiser une distrib de démarrage T0. Puis itérer n fois.\\
+
 Pour chaque type/espèce d'arbre, et à chaque itération :\\
 Chaque arbre a un cercle avec un rayon (ressources nécessaire). L'arbre peut :
 \begin{itemize}
@@ -546,4 +546,128 @@ Chaque arbre a un cercle avec un rayon (ressources nécessaire). L'arbre peut :
 	\item se reproduire, et où. En général, dans un rayon Rs autour de lui, de façon aléatoire.
 	\item tester sa compétion avec ses voisins, sa compatibilité avec son environnement. Cela influe sur ses capacités.
 \end{itemize}
+
+\section{Structures de données accélatrices}
+Un certain nmbre de modèle de maillages créés : On souhaite pouvoir accélérer les traitements à tout moments.
+
+Objectif : Optimisation
+\begin{itemize}
+	\item visualisation -> n'afficher que ce qui est nécessaire (visible ds le cone de la caméra)
+	\item collision -> ne tester que ce qui est nécessaire (proche)\\
+		On s'appuie sur des techniques de structuration de l'espace : traitement des objets un par un. Gains souvent titanesques (facteur 10 puissance 2, 3)
+\end{itemize}
+
+\subsection{Classification}
+Hiérachie 
+\begin{itemize}
+	\item Hiérachies Volumes englobants
+		\begin{itemize}
+			\item AABB : des boîtes à chaussures qui contiennent des boîtes à chaussures (Axis Aligned B.. Boxes)
+			\item OBB : des boites d'orientation quelconques -> On évite, car rarement utiles
+			\item BVH : des cercles qui contiennent des carrés qui contiennent des triangles .. -> Pas adpaté
+		\end{itemize}
+	\item Division de l'espace
+		\begin{itemize}
+			\item BSP : arbre binaire -> La classification nécessite des calculs (trois additions, trois multiplication, deux additions, et un test) ce qui peut couter cher en grand nbre.
+			\item k-D-tree : nbre fini de directions\\
+				k-D-tree particulier : utilisation des plans principaux du repère uniquement -> ce sont une optimisation des BSP. Le cout de classification est un test. SI on peut l'utiliser, on l'utilise en le préférant aux BSP
+		\end{itemize}
+		\item les grilles
+			\begin{itemize}
+				\item les grilles régulières -> division simples -> très utilisées car elles ont de bonnes propriétés de vitesses. Elles bouffent bcp de mémoire 
+				\item les grilles adaptatives (Quad-Tree, Oct-Tree) qui sont la version récursives d'une division par quatre en 2D et par 8 en 3D
+				\item les multigrilles -> structure récursive de division sans forcément de régularité -> une multigrille bien choisie permet d'éviter les pertes de performances d'un oct-tree
+			\end{itemize}
+\end{itemize}
+
+\subsection{BVH AABB}
+But : structurer l'espace en un certain nbre de région incluses les unes dans les autres de manières hiérarchiques
+En informatique, cela correspond à un arbre sous la forme
+\begin{itemize}
+	\item  B12345
+		\begin{itemize}
+			\item B12
+				\begin{itemize}
+					\item B1 -> O1
+					\item B2 -> O2
+				\end{itemize}
+			\item B345
+				\begin{itemize}
+					\item B3 -> O3
+					\item B4 -> O4
+					\item B5 -> O5
+				\end{itemize}
+		\end{itemize}
+\end{itemize}
+
+\vskip 2cm
+
+\textbf{Algorithme :}\\
+Test p $\in$ O
+\begin{verbatim}
+bool N ::Test(p)
+	if(terminal) return O.appartien(p);
+	else
+		si(p n'appartient pas à B) return false
+		sinon return left::Test(p) || right::Test(p)
+\end{verbatim}
+Autre exemple : $\delta \inter O$\\
+L'algo est similaire, en remplaçant juste le test sur l'appartenance du point à la boite par tester si la droite passe par la boite englobante.
+
+\vskip 2cm
+\textbf{Construction}
+Pb : quelle hiérachie optimise pour n objets.\\
+C'est un problème NP complet => utilisaton d'heuristiques de construction (ou construction à la main).\\
+Par exemple, on choisit une direction de construction (X, Y) -> On partage la population en 2 parties de tailles plus ou moins égales. On on récursive, mais en changeant de direction (en tournant orthognonalement).\\
+Très efficace -> calculs sur VE : boites AABB sont rapides, et constructions rapides
+
+Remarques : certains objets rentrent mal dans des AABB
+
+plutot que de faire un volume Englobant + complex, faire l'union de volumes englobants simples.
+
+Remarque : Les hiérachies de boites englobantes sont utiles pour des objets statiques ou à mouvement régulier et limité dans l'espace
+
+
+\subsection{Grilles régulières}
+(dessin d'un grille)
+
+une grille est un tableau à N dimmensions (2 ou 3 en fonction du nbre de dimmensions dans lesquels on travaille). Les cases contiennent la liste des objets touchant leur case.
+
+\vskip 2cm
+\textbf{Algo} p $\in$ O\\
+trouver case(i, j, k)\\
+tester les objets de (i, j, k)\\
+
+Algoithme de Bresonamm : très efficace, et est capable de donner l'ordre de passage à travers les cases.
+
+\vskip 2cm
+\textbf{construction}
+Les cas ou une grille n'apporte quasiment rien :
+\begin{itemize}
+	\item les cas ou ts les objets ou presque sont dans une même case. -> la grille n'a rien pu séparer : distribution / dispersion hétérogène
+	\item distribution hétérogènes de petits objets, et gros objets sur plusieurs cases -> tailles différentes
+\end{itemize}
+
+Grilles= bien si objets $\approx$ de meme taille et bien distribués
+
+A utiliser pour la foret.
+
+Remarque : 2 stratégies :
+\begin{itemize}
+	\item chaque case stocke $\forall$ les objets qui les touchent. 1 objet est référencé quatre fois au maximum si son diamètre est inférieur à la taille d'une cellule.
+	\item Comme le nbre de cas expliqué ci dessus peut être grand, on peut associer un objet à une et une seul case. On asscoie la case qui contient le centre/point d'ancrage de l'objet à cet objet : loose grid (grille relachée). On teste également le 1 voisinage pour l'appartenance d'un pt.
+\end{itemize}
+
+
+\subsection{Structures particulières}
+Ttes ces structures sont très générales.\\
+
+$\exists$ structure spécifiques à des pbs particuliers.
+
+Exemple : les portals\\
+C'est une extension des structures précédentes pour les scènes architecturales. Permet d'accéléer au max la visualisation dans les scènes d'intérieur.\\
+Avec les structures précédentes, on devait afficher ttes les pièces qui intersectent le champ de vision. Or elles peuvent être dissimulés par des murs.\\
+Les portals divisent en plusieurs sections numérotés, et rajoutent des "portals" entre des sections (les ouvertures, fenetres, portes). On récurse l'affichage uniquement si la vue intersecte un portal. On peut limiter l'affichage d'une section vue par un portal en récursant par un volume V de visualisation plus petit, dépendant de la taille de l'ouverture. On récurse V sur les ouvertures de la section.
+
+Il peut y avoir bcp de structures et d'algos spécifiques. Plus il y a d'hypothèses fortes, plus on peut s'appuyer dessus pour faires des structures spécifiques adaptées.
 \end{document
