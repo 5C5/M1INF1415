@@ -196,6 +196,59 @@ void smoothenNoise(Mat& resu, Mat& m, int seuilNombreZone, int seuilPriseEnCompt
     }
 }
 
+/*
+*
+*/
+
+void frontiere(Mat& resu, Mat& m, int seuil){
+	resu=Mat::zeros(m.rows,m.cols,m.type());
+	for(int i=1; i<m.rows-1;i++){
+		for(int j=1; j<m.cols-1;j++){
+			if(m.at<Vec3b>(i,j)[0]>seuil&&(m.at<Vec3b>(i-1,j)[0]<seuil||m.at<Vec3b>(i+1,j)[0]<seuil
+				||m.at<Vec3b>(i,j-1)[0]<seuil||m.at<Vec3b>(i,j+1)[0]<seuil)){
+				
+				resu.at<Vec3b>(i,j)=Vec3b(255,255,255);
+				
+			}
+		}
+	}
+}
+
+void centreGravite(int& cx, int& cy, Mat& m ,int seuil){
+	cx=0;
+	cy=0;
+	int nb=0; 
+	for(int i=0; i<m.rows;i++){
+		for(int j=0; j<m.cols;j++){
+			if(m.at<Vec3b>(i,j)[0]>seuil){
+				cx+=j;
+				cy+=i;
+				nb++;
+			}
+		}
+	}
+	if(nb!=0){
+		cx/=nb;
+		cy/=nb;
+	}
+	else{
+		cx=0;
+		cy=0;
+	}
+	
+}
+
+void parasiteAvecCentre(int cx, int cy, Mat& m, int taille ,Vec3b color){
+
+	for(int i=0; i<m.rows;i++){
+		for(int j=0; j<m.cols;j++){
+			if(i<cy-taille||i>cy+taille||j<cx-taille||j>cx+taille){
+				m.at<Vec3b>(i,j)=color;
+			}
+		}
+	}
+
+}
 
 /*
  * Programme principal
@@ -217,7 +270,7 @@ int main(int argc, char ** argv){
 	else
 		film = VideoCapture(filename);
 
-	Mat frame, bg, obj, bgflou, diff, hist, diffhist, tmp;
+	Mat frame, bg, obj, bgflou, diff, hist, diffhist, tmp, front;
 	char key;
 
 	//namedWindow("Image normale", 1);
@@ -250,13 +303,26 @@ int main(int argc, char ** argv){
 		
 		diffhist = difference( frame, hist);
 		diff = difference(bg, frame);
+
+		frontiere(front, diff, 50);
 		
 		//Affichage des différentes images
 		imshow("Image normale", frame);
-		imshow("objet extrait", obj);
 		
-		imshow("Différence background in grayscale", diff);
-		imshow("Current Test", diffhist);
+
+		int cx;
+		int cy;
+		centreGravite(cx,cy,diff,50);
+		front.at<Vec3b>(cy,cx)=Vec3b(255,0,0);
+		parasiteAvecCentre(cx,cy,front,150,Vec3b(0,0,0));
+		parasiteAvecCentre(cx,cy,diff,150,Vec3b(0,0,0));
+		parasiteAvecCentre(cx,cy,obj,150,Vec3b(0,255,0));
+		parasiteAvecCentre(cx,cy,diffhist,150,Vec3b(0,0,0));
+		
+		imshow("objet extrait", obj);
+		imshow("Difference background in grayscale", diff);
+		imshow("Frontiere", front);
+		imshow("DiffHist", diffhist);
 
 
         //smoothenNoise(diff, diff, 1000, 75);
@@ -281,4 +347,4 @@ int main(int argc, char ** argv){
 	film.release();
 
 	return EXIT_SUCCESS;
-}
+} 
