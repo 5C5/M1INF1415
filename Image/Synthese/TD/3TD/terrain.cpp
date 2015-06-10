@@ -93,7 +93,7 @@ void Terrain::addDoubleNoise(){
         for(int k = 0; k < 10; k+=2){
             double x = geom[i].x/20;
             double y =  geom[i].z/20;
-            geom[i].y +=  7/pow(3, k) * smooth_noise(x * (k+3)/3, y * (k+1));
+            geom[i].y +=  5/pow(2, k) * smooth_noise(x * (2 * k+3), y * (2 * k+3));
         }
     }
 }
@@ -106,17 +106,33 @@ void Terrain::addWeirdNoise(){
             double x = geom[i].x/20;
             double y =  geom[i].z/20;
             geom[i].y +=
-                   montee((int)geom[i].y % 1) *
-                   smooth_noise(x + k*2, y + k*2 );
+                   montee((geom[i].y + 20)/40) * 5/pow(2, k) *
+                    smooth_noise(x * (2 * k+3), y * (2 * k+3));
+
         }
     }
 }
+
  void Terrain::addSeuil(double s){
     if (s >= -20 && s <= 20){
 
         for(int i = 0; i < geom.size(); i ++){
             double t = geom[i].y;
-            if(t > s){
+            if(t > s + smooth_noise(t, s)){
+                geom[i].y -= 2 * (t - s);
+            }
+        }
+    }
+ }
+
+ void Terrain::addSeuilBruite(double s){
+    if (s >= -20 && s <= 20){
+
+        for(int i = 0; i < geom.size(); i ++){
+            double t = geom[i].y;
+            if(t > s - smooth_noise(t, s) && t < s + smooth_noise(t, s))
+                geom[i].y += 2 * smooth_noise(s, t);
+            if(t >= s + smooth_noise(t, s)){
                 geom[i].y -= 2 * (t - s);
             }
         }
