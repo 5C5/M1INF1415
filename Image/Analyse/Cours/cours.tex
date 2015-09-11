@@ -225,7 +225,7 @@ La segmentation par ligne de partage des eaux : famille des méthodes de segment
 stochastique : Gibbs, Markov.
 
 \vskip 1cm
-A : ensemble des pixels (i, j)\\
+A : ensemble des pixels (i, j)\\ 
 attribut : niveau de gris (valeur de couleur).\\
 Hypothèse on dispose de N classes(région). Assignation /affect des pixels dans les différentes classes/régions\\
 
@@ -236,11 +236,41 @@ But : de faire évoluer chaque vecteur $ P(i, j) \approx \alpha$ -> itérative\\
 $0 << P(i, j, l) << 1$ soit $ \sum_l P(i, j, l) = 1$
 
 \vskip 1cm 
-Règles de production/ Mise à jour (Rosenfeld)\\
+Règles de production/ Mise à jour (Rosenfeld)
 On donne une quotation négative/très faible à certains éléments pour pondérer leur probabilité en fonction de leur cohérence : on tient compte de la connaissance que l'on a.\\
 Rosenfeld propose de soit calculer la corrélation entre ttes les classes, soit de calculer une estimation
 
 $r((i, j) \in l, (u, v) \in k)$ compatibilité $\in [-1, 1]$\\
 
+
+\section{}
+\begin{itemize}
+	\item Relaxation probabiliste
+	\item méthode Markovienne (processus de Markov) : Le présent dépend du passé, et l'état à un temps $t_i$
+\end{itemize}
+Cela correspond à l'assignation d'un pixel ij à une classe.
+
+\vskip 1cm
+Plusieurs étapes :
+\begin{enumerate}
+	\item Répartition initiales : chaque pixel (i, j) est affecté à une classe donnée avec un indice de certitude (probabilité)\\
+		-> Contexte :\\
+			-> quantifié par des compatibilités (....), de configurations :\\
+			-> classe c1/ a la classe C2\\
+\end{enumerate}
+
+On dispose des probabilités (i, j) $\in R_l -> P^{(n)}_{ij} {\\
+	P^{(n)}_{(ij)}(R1)\\
+	P^{(n)}_{(ij)}(R2)\\
+P^{(n)}_{(ij)}(RL)\\}$
+
+
+$cmp((i, j) \in R_l, (u, v) \in R_m)$\\
+$cmp(R_l, R_m)$\\
+
+$\sum_{(u, v)} \sum_l cmp(R_l, R_m) * P'uv(R_l)$
+
+
+\vskip 2cm
 
 \end{document}

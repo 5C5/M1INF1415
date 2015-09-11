@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include <math.h>
 
+
+
+/*
+ //Code de Ken PERLIN
+ //disponible ici : http://mrl.nyu.edu/~perlin/doc/oscar.html#noise
 static void init(void);
 
 #define s_curve(t) ( t * t * (3. - 2. * t) )
@@ -182,6 +187,7 @@ static void init(void){
 			g3[B + i][j] = g3[i][j];
 	}
 }
+*/
 
 double noise(int t){
 	double fract=sin(t)*43758.5453123;
@@ -238,23 +244,29 @@ double smooth_noiseABS(double x, double y) {
 	return (1+smooth_noise(x, y))/2;
 }
 
-void test (){
-	for(double i =0; i < 10; i++){
-		for(double j = 0; j < 10; j++){
-            float t[2] = {(float)i, (float)j};
-			float k = noise2(t);
-			double l = noise(i, j);
-            //printf("Selon perlin : %f; selon Florian %d\n", k, l);
-		}
-	}
-}
 
-double interpolation(double x1, double y1, double x2, double y2, double x){
+double lerp(double x0, double y0, double x1, double y1, double x){
 
-    double pente = (y2 - y1)/(x2 - x1);
-    return (pente * (x1 - x) + y1);
+    return y0 + (y1 - y0)/((x - x0)/(x1 - x0));
 }
 
 double montee(double x){
     return (1 - (1 -(x * x)) * (1 - (x*x)));
+}
+Point3f highest(Point3f a, Point3f b, Point3f c){
+    if(a.y >= b.y && a.y >= c.y)
+        return a;
+    else if(b.y >= a.y && b.y >= c.y)
+        return b;
+    else
+        return c;
+}
+
+Point3f lowest(Point3f a, Point3f b, Point3f c){
+    if(a.y < b.y && a.y < c.y)
+        return a;
+    else if(b.y < a.y && b.y < c.y)
+        return b;
+    else
+        return c;
 }

@@ -1,0 +1,21 @@
+***README***
+
+ADAM FLORIAN 11411840
+BRISARD LUCAS 11410581
+PICARD COLAS 11410822
+
+COMPILATION :
+Pour compiler, il est nécessaire d'utiliser CMake. Le fichier CMakeLists.txt est fourni. Il suffit donc de faire
+cmake .
+make
+
+
+ÉXÉCUTION :
+Le programme prend en argument soit le numéro d'une caméra branchée sur l'ordinateur (habituellement 0 ou 1), soit un fichier video.
+Dans les deux cas, la première image de la video ne doit comporter que le décor, puisque nous l'utilisons comme telle.
+Il suffit donc de faire :
+./Extraction 0
+OU
+./Extraction <path/of/the/video/file>
+
+Pendant le programme, pour passer à l'image suivante, il faut presser la touche 'g'. Pour quitter le programme, il faut presser la touche 'q'

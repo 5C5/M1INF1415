@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( Terrain)
+find_package( OpenCV REQUIRED )
+include_directories("/Locals/OpenCV-2.4.10/include")
+add_executable( Terrain outils.cpp main.cpp terrain.cpp td.cpp tree.cpp)
+target_link_libraries( Terrain ${OpenCV_LIBS} )

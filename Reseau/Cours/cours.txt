@@ -29,32 +29,37 @@ Temps de transfert : 640 000 bits à envoyer
 
 
 Commuter : Paquet ou circuit ?
--Pour les appli en temps réels, avec contrainte fortes, privilégier CIRCUIT
--Pour la simplicté et le coup de mise en place, privilégier PAQUET
--Pour le partage des ressources, privilégier PAQUET( pour l'opérateur) et CIRCUIT (pour l'utilisateur)
+-Pour les appli en temps réels, avec contrainte fortes, privilégier CIRCUIT : De la ressource sera réservée pour l'utilisateur.
+-Pour la simplicté et le coup de mise en place, privilégier PAQUET : 
+-Pour le partage des ressources, privilégier PAQUET( pour l'opérateur/fournisseur) car permet plus d'utilisateurs simultanés, et CIRCUIT (pour l'utilisateur) car garantit à l'utilisateur une qtté de donnée.
 
 
 Fragmentation des paquets :
+L (taille du message en Mbits), C (bande passante en Mbps), n(nombre de saut) , m (nombre de paquets)
+Sans Frag : 15 s (3 x 7.5 / 1.5) <=>  L * n /C
+Avec fragmentation :7 s (3 x 7.5 / 5 / 1.5 + 4 x 7.5 /5 / 1.5) <=> n*L / m / C + (m-1)*L / m / C <=> temps d'attente du dernier paquet + temps de transfert.
 
-Sans Frag : 15 s (3 x 7.5 / 1.5)
-Avec fragmentation :7 s (3 x 7.5 / 5 / 1.5 + 4 x 7.5 /5 / 1.5)
-
-Avantage : réduction du temps de transmission; perte uniquement du fragment perdu et non pas du message entier
-Inconvénient : utilsation de davantage de ressource (multiplication des informations de transmission) rapport entete/donnée utile augmente; Désegmentation possible
+Avantage : réduction du temps de transmission (RTT); perte uniquement du fragment perdu et non pas du message entier. Le transfert est parallélisé. Limite des erreurs grâce à la réduction de la taille des paquets.
+Inconvénient : utilsation de davantage de ressource (multiplication des informations de transmission) rapport entete/donnée utile augmente; Désegmentation possible, donc réordonnancement.
 
 
 Acheminement à la source :
-Avantage : chemin emprunté connu
-Inconvénient : Solution peu résistante aux changements de topologie; la taille de l'entete est variable et non bornée;
+Chaque paquet contient le chemin complet à suivre, avec les sorties des commutateurs sur la route.
+Avantage : chemin emprunté connu, donc rapide
+Inconvénient : Solution peu résistante aux changements de topologie; la taille de l'entete est variable et non bornée -> elle augmente proportionnellement avec la taille du chemin;
 
 
-Circuit Virtuel
-On change le numéro /D à chaque lien car : taille du champ réduite; gestion indépendante des commutateurs
+Acheminement par Circuit Virtuel :
+On détermine un chemin entre la source et la destination : on attribue à chaque lien composant le chemin un identifiant de Circuit Virtuel. Un table de correspondance permet de lier
+On change le numéro ID à chaque lien car : taille du champ réduite; gestion indépendante des commutateurs
+Les commutateurs doivent répercuter les changements de topologie.
 
-Avantage : moins de place; Qualité de Service QoS; Cout de l'entete bas; Acheminement rapide; chemin emprunté connu
+
+Avantage : moins de place; Qualité de Service QoS; Cout de l'entete bas; Acheminement rapide car chemin emprunté connu
 Inconvénient : Attente avant établissement de la communication; si un lien tombe, besoin d'une nouvelle connexion.
 
-Datagramme : 
+Acheminement par Datagramme : 
+Chaque paquet contient l'adresse de sa destination finale.
 Avantage : pas d'attente avant la connexion; les paquets sont envoyés indépendemment de ceux des autres noeuds; Résistant aux changements de topologie;
 Inconvénient : Sans connexion (pas de garantie sur la QoS; pas de garantie de livraison); les paquets sont envoyés indépendemment de ceux des autres noeux.
 
@@ -69,15 +74,15 @@ Types de délais :
 4 - Délai de propagation ~[µs - ms] d/y si taille d du lien et vitesse de propagation y
 
 
-Délai de bout en bout  = (N + 1) x (Dtrait + Dtrans + Dprop) + Dattente
-
+Délai de bout en bout  = (N + 1) x (Dtrait + Dtrans + Dprop) + Somme des Dattente
+OU (N+1) * 
 
 Calcul numérique : Sans fragmentation = 15,3 s
 				   Avec fragmentation = 7,3 s
 
 Architecture en couche :
-Avantages : Très modulable (possibilité d'évolution); Un protocole appartien à une couche (une seulement, normalement)
-Inconvénient : Perte d'information liée à la communication aux couches adjacentes seulement.
+Avantages : Très modulable (possibilité d'évolution); Un protocole appartien à une couche (une seulement, normalement); identifier rapidement un aspect/service; changer l'implémentation d'une couche.
+Inconvénient : Perte d'information liée à la communication aux couches adjacentes seulement. fonctions dupliquées; besoins de "cross-layer"
 
 
 _________________________________________
@@ -307,6 +312,8 @@ Service de la couche 2 :
 	-Encapsulation du datagramme ds une trame + champs supplémentaires (en-tête de niveau 2, informations sur la couche 2 , adresses MAC)
 	-Assurer la communication entre deux noeuds voisins, réaliser les services de niveau 2.
 	-Délimitation d'une trame  : fanion(bit), marqueur de de début et de fin (caractères)
+
+En-tête dela couche 2 : 
 
 -Détection d'erreur :
 	-Erreurs possibles su le lien de communication (atténuation, bruits, collisions /interférences, Echo, Diaphonie)

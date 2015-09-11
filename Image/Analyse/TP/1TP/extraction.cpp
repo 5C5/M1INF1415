@@ -122,8 +122,8 @@ Mat traitement(Mat a,Mat b, int e){
 	for(int i=0; i<a.rows;i++){
 		for(int j=0; j<a.cols;j++){
 			resu.at<Vec3b>(i,j) = traitement(a.at<Vec3b>(i,j),temp.at<Vec3b>(i,j), b.at<Vec3b>(i, j), e);
-		}
 	}
+}
 
 	return resu;
 }
@@ -299,9 +299,9 @@ int main(int argc, char ** argv){
 	while(key != 'q' && !frame.empty()){
 		
 		//extraction dans obj de la différence entre bg et frame
-		obj = traitement(bgflou,frame, 50) ;
+		//obj = traitement(bgflou,frame, 50) ;
 		
-		diffhist = difference( frame, hist);
+		//diffhist = difference( frame, hist);
 		diff = difference(bg, frame);
 
 		frontiere(front, diff, 50);
@@ -319,10 +319,11 @@ int main(int argc, char ** argv){
 		parasiteAvecCentre(cx,cy,obj,150,Vec3b(0,255,0));
 		parasiteAvecCentre(cx,cy,diffhist,150,Vec3b(0,0,0));
 		
-		imshow("objet extrait", obj);
-		imshow("Difference background in grayscale", diff);
+		//imshow("objet extrait", obj);
+		
+		//imshow("Difference background in grayscale", diff);
 		imshow("Frontiere", front);
-		imshow("DiffHist", diffhist);
+		//imshow("DiffHist", diffhist);
 
 
         //smoothenNoise(diff, diff, 1000, 75);

@@ -7,19 +7,21 @@ Cours du 11/09/2014
 	[Langage type Pascal] -> [représentation intermédiaire -> Robot Logo]
 
 On part d'un langage source, qu'on passe à un compilateur, qui renvoie normalement un code binaire éxécutable.
-
+données formatées -> représentation interne
 Cela se fait en deux étapes :
 -Génération d'un code intermédiaire (code trois adresses)
 -Génération du code binaire à partir de ce code 3 @
 
 Le code binaire dépend du OS et de la machine utilisé. Le code 3@, proche de se code binaire, va pouvoir être optimisé.
 
-Dans la génération du code 3@, il y a trois étapes
--analyse lexicale (découpe le code en unité lexicale (lèxeme). On a défini au préalable tous les expressions régulières.
+Dans la génération du code 3@, il y a trois phases, le front-end:
+-analyse lexicale (découpe le code en unité lexicale (lèxeme). On a défini au préalable tous les expressions régulières. 
 -analyse syntaxique : vérification de l'adéquation entre les suites de lèxemes et le langage.
--analyse sémantique : on va essayer de donner un sens (et vérifier qu'il y en a un). Elle fait la vérification d'erreur plus génération de code 3@. Elle peut également faire un certain nombre d'optimisations (simples)
+-analyse sémantique : on va essayer de donner un sens (et vérifier qu'il y en a un). Elle fait la vérification d'erreur plus génération de code 3@. Elle peut également faire un certain nombre d'optimisations (simples), et des calculs simples.
 
-Dans le passage du code 3@ au code binaire, également trois étapes :
+L'analyse sémantique permet d'optimiser en enlevant du code mort, et en optimisant les calculs.
+
+Dans le passage du code 3@ au code binaire, également trois étapes (back-end) :
 -Optimisation par rapport à la machine.
 -Allocation de registre (limiter les accès mémoire)
 -Génération du code assembleur => utilisation d'instruction liées au processeur.
@@ -28,6 +30,8 @@ Prg source -> analyse lexicale -> fournit des lèxèmes -> analyse syntaxique (c
 
 Langage à générer : du NBC (langage du robot)
 
+
+-------------------------------------------------
 Dans l'analyse lexicale, il nous faut une liste des identificateurs -> la table des symboles; dans un contexte donné : identificateur --> signification dans le programme.
 
 La table des symboles peut se présenter sous la forme d'un tableau de symbole, chacun possédant une liste chainée de signfication (selon le contexte).
@@ -46,9 +50,16 @@ On donne une description des lexèmes (et quelques action en C) à un prog appel
 
 Le remplissage de la table des symboles va être un couplage l'analyse syntaxique et l'analyse sémantique.
 
+-------------------------------------------------------------
+Analyse syntaxique :
 Le langage source peut être décrit sous la forme d'une GramR.
 
-(J'ai déjà fait tout les trucs sur les GramR, l'analyse lexicale et syntaxique, je ne prends pas la peine d'écrire l'exemple du prof. Surtout que dessiner des piles en ASCII, c'est chiant. Même si c'est de l'UTF-8. Mais libre à vous de compléter cette partie du cours).
+GramR G : <axiome, Vn, Vt, regles>
+avec Vn les variables non terminal
+Vt variables terminales
+et les regles de production
+
+
 
 Pile contient des couples : <Symbole, attribut>
 
@@ -70,6 +81,22 @@ Objectifs des TPs : définir les attributs/actions pour générer du code.
 -Optimisation
 -Affectation de registres.
 
+--------------------------------------------------
+Chaque fois qu'on lit un identificateur, on le rajoute à la table des identificateurs s'il n'est pas déjà présent.
+On transmet son numéro unique
+
+Table des symboles : une par contexte (prog/ sous programme.
+Parcours sur TS des contextes parents.
+
+Remplissage des TS :
+	-lors de l'analyse syntaxique, dans les déclarations. Si l'identificateur n'appartient pas à la table des symboles, on ajoute une ligne, avec, son nom, Var, son numéro d'identificateur.
+
+
+analyse sémantique : 
+	-définir les attributs sémantiques de chaque symbole
+	-définir les méthodes de calculs de ces attributs.
+
+
 
 La gestion des déclarations : associer une signification à chaque identificateur.
 
@@ -77,7 +104,7 @@ La gestion des déclarations : associer une signification à chaque identificate
 ->Fonction : décrite par un nbre d'argumment, la TS de son contexte, type de retour; code 3@
 ->Procédure (Fonction void en C) : nbre d'argumment; TS contextuelle, code3@.
 ->variable : définie par leur type;
-->constante : définie par un type et une valeur.
+->constante : définie par un type et une valeur. Cste -> const id = Expression
 ->Argumment : défini par un mode de passage (adresse) et le type associé
 ->type utilisateur : déscription du type(quelqu'il soit)
 ->temporaires : (les petis trucs utilisés pour stocker les résultats des calcules intermédiaires) décrit par le type associé.
@@ -101,7 +128,10 @@ intervalles -> bornes min et max + type borne
 + types utilisateurs
 
 TS des symboles :
-une valeur | type symbole | une description du type
+une valeur | type symbole | un descripteur
+
+Structure de données : classes/structures.
+
 
 
 pas de notion d'ordre dans la table des symboles, donc nécessité de rajouter des données pour ordonner : un décalage mémoire.

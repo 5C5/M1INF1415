@@ -1,11 +1,15 @@
+#include "outils.hpp"
 #include "terrain.hpp"
+#include "tree.h"
 
 using namespace std;
 using namespace cv;
 
 Terrain::Terrain(float n, float m, float taille): x(n), y(m), size(taille){
 
-	float pasX = x/size, pasY = y/size;
+    this->pasX = x/size;
+    this->pasY = y/size;
+    cout << "pas : " << pasX << " " << pasY << endl;
 
     for(float i = 0; i < x; i += pasX){
 
@@ -16,7 +20,7 @@ Terrain::Terrain(float n, float m, float taille): x(n), y(m), size(taille){
 			geom.push_back(k);
 		}
 
-	}
+    }
 
 	for(int i = 0; i < size - 1; i ++){
 		for(int j = 0; j < size - 1; j ++){
@@ -29,41 +33,39 @@ Terrain::Terrain(float n, float m, float taille): x(n), y(m), size(taille){
 			topo.push_back(i * size + j + 1);
 			topo.push_back((i+1) * size + j + 1);
 		}
-	}
-
+    }
 }
 
-void Terrain::writeIntoOBJ(const string& filename) {
+Terrain::Terrain(float sample, string filename){
 
-    FILE * f = fopen(filename.c_str(), "w");
-    if(f != NULL) {
+    Mat image;
+    image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    this->x = image.rows * sample;
+    this->y = image.cols * sample;
+    this->size = image.rows;
 
-        vector<Point3f>::const_iterator it ;
-        vector<int>::const_iterator it2 ;
+    cout << "pixel : " << image.at<char>(12, 34)/5 << endl;
 
-        for(it = geom.begin(); it != geom.end(); ++it) {
-            fprintf(f, "v %f %f %f\n", it->x, it->y, it->z);
-        }
-        /*
-        for(it = m_normals.begin(); it != m_normals.end(); ++it) {
-            fprintf(f, "vn %f %f %f\n", it->x, it->y, it->z);
-        }*/
-        for(it2 = topo.begin(); it2 != topo.end(); ++it2) {
-            fprintf(f, "f %d//", *it2 + 1);
-            ++it2 ;
-            fprintf(f, " %d//", *it2 + 1);
-            ++it2 ;
-            fprintf(f, " %d//\n", *it2 + 1);
-            /*++it2 ;
-            fprintf(f, "%d ", *it2 );
-            ++it2 ;
-            fprintf(f, "%d//", *it2);
-            ++it2 ;
-            fprintf(f, "%d\n", *it2);*/
+    for(float i = 0; i < size; i++){
+        for(float j = 0; j < image.cols; j++){
+            Point3f k(i + sample, image.at<char>(i, j)/80, j + sample);
+            geom.push_back(k);
         }
     }
-    fclose(f);
+    for(int i = 0; i < size - 1; i ++){
+        for(int j = 0; j < size - 1; j ++){
+
+            topo.push_back(i * size + j);
+            topo.push_back((i+1) * size + j + 1);
+            topo.push_back((i+ 1) * size + j);
+
+            topo.push_back(i * size + j);
+            topo.push_back(i * size + j + 1);
+            topo.push_back((i+1) * size + j + 1);
+        }
+    }
 }
+
 
 void Terrain::resethigh(){
 
@@ -80,7 +82,7 @@ void Terrain::addSimplePerlin(){
         for(int k = 0; k < 5; k++){
             double x = geom[i].x/20;
             double y =  geom[i].z/20;
-            geom[i].y +=  15.0/pow(2, k) *
+            geom[i].y +=  15.0/(2 * k + 1) *
                     smooth_noise(x * (k+3)/2, y * (k+3)/2);
         }
     }
@@ -137,4 +139,70 @@ void Terrain::addWeirdNoise(){
             }
         }
     }
+}
+
+
+bool Terrain::isViable(Point3f * o){
+
+    Point3f a, b, c, d, p0, p1;
+    Mat n, m, normale;
+
+    vector<Point3f>::const_iterator it ;
+
+
+
+    printf("Test de isViable\n");
+
+    int indX = (int)(o->x/pasX) % (int)size;
+    int indY = (int)(o->z/pasY) % (int)size;
+
+    if(geom.size() < ((indX + 1) * size + indY + 1)){
+        d = geom[indX * size + indY];
+        c = geom[indX * size + indY - 1];
+        b = geom[(indX - 1) * size + indY];
+        a = geom[(indX - 1) * size + indY - 1];
+        printf("1\n");
+    }else{
+        a = geom[indX * size + indY];
+        b = geom[indX * size + indY + 1];
+        c = geom[(indX + 1) * size + indY];
+        d = geom[(indX +1) * size + indY + 1];
+        printf("2\n");
+    }
+
+    *o = Point3f(o->x, a.y, o->z);
+    double distAP = cv::norm(a - *o);
+
+    *o = Point3f(o->x, d.y, o->z);
+    double distDP = cv::norm(d - *o);
+
+    if(distAP > distDP){
+        p1 = highest(d, b, c);
+        p0 = lowest(d, b, c);
+    }else{
+        p0 = lowest(a, b, c);
+        p1 = highest(a, b, c);
+    }
+
+    o->y = lerp(p0.x, p0.y, p1.x, p1.y, o->x);
+    normale = Mat(p0).cross(Mat(p1));
+
+    return (o->y < 20 );
+}
+
+ void Terrain::addTrees(){
+
+     int x, y;
+     Point3f o;
+     for(int i = 0; i < 100; i++){
+
+        do{
+             x = rand() % (int)this->x;
+             y = rand() % (int)this->y;
+         }while(x > this->x - this->pasX && y > this->y - this->pasY);
+        o = Point3f(x, 0, y);
+        if(this->isViable(&o)){
+            this->flore.push_back(Tree(o,Tree::PLATANE, 2));
+        }
+     }
  }

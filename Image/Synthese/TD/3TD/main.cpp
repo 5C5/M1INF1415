@@ -1,22 +1,19 @@
 #include "terrain.hpp"
-
+#include "td.hpp"
 int main(int argc, char ** argv){
 
-    //Terrain t(900.0, 900.0, 600.0);
-    Terrain n(900.0, 900.0, 600.0);
-    Terrain m(900.0, 900.0, 600.0);
-    n.writeIntoOBJ("terrain.obj");
-    //t.addSimplePerlin();
-    //t.writeIntoOBJ("noise.obj");
-    n.addSimplePerlin();
-    n.addDoubleNoise();
-    n.writeIntoOBJ("double.obj");
-    m.addSimplePerlin();
-    //m.addWeirdNoise();
-    //m.writeIntoOBJ("weird.obj");
-    //m.addSeuil(9);
-    //m.writeIntoOBJ("seuil.obj");
-    m.addSeuilBruite(9);
-    m.writeIntoOBJ("seuib.obj");
-	return EXIT_SUCCESS;
+    Terrain a(1200, 1200, 300);
+
+    a.addSimplePerlin();
+    a.writeIntoOBJ("noise.obj");
+    a.addDoubleNoise();
+    a.writeIntoOBJ("double.obj");
+    a.addWeirdNoise();
+    a.writeIntoOBJ("weird.obj");
+    a.addSeuil(8);
+    a.writeIntoOBJ("seuil.obj");
+    a.resethigh();
+    a.addSeuilBruite(8);
+    a.writeIntoOBJ("seuilb.obj");
+    return EXIT_SUCCESS;
 }
