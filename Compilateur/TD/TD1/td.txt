@@ -70,10 +70,16 @@ int main(){
 }
 
 
-yylex  parcours l'AFD :
--Si un texte == E/R --> exécution de l'action associée. Si aucune action n'a été précisée, l'action par défaut est la réécriture du texte dans la sortie standard.
+fonctionnement de yylex :
+-lit les caractères ds yyin
+-trouver les transitions ds l'AFD
+-remplir yytext et yylen
+
 Son objectif : trouver la + grde chaine correspondant à une E/R.
+-Si du texte matche une E/R --> exécution de l'action associée. Si aucune action n'a été précisée, l'action par défaut est la réécriture du texte dans la sortie standard.
 Si du texte == plusieurs E/R, alors il éxécute l'action de la première E/R dans l'ordre du fichier de description.
+
+pour effectuer une action vide (ne pas faire l'action par défaut), il faut placer un point virgule (;) sur la ligne
 
 pour compiler le fichier de description (en .l ou .lex)
 flex -o fichier.c fichier.l
@@ -102,10 +108,12 @@ int main(int argc, char** argv){
 	}
 }
 
-ce code C est utilisé pour valider l'analyseur lexical. Il est a rajouté dans la dernière partie (4) du fichier de description des lexemes.
+ce code C est utilisé pour valider l'analyseur lexical. Il est à rajouté dans la dernière partie (4) du fichier de description des lexemes.
 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 création de l'analyseur syntaxique
+
+BISON
 
 grammaire du lgge
 G = <axiome, Vt, Vn, règles de production>
@@ -119,8 +127,9 @@ par exemple, la grammaire <I, {id := + * ;}, {I, E}, {
 }
 
 Description de la grammaire [fichier] sous un certain formalisme --bison-->code C de l'automate à pile faisant la reconnaissance de la gramR.
+
 Dans le code C généré, sont compris :
--une fct° yyparse(), qui analyse le texte en entrée et renvoyant 0 si c'est bon, & en cas d'erreur (ou l'inverse). Suppose qu'il existe une fct° int yylex(). (Normalement, flex l'a généré)
+-une fct° yyparse(), qui analyse le texte en entrée et renvoyant 0 si c'est bon, 1 en cas d'erreur (ou l'inverse). Suppose qu'il existe une fct° int yylex(). (Normalement, flex l'a généré)
 -une fnction int yyerror(char *), appelée par yyparse() en cas d'erreur, que nous derons définir (soit s'arrêter sur le premiere erreur, soit l'afficher et sortir)
 
 fichier de description de la GramR
@@ -142,6 +151,8 @@ gcc -c parser.c -o parser.o
 gcc -o test parser.o lexem.o -lfl
 
 l'option -d va générer un parser.h comprenant un certain nbre de déclaration, à inclure ds le fichier de description de flex. Donc ne pas compiler lexem.c avant d'avoir fait bison ...
+
+
 
 pour la grammaire suivante :
 <I, {id := + * ;}, {I, E}, {
@@ -277,3 +288,62 @@ E↑type		typedef struct{
 A essayer de définir ds un fichier à part plutot que dans parser
 
 L'interet est de pouvoir faire des fonctions du style void gereAddition(tattr E8 out, const tattr E8 left, const tattr E8 right);
+
+
+
+**********************************************
+nouvel exemple, utilisant l'exemple de FLEX vu précedemment :
+dans bison :
+
+%start E
+%token add sub
+%token	entier
+
+
+//regles de priorité /associativités
+//%left op assoc à gauche
+//%right op ___ à droite
+//%nom assoc op pas d'assoc
+//on écrit les regles les plus prioritaires en premiers
+%left add sub
+
+//attributs de la grammaire
+%type <valeur> E
+%union {
+		int valeur;
+		//la liste des attrs de la gramR
+		//une union correspondante sera crée dans parser.h
+		//dans FLEX, on pourra accéder aux champs de cette union via yylval.valeur, etc.
+}
+
+
+%%
+		$1 $2 $3
+E	:	E add E		{$$ = $1 + $3;}
+	|	E sub E		{$$ = $1 - $3;}
+	|	entier		{$$ = $1;}
+	;
+
+P	:	E
+	;
+
+//les dollars correspondent aux élements de la pile.
+//Or, si on sort de yyparse, on ne peut plus accéder à ces attributs.
+//On ajoute donc un "faux" symbole P -> nouvel axiome
+//G = < P, { + - entier}, {P, E}
+//			{P -> E
+//			{E -> E + E | E - E | entier}
+//			}>
+
+%%
+int main (__){
+	yyparse();
+}
+****************************************************
+pb de bison : => 1 attr par symbole.
+On fait donc remonter une structure contenant le type, la valeur (calculée ou non).
+
+
+
+Penser à faire un fichier déclarant les strcutures pour les attributs.
+Dans d'autre fichiers, penser à faire des méthodes pour gérer les opérations mathématiques, les constrcutions syntaxiques.
