@@ -132,7 +132,41 @@ une valeur | type symbole | un descripteur
 
 Structure de données : classes/structures.
 
+-----------------------------------------
+ListeDecl -> DeclVar, ListeDecl
+			|DeclVar
 
+DeclVar -> Type : ListeIdent
+ListeIdent ->ident, ListeIdent
+			|ident
+
+Type -> TypeBase
+		|TypePtr
+		|TypeTab
+		|TypeStruct
+		|TypeEnum
+
+TypeBase -> Integer
+			|real
+			|boolean
+			|char
+			|string
+			|Ident
+
+TypePtr -> ^TypeBase
+
+TypeTab -> array[E0 ... En] of TypeBase
+
+TypeEnum -> {listeIdent}
+
+TypeStruct -> record listeDecl end
+
+
+Description :
+pointeur -> type de l'elt pointé
+tableau -> Borne inf Borne sup
+
+------------------------------------------
 
 pas de notion d'ordre dans la table des symboles, donc nécessité de rajouter des données pour ordonner : un décalage mémoire.
 
@@ -218,6 +252,16 @@ struct DescType {
 	DescType * elts;
 	TS * champs;
 }
+
+---------------------------------
+
+
+
+
+---------------------------------
+
+
+
 
 _ _ _ _ _ _ _ _
 génération de code

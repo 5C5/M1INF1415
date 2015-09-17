@@ -12,26 +12,13 @@ E/R
 [a-z A-Z]⁺  --> id
 
 
-Expressions régulières pour flex
-x 			--> le caractère x;
-·			--> tout caractère sauf le retour à la ligne
-[x y z] 	--> x ou y ou z
-[a-z]		--> un carac entre a et z
-[^x y z]	--> un carac autre que x, y, ou z
-[^a-z]		-->un carac <a ou >y
-RS			--> l'Expression régulière R suivie de l'expression régulière S
-R*			--> l'expression régulière R répété 0 ou + fois
-R+			--> "							   "1 "			"
-R?			--> "									"1" "	"
-\n			--> retour à la ligne
-
 flex --> description de lexèmes --> sort le code C de l'Automate Fini Déterministe, comprenant :
 -une fonction int yylex() qui va parcourir l'AFD en fonction des entrées
--une variable char * yylex, chaine de carac pour le texte d'entrée correspondant à l'expression régulière
--une variable int yyleng qui est la longueur de la chaine de carac précédente
+-une variable char * yytext, chaine de carac pour le texte d'entrée correspondant à l'expression régulière
+-une variable int yylen qui est la longueur de la chaine de carac précédente
 -un pointeur sur un fichier FILE* yyin, fichier sur lequel on ira lire les caractères, initialisé par défaut sur l'entrée standard stdin.
 
-Fichier de description a la forme suivante :
+Fichier de description (.l) a la forme suivante :
 
 %{
 ...(1)
@@ -42,10 +29,46 @@ Fichier de description a la forme suivante :
 %%
 ...(4)
 
-Dans le premier bloc (1) entre accolade, on met le code c comprenant les #includes, les prototypes de fnct°, qui sera recopié au début du code C généré par flex
+Dans le premier bloc (1) entre accolade, on met le code C/C++ de déclaration, comprenant les #includes, les prototypes de fnct°, qui sera recopié au début du code C/C++ généré par flex
 Le bloc suivant l'accolade (2) servira à la définition de macros d'expression régulière sous la forme notion E/R --> {notion}
 Dans le bloc (3), c'est la définition des lexèmes et des actions associés, sous la forme E/R {code C de la fonction}
 Dans la dernière partie (4), c'est du code C/C++ recopié dans le code généré.
+
+Expressions régulières pour flex
+x 			--> le caractère x;
+·			--> tout caractère sauf le retour à la ligne
+[x y z] 	--> x ou y ou z
+[a-z]		--> un carac entre a et z
+[^x y z]	--> un carac autre que x, y, ou z
+[^a-z]		--> un carac autre qu'entre a et z
+{nom}		--> fait référence à une définition
+RS			--> l'Expression régulière R suivie de l'expression régulière S
+R*			--> l'expression régulière R répété 0 ou + fois
+R+			--> "							   "1 "			"
+R?			--> "									"1" "	"
+(R)			--> idem R
+"  "		--> la chaine définie
+\n			--> retour à la ligne
+
+
+exemple : 
+G = <E, {+ - entier}, {E}
+	{E -> E + E
+		 |E - E
+		 | entier}>
+
+équivalent dans Flex :
+CHIFFRE		[0-9]
+%%
+"+"
+"-"
+{CHIFFRE}+
+[\n\t]
+.
+%%
+int main(){
+}
+
 
 yylex  parcours l'AFD :
 -Si un texte == E/R --> exécution de l'action associée. Si aucune action n'a été précisée, l'action par défaut est la réécriture du texte dans la sortie standard.
