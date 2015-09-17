@@ -395,12 +395,25 @@ Protocole à accès aléatoire :
 ALOHA : 
 -Protocole à accès aléatoire developpé pour le 1 er réseau sans fil par commutation de pqt. Actuellement envoyés par le récepteur + retransmis de la source après un temps aléatoire si absence d'accusé de reception confirmant la réception du paquet par le destinataire.. -> Efficacité limitée 1/(2.E) de la capacité, diminuant avec le nbre de stations souhaitant trsmttre.
 -Slotted ALOHA : efficacité doublé par les slots, nécessite une synchronisation. ->
+-Les collisions sont gérées en faisant acquitter les émissions par le récepteur
+
+Aloha slotté :
+-même chose que l'Aloha, mais dans des slots
+-performance doublée en terme de débit totale
 
 Carrier Sens Multiple Acess CSMA : écoute du médium pour attendre sa libération avant d'envoyer. Reste des risques, en raison des tmps de propagation/trsmssion
 -Collision Detection : la station qui transmet detecte une collision => arrêt de la com
 	-lien filaire : comparaison entre le signal émis et le signal reçus, réalisée par les sources. Retrnsmssion après un tmps aléatoire. Les liens filaires sont assez fiables, pertes de pqts étant dus aux collisions/non acquittement des pqts bien rçus
 	-Taille minimum sur les paquets pour détecter les collisions
 	-signal de brouillage envoyé par les sources détectant une collision-> met toutes les stations du médium dans le même état -> repris ds Ethernet -> de - en - utilisé (Réseaux Ethernet Full-duplex.)
+Algorithme csma !
+	-SI on a un paquet dans l'interface réseau, on regarde le médium !
+		-si le lien de communication est libre, alors on transmet
+		-sinon, on attend que le lien soit libre, et alors on transmet le paquet
+-En cas de collision.
+
+
+
 
 -Collision Avoidance : sur un médium sans fil, difficile de faire du CD, donc paquets acquités par le destinataire. Si on est obligé d'attendre la fin d'une collision, c'est couteux en tmps. On essaye d'éviter au maximum les collisions à priori.
 	-Tmps d'attente aléatoire avant la transmission du paquet d'un paquet (compromis entre le tmps d'attente et la réduction des collisions)
@@ -408,8 +421,12 @@ Carrier Sens Multiple Acess CSMA : écoute du médium pour attendre sa libérati
 
 Binary Exponential Backoff
 -Fenêtre de contention (Contention Window)
-Backoff : valeur aléatoire tirée dans la CW. Le tirage se fait selon une distribution uniforme.
+Backoff : valeur entière aléatoire tirée dans la CW (0 à k). Le tirage se fait selon une distribution uniforme.
 À chaque retransmission du paquet, on double la taille de la CW. On a donc une CMax et une Cmin.
+On réinitialise la fenetre une fois que le paquet a bien été transmis
+
+Protocoles sans collision
+
 
 
 __________________________________________________________
