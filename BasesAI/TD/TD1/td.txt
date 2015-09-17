@@ -14,8 +14,12 @@ Fonction de but : cout de 22 et respect de l'état but.
 
 Amélioration des opération : colorier une région voisine avec 1 des quatres couleurs non présentes dans une région limitrophe.
 
-Heuristique : Utiliser une couleur déjà utilisée en majoritée.
+Heuristique : Utiliser une couleur déjà utilisée en majoritée. Colorier la région ayant le plus de voisins coloriées
 
+
+Autre modélisation :
+Etat initial : 22 régions coloriées
+Opérateurs : effacer la région X, déplacer une couleur, intervertir deux régions.
 -----------------------------------------------------------------
 Sudoku : 
 -Ma version
@@ -47,18 +51,24 @@ les heuristiques 1 et 1bis sont des spécialisations de 2 et 3.
 ---------------------------------------------------------------------------
 Problèmes de planification : Taquin
 
-Etat : grille de NxN ou sont placés N-1 marqués de 1 à N-1 et une case vide.
+Etat : grille de NxN ou sont placés N-1 tuiles marqués de 1 à N-1 et une case vide.
 Etat initial : grille avec disposition au hasard des cases
 Etat final : grille avec cases disposés dans l'ordre numérique et case vide au centre
 Etat sucesseur : m^ grille avec les deux cases inversées.
-Opérateur : déplacer une case adjacente vers l'emplacement vide
+Opérateur : 
+-déplacer le trou en haut -> Trou pas sur la première ligne
+-"					"bas	-> Trou pas sur la dernière ligne
+-"				" à gauche	-> Trou pas sur la première colone
+-"				" à droite	-> Trou pas sur la dernière ligne
+
 Cout : 1
-Fonction but :
+
 
 heuristique : 
 -déplacer en priorité les cases les plus loin de leur position finale.
+-faire la somme des déplacements/distance de chaque tuile à sa disposition finale.-ne pas revenir à une config précédente
 
-Possibilité d'avoir quatre opérateur, chacun correspondant à chacun des déplacements de la case vide (heu, bas, droite gauche).
+Possibilité d'avoir quatre opérateur, chacun correspondant à chacun des déplacements de la case vide (haut, bas, droite gauche).
 
 
 Tour de Hanoi : 

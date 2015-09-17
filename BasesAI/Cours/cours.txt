@@ -163,6 +163,7 @@ Problème de jeu :
 	Au lieu de chercher un chemin à l'état final, on cherche une stratégie, c-a-d un choix d'action pour chaque étét où pourrait se trouver le joueur (ex des échecs ou des jeux vidéos)
 
 
+
 ·Résolution d'un problème
 Une fois qu'on a l'espece des etats, il faut pouvoir le parcourir :
 Structure général de l'algo :
@@ -186,7 +187,7 @@ Pour rechercher le successeur : on fait une recherche exhaustive
 	->Parcours en pronfondeur itéré : on teste les bornes de profondeur les unes après les autres.
 
 Recherche informée : 
-uen heuristique : un moyen d'ordonner dynamiquement la liste des successeurs selon leur promesse de se rapprocher d'un but. L'expression d'une connaissance spécifique au problème à résoudre
+une heuristique : un moyen d'ordonner dynamiquement la liste des successeurs selon leur promesse de se rapprocher d'un but. L'expression d'une connaissance spécifique au problème à résoudre
 
 Plusieurs algorithmes :
 -Best First search (le premier d'abord) : utiliser la fonction heuristique comme fonction d'évaluation.
