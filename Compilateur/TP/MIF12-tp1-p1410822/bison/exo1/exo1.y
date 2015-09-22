@@ -1,7 +1,9 @@
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
-	int yyerror(char *);
+
+	extern int yylex();
+	extern int yyerror(char *);
 %}
 %start P
 %token openbracket
@@ -12,12 +14,14 @@
 P : B
 	;
 B : openbracket B closebracket
+  | contenu B
+  | B contenu
   | contenu
   ;
 
 %%
 int yyerror(char *e){
-	printf("%s\n", e);
+	printf("%s \n", e);
 }
 
 int main(int argc, char **argv){

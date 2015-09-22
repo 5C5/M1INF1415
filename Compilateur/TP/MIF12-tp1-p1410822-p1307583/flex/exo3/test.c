@@ -1,4 +1,0 @@
-{
-	plop }}
-}
-{pas plop}}

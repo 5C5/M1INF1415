@@ -7,7 +7,8 @@
 
 %%
 [{] {nb ++;} 
-[}] {nb --;}
+[}] {nb --; if(nb < 0)
+				printf("Attention, accolade fermante sans accolade ouvrante correspondate\n");}
 . {}
 %%
 

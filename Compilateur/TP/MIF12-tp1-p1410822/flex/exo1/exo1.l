@@ -1,13 +1,21 @@
 %{
+	/*
+	* Premier exercice sur Flex
+	* TP1 de compilation
+	* Colas PICARD p1410822
+	*/
 	#include <stdio.h>
 	#include <stdlib.h>
 
+	extern int yylex();
+	extern int yyerror(char * m);
 	int nb_char = 0;
 	int nb_lne = 0;
 %}
 %%
-\n	{nb_lne ++; nb_char ++; printf("nbre ligne = %i\n", nb_lne);}
-.	{printf("caractère lu\n"); nb_char ++;}
+
+\n	{nb_lne ++; nb_char ++;}
+.	{ nb_char ++;}
 
 %%
 

@@ -13,7 +13,7 @@ BIND = bin
 
 EXEC = ppc
 
-OBJFILES = parser.o lexer.o main.o tdi.o tds.o
+OBJFILES = parser.o lexer.o main.o tdi.o
 OBJS = $(OBJFILES:%.o=$(OBJD)/%.o)
 
 NO_COLOR=\x1b[0m
@@ -35,7 +35,7 @@ $(BIND)/$(EXEC): $(OBJS)
 	@if test -e temp.errors; then $(ECHO) "$(ERROR_STRING)" && $(CAT) temp.log; elif test -s temp.log; then $(ECHO) "$(WARN_STRING)" && $(CAT) temp.log; else $(ECHO) "$(OK_STRING)"; fi;
 	@$(RM) -f temp.errors temp.log
 
-$(OBJD)/%.o: $(SRCD)/%.c
+$(OBJD)/%.o: $(SRCD)/%.c $(SRCD)/%.cpp
 	@$(ECHO) "$(INFO_COLOR)Compiling source file $(FILE_COLOR)$@$(INFO_COLOR) ... $(NO_COLOR)\c"
 	@$(CC) -o $@ -c $< -I$(INCD) -I$(SRCD)  2> temp.log || touch temp.errors
 	@if test -e temp.errors; then $(ECHO) "$(ERROR_STRING)" && $(CAT) temp.log; elif test -s temp.log; then $(ECHO) "$(WARN_STRING)" && $(CAT) temp.log; else $(ECHO) "$(OK_STRING)"; fi;

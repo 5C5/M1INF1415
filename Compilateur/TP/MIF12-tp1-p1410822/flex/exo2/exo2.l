@@ -1,4 +1,9 @@
 %{
+	/*
+	* Fichier pour compter le nombre de caractère, de mots et de ligne 
+	* second exercice du TP1 de compilation
+	* Colas PICARD p1410822
+	*/
 	#include <stdio.h>
 	#include <stdlib.h>
 
