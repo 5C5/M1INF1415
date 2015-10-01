@@ -2,13 +2,22 @@ TD2 Couche liaison de données
 
 Performance de 802.11b
 1)
-200 ÷ (3 × 10⁸) = 2/3 .10⁻⁶  = 6µs
+200 ÷ (3 × 10⁸) = 2/3 .10⁻⁶  = 0.6µs
 
 2) 15,5 * 20µs (compris entre 0 et 31, tiré aléatoirement, multiplié par le tmps d'un slot)
 = 310µs
 
 3) 534 × 8 ÷ 1000000 = 0.004272 s
-+ 0.00000552 + 0.000202 + (14 × 8 * 1000000) = 0.004824 + 0.000314 = 0.005138
++ 0.000552 + 0.000202 + (14 × 8 * 1000000) = 0.004824 + 0.000314 = 0.005138
+
+Débit : ((Données utiles + en-tête) en bit) / bande-passante + DIFS 	+ Temps D'attente Aléatoire + Temps d'en-tête physique Message + Temps d'en-tête
+			((500 		 + 34) * 8)			/ 10000000		 + 0.00005  + 0.00031					+ 0.000192						   + 0.000192
+physique ACK + SIFS 	+ (ACK en bit) / bande-passante
+			 + 0.00001  + (14 * 8)	   / 1000000 
+			 
+= 0.004272 + 0.00005 + 0.000310 + 0.000192 + 0.000192 + 0.00001 + 0.000112 = 0.005138
+
+Temps constant entre chaque calcul : 0.000754
 
 Débit réel : 778513 b/s pour 1Mb/s et 500octets
 Débit réel : 3.45Mb/s pour 11 Mb/s et 500 octets
@@ -17,6 +26,8 @@ Débit réel : 5.28Mb/s pour 11Mb/s et 1000 octets
 Débit réel : 0.91Mb/s pour 1Mb/s et 1500 octets
 Débit réel : 6.38Mb/s pour 11Mb/s et 1500 octets
 
+
+On rajoute beaucoup d'informations nécessaire pour le réseau, qui ne sont pas considérées commes utiles. Il y a également beaucoup de temps d'attente
 4) 6.38 /2
 
 5)Le backoff de la station partant en deuxième ne repart pas à 0 quand elle peut émettre, donc son temps d'attente est plus petit
@@ -24,6 +35,7 @@ Débit réel : 6.38Mb/s pour 11Mb/s et 1500 octets
 6) Le débit diminuera proportionnellement au nbre de stations (légèrement supérieur au débit d'une station seule/N ). Si N trop grand, les collisions augmentent et les fenetre de contention s'élargissent.
 
 --------------------
+Station à 11Mb/s : 
 La station à 11Mb/s verra son débit diminuer énorément (moins de la moitié) tandis que la station à 1Mb/s verra son débit diminuer beaucoup moins. En effet, la station à 1 Mb/s met beaucoup plus de temps à envoyer que l'autre, ce qui a un impact plus fort sur le débit de la station à 11 Mb/s
 
 

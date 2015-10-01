@@ -7,35 +7,47 @@ INSOLUBLES ; g, h
 flag : 
 
 u <- d
+regles (u) = R1, R2, R3
+seuil à l'infini
 
 => R1 : d <- g, h	(X) -> 
-		rg(g) = 1	//pas de successeur, on le place dans les insolubles
+		rg(g) = 1	//pas de successeur pour g, on le place dans les insolubles
 
 => R2 : d -> a, e, f
 			appel récursif sur BSH(a), on remarque que b et c sont solubles, on les mets dans resolus. Du coup, a est soluble et mis dans résolus
 			appel récursif de BSH(e) : e est résolu.
-
-			etc
+			appel récursif de BSH(f) : regles(f) : R4, R5.
+					R4 : i est insoluble
+					R5 : c est dans les résolus, j est insoluble. f est un échec, et est mis dans les insolubles
+			R2 échec
+=>R3 : d -> a, k
+			a est dans les résolus
+			appel récursif de BSH(k) : e et l son solubles, on les places dans les résolus
+			R3 succès
+d succès.
 
 
 ___________________
 Le monde des blocs :
 
-Etat : l'ensemble des n blocs, la pince, la table
+Etat : l'ensemble des n blocs annotés et leur situation, la pince vide ou non, la table
 exemple -> sur_table(C), sur_table(B), sur(B, A), pinceVide/danspince(D)
-Pour décrire une etat Ei, on a besoin de 
--sur_table(xi), xi € {A, B, C , D}
--sur(xi, xj) , xi, xj € {A, B, C, D}
--pincevide booleen
--dansPince(xi), xi€ {A, B, C, D}
+
+Pour décrire une etat Ei, on a besoin de :
+-sur_table(xi), xi € {A, B, C , D} : vrai si le cube est sur la table
+-sur(xi, xj) , xi, xj € {A, B, C, D} : vrai si le cube i est sur le cube j
+-pincevide booleen : vrai si la pince est vide
+-dansPince(xi), xi€ {A, B, C, D, ø} : vrai si le cube est dans la pince
+-accessible(xi) , xi € {A, B, C, D} : vrai si le cube est au sommet de la pile
 
 Op1 : prendreCube(Xi) Condit° : pincevide = vrai + accessible de (Xi)
 	description met Xi dans la pince
 	Etat successeur = 
-		Depiler(Xi) = Op1a : {sur(Xi, Xj) ^ accessible(Xj)}
+		Depiler(Xi) = Op1a : {sur(Xi, Xj) & accessible(Xj)}
 		PrendreSurTable(Xi) = OP1b : surTable(Xi)
 					  pincevide <- faux
 					  ajouterDansPince(Xi)
+					  -accessible(Xi);
 
 Op2a : poserSurTable(Xi) Condit° : pincevide = faux, dansPince(Xi)
 		Etat successeur :
@@ -43,6 +55,7 @@ Op2a : poserSurTable(Xi) Condit° : pincevide = faux, dansPince(Xi)
 						-dansPince(Xi)
 						surTable(Xi).
 						accessible(Xi).
+
 Op2b : poserSurCube(Xi, Xj) : Condit° pincevide = faux, dansPince(Xi), accessible(Xj).
 		Etat successeur :
 						pincevide <- vrai.
@@ -51,5 +64,18 @@ Op2b : poserSurCube(Xi, Xj) : Condit° pincevide = faux, dansPince(Xi), accessib
 						-accessible(Xj).
 						accessible(Xi).
 
+
+------------------------------------------------------
+Résolution de contrainte :
+
+Etat : 
+-variable X : {S, E, N, D, M, O, R, N, Y}
+-Domaine de valeur D : {0, 1, 2, 3 , 4, 5, 6, 7, 8, 9}
+C = Xi != Xj ∀ij ∈  {1, 8}
+
+X4 + X2 = X8 + R1
+R1 + X3 + X7 = X2 + R2
+R2 + X2 + X6 = X3 + R3
+R3 + X1 + X5 = X6 + 10 * M
 
 
