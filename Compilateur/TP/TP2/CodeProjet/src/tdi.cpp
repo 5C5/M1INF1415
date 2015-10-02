@@ -1,7 +1,10 @@
 #include "tdi.hpp"
 
 Identificateur::Identificateur(char * n){
-
+	
+	if(!num > 0){
+		num = 1;
+	}
 	name = string(n);
 	ident = num++;
 }
@@ -16,7 +19,7 @@ char * Identificateur::getNom(){
 	return this.name.c_str();
 }
 
-unsigned ajoutIdentificateur(const char *n){
+unsigned ajouterIdentificateur(const char *n){
 
 	tdi.push_back(Identificateur(n));
 	return tdi.back().getIdent();

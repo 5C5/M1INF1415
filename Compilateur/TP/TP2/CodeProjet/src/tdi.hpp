@@ -1,16 +1,19 @@
+#ifndef TDI_HPP
+#define TDI_HPP
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
-#ifndef TDI_HPP
-#define TDI_HPP
+
 
 class Identificateur {
 
 	protected :
-		static unsigned int num = 1;
+		static unsigned int num;
 		unsigned int ident;
 		string name;
 
@@ -19,10 +22,11 @@ class Identificateur {
 		unsigned int getIdent();
 		char* getNom();
 
-}
-#endif TDI_HPP
+};
 
-vector <Identificateur> tdi;
-unsigned int ajoutIdentificateur(const char *);
+vector<Identificateur> tdi;
+unsigned int ajouterIdentificateur(const char *);
 void sauvegardeTable(const char *);
-void afficherTable(void);
+void afficherTableIdent(void);
+
+#endif

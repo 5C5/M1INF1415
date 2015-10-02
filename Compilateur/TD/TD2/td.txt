@@ -50,4 +50,163 @@ LT -> T LT_2
 	ajouterfil(LT↓noeud, T↑noeud)
 	LT_2↑pere = LT↑pere
 
+_______________________________________________________________________________________________
 
+TD 2 2015
+
+L -> E L
+	|
+
+E -> A L B .(id1==id2)
+	| ident
+
+A↑(id1) -> < ident >
+B↑(id2) -> </ ident>
+
+1 : attribuer la GramR pour vérifier que les balises ouvrantes et fermantes se correspondent
+L	-> E L
+	|
+
+E	-> A↑(id1) L B↑(id2)
+	|ident
+A↑(id1)-> < ident >
+B↑(id2)-> </ident >
+
+
+
+Correction :
+-> On a une Table des Identificateurs
+Ident↑ n° 	A↑n°	B↑n°
+
+A -> <ident >
+	 A↑n° = Ident↑n°
+
+B -> </ident>
+	B↑n° = Ident↑n°
+
+E -> A L B
+	si A↑n° != B↑n° --> erreur
+
+
+Implémentation flex bison :
+Flex :
+
+%{
+#include "parser.h"
+%}
+%%
+[a-zA-Z]+	yyval.num = ajouterTI(yytext);
+			return Ident;
+
+"<"			return inf;
+">"			return sup;
+"</"		return inferm;
+.			;
+ǹ			;
+%%
+
+
+Bison :
+%start L
+%token inf sup inferm
+%token <num> ident
+%type <num> A
+%type <num> B
+%union{
+	int num;
+}
+%%
+
+L 	: E L
+	|
+	;
+
+E	: ident
+	| A L B		{if ($1 != $3) yyerror(...);}
+	;
+
+A 	: inf ident sup $$=$2
+	;
+
+B	: inferm ident sup $$=$2
+	;
+%%
+
+*****************************************************
+L -> I L
+	|
+I -> ident = E
+E -> * E E
+   | / E E
+   | + E E
+   | - E E
+   | entier
+   | reel
+   | ident
+
+
+Attribuer la gramR pour :
+	-> construire la chaine de l'expression sous forme opg op opd
+		|parenthèsage
+
+E ↑2	-> * E1 E2↑
+		E↑s = (besoinparenthesageg(2, E2↑op) ? "(".E2↑s+")" : E2↑s)
+		."*"
+		.(besoinparenthesaged(2, E3↑op) ? "(".E3↑s.")" : E3↑s)
+		
+↑3	|  / E1 E2
+		E↑s = E1↑s."/".E↑2s
+		E↑s = (besoinparenthesageg(3, E2↑op) ? "(".E2↑s+")" : E2↑s)
+		."*"
+		.(besoinparenthesaged(3, E3↑op) ? "(".E3↑s.")" : E3↑s)
+↑1	|  + E1 E2
+		E↑s = E1↑s."+".E2↑s
+
+↑1	|  - E1 E2
+		E↑s = E1↑s."-".E2↑s
+
+	|  entier
+		E↑s = entier↑s
+
+	|  reel
+		E↑s = reel↑s
+	|  ident
+		E↑s = ident↑s
+
+
+****** vérifier qu'un ident a bien été affacté abant d'être utilisé
+une table des Idents
+Ident↑n°
+-> Table n° --> booleen : vrai(on a vu ident = ...) | faux (pas vu). mis à faux par défaut
+
+L	-> I L
+	|
+I 	-> ident = E
+	Table[Id↑n°].booleen = vrai
+
+E	-> id
+		si not(Table[Id↑n°].booleen)
+			-> erreur
+
+
+-> pouvoir affecter, en fin d'analyse, la valeur et le type de chaque identificateur
+L -> I L2
+	I↑id	I↓liste
+	L↓liste	E↓liste
+	L↑listemontante
+	{I↓liste = L↓liste
+	L2↓liste = 
+
+E -> reel
+	E↑type = 1
+	E↑val = reel↑val
+E -> entier
+	E↑type = 0
+	E↑val = entier↑val
+E -> ident
+	E↑type = Table[id↑num].type
+	E↑val = Table[id↑num].val
+
+E -> */+- E2 E3
+	E↑type = E2↑type | E3↑type
+	E↑val = E2↑val */+- E3↑val
