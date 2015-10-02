@@ -1,22 +1,25 @@
 #include "tdi.hpp"
 
-Identificateur::Identificateur(char * n){
+unsigned int Identificateur::num = 1 ;
+vector<Identificateur> tdi;
+
+Identificateur::Identificateur(const char * n){
 	
-	if(!num > 0){
-		num = 1;
+	if(!this->num > 0){
+		this->num = 1;
 	}
-	name = string(n);
-	ident = num++;
+	this->name = string(n);
+	this->ident = num++;
 }
 
 unsigned int Identificateur::getIdent(){
 
-	return this.ident;
+	return this->ident;
 }
 
-char * Identificateur::getNom(){
+const char * Identificateur::getNom(){
 
-	return this.name.c_str();
+	return this->name.c_str();
 }
 
 unsigned ajouterIdentificateur(const char *n){
@@ -31,7 +34,7 @@ void sauvegardeTable(const char * name){
 
 	if((fichier = fopen(name, "w"))!= NULL){
 		for(vector<Identificateur>::iterator it = tdi.begin(); it!= tdi.end(); it++){
-			fprintf(fichier, "nom : %s; numero : %d\n", *it.getNom(), *it.getIdent());
+			fprintf(fichier, "nom : %s; numero : %d\n", it->getNom(), it->getIdent());
 		}
 	}
 }
@@ -39,7 +42,7 @@ void sauvegardeTable(const char * name){
 void afficherTable(void){
 	
 	for(vector<Identificateur>::iterator it = tdi.begin(); it!= tdi.end(); it++){
-			printf("nom : %s; numero : %d\n", *it.getNom(), *it.getIdent());
+			printf("nom : %s; numero : %d\n", it->getNom(), it->getIdent());
 		}
 }
 

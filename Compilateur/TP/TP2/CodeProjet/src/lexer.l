@@ -8,8 +8,8 @@
  
 #include <cstdio>
 #include <cmath>
-
 #include "parser.h"
+#include "tdi.hpp"
 
 extern int row, column;
 
@@ -103,7 +103,7 @@ CHIFFRES [0-9]+
 
 {T}{R}{U}{E}					column += yyleng; return TOK_BOOLEAN;
 {F}{A}{L}{S}{E}					column += yyleng; return TOK_BOOLEAN;
-[a-zA-Z]([a-zA-Z0-9])*			column += yyleng; return TOK_IDENT;
+[a-zA-Z]([a-zA-Z0-9])*			column += yyleng; yylval.ident = ajouterIdentificateur(yytext); return TOK_IDENT;
 '({NQUOTE}|'')+'				column += yyleng; if ( yyleng == 1 ) return TOK_CHAR; else return TOK_STRING;
 -?{CHIFFRES}					column += yyleng; return TOK_INTEGER;
 -?{CHIFFRES}"."{CHIFFRES}		column += yyleng; return TOK_REAL;

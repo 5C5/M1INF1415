@@ -8,6 +8,11 @@ extern int yylex ();
 %}
 
 %union{
+	int ident;
+	int valint;
+	float valreal;
+	char valchar;
+	char * valstring;
 }
 
 %token KW_PROGRAM

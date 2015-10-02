@@ -9,7 +9,9 @@
 using namespace std;
 
 
-
+/*
+ * Classe d'identificateur
+ */
 class Identificateur {
 
 	protected :
@@ -18,15 +20,20 @@ class Identificateur {
 		string name;
 
 	public :
-		Identificateur(char * n);
+		Identificateur(const char * n);
 		unsigned int getIdent();
-		char* getNom();
+		const char* getNom();
 
 };
 
-vector<Identificateur> tdi;
-unsigned int ajouterIdentificateur(const char *);
-void sauvegardeTable(const char *);
-void afficherTableIdent(void);
+/*
+ * Déclaration de la table d'identificateur (variable globale)
+ */
+extern vector<Identificateur> tdi;
 
+
+extern unsigned int ajouterIdentificateur(const char *);
+extern void sauvegarderTable(const char *);
+extern void afficherTableIdent(void);
+extern char * getNom(const unsigned int);
 #endif
