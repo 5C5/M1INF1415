@@ -10,6 +10,9 @@
 -- NE PAS MODIFIER LE RESTE DES COMMENTAIRES DU FICHIER
 -- Les réponses sont à saisir entre deux commentaires
 
+
+
+
 /*1.
     Donner, pour chaque arbre de la parcelle 613376 (IDP), sa hauteur totale (HTOT).
 
@@ -18,6 +21,12 @@
     <!ELEMENT hauteur (#PCDATA)>
     ]>
 */
+SELECT XMLELEMENT(name "arbre", 
+  XMLELEMENT(name "hauteur", HTOT)) 
+  AS VXML
+  FROM ARBRES a 
+  WHERE a.IDP = 613376; 
+
 
 /*2.
     Reprendre la question précédente et ajouter un attribut id (valeur obtenue via A) dans l'élément arbre.
@@ -28,6 +37,13 @@
     <!ELEMENT hauteur (#PCDATA)>
     ]>
 */
+SELECT XMLELEMENT(name "arbre", 
+  XMLATTRIBUTES(a.A as "id"), 
+  XMLELEMENT(name "hauteur", HTOT))
+  AS vxml
+  FROM ARBRES a 
+  WHERE a.IDP = 613376; 
+
 
 /*3.
     Ajouter, lorsqu'elle est disponible, le nom de l'espèce (code: ESPAR, nom obtenu via la vue documentation), toujours pour la parcelle 613376.
@@ -39,6 +55,14 @@
     <!ELEMENT espece (#PCDATA)>
     ]>
 */
+SELECT XMLELEMENT(name "arbre", 
+  XMLATTRIBUTES(a.A as "id"), 
+  XMLELEMENT(name "hauteur", HTOT),
+  XMLFOREST(libelle AS "espece"))
+  AS vxml
+  FROM ARBRES a LEFT OUTER JOIN  
+    (SELECT libelle, code  FROM DOCUMENTATION WHERE DOCUMENTATION.DONNEE = 'ESPAR') ON a.ESPAR = code
+  WHERE a.IDP = 613376;
 
 /*4.
     Donner pour chaque espèce (valeur distincte ESPAR) son nom (si disponible) et le nombre d'arbres de cette espece.
@@ -50,6 +74,14 @@
     <!ELEMENT quantite (#PCDATA)>
     ]> 
 */
+SELECT XMLELEMENT(name "espece", 
+  XMLATTRIBUTES(a.ESPAR as "code"),
+  XMLFOREST(libelle AS "nom"),
+  XMLFOREST(COUNT(a.A) AS "quantite"))
+  AS vxml
+  FROM ARBRES a LEFT OUTER JOIN  
+    (SELECT libelle, code  FROM DOCUMENTATION WHERE DOCUMENTATION.DONNEE = 'ESPAR') ON a.ESPAR = code
+  GROUP BY a.ESPAR, libelle;
 
 /*5.
     Pour chaque parcelle dont l'identifiant (IDP) est inférieur ou égal à 600200, donner l'identifiant de la parcelle et la liste des espèces présentes dans cette parcelle (son code ESPAR sous forme d'attribut XML et pour celles dont on le connait, leur nom sous forme de texte).
@@ -61,7 +93,17 @@
     <!ATTLIST espece code CDATA #REQUIRED>
     ]>
 */
-
+-- pas fini
+--SELECT XMLELEMENT(name "parcelle", XMLATTRIBUTES(a.IDP as "id"),
+  --XMLFOREST(COUNT(a.A) AS "nb"),
+  --XMLAGG(
+    --DISTINCT(XMLELEMENT(name ="espece", 
+    --XMLATTRIBUTES(a.ESPAR as "code"), 
+    --XMLATTRIBUTES(libelle)))))
+  --AS vxml
+  --FROM ARBRES a LEFT OUTER JOIN  
+    --(SELECT libelle, code  FROM DOCUMENTATION WHERE DOCUMENTATION.DONNEE = 'ESPAR') ON a.ESPAR = code
+  --WHERE a.IDP <= 600200;
 
 /*6.
     Pour chaque parcelle dont l'identifiant (IDP) est inférieur ou égal à 600200, donner l'identifiant de la parcelle, le nombre d'arbres de cette parcelle et la liste des espèces présentes dans cette parcelle (son code ESPAR sous forme d'attribut XML et pour celles dont on le connait, leur nom sous forme de texte).
