@@ -78,3 +78,90 @@ F3 = ∀x (∀y D(x, y) -> V(y)) -> S(x)
 
 Exercice 4
 
+
+__________________________________________________________
+06/10/2015
+
+Question 1 :
+***********
+(∀x ∃y ∀t R(x, z, y))-> (∃x ∀y ∃t S(x, z, t))
+	variables : x, y, z, t (z libre), (x, y, t liées)
+
+	termes :x, y, z, t
+
+	Formules atomiques : R(x, z, y) , S(x, z, t)
+
+	formules non atomiques : R(_), S(_), (∀x ∃y ∀t R(x, z, y)) , (∃x ∀y ∃t S(x, z, t)) , (∀x ∃y ∀t R(x, z, y))-> (∃x ∀y ∃t S(x, z, t))
+
+(∀x ∃y ∀t R(x, z, t)) -> (∃ x ∀ y ∃t S(x, z, t))
+	variables : x, y, z, t ; libre = z; liées = x, y, t
+
+	termes : x, z, t
+
+	Atomes : R(x, z, t) S(x, z, t)
+
+	Formule
+
+(∀x ∃y ∀t R(f(x), g(z), t)) -> (∃x ∀y ∃t S(x, z,t)
+	variables : x, y, z, t liées = z, libre = x, t
+
+	Terme : x, z, t, g(z), f(x)
+
+	Atome : R(f(x), g(z), t), S(x, z, t)
+
+
+
+Question 2 :
+************
+(∀x ∃y ∀t R(x, z, y))-> (∃x ∀y ∃t S(x, z, t))
+<=>
+−(∀x ∃y ∀t R(x, z, y)) ∨ (∃x ∀y ∃t S(x, z, t))
+<=>
+(∃x ∀y ∃t −R(x, z, y)) ∨ (∃x ∀y ∃t S(x, z, t))
+<=>
+(∃x ∀y ∃t) −R(x, z, y) ∨ S(x, z, t)
+
+
+Question 6 :
+************
+1. quelques chandelles éclairent très mal 		=> ∃x EM(x)
+2. les chandelles sont faites pour eclairer 	=> ∀x FE(x)
+3. les chandelles qui sont faites pour éclairer => ∃x (FE(x) ∧ EM(x))
+
+EM(X) ; les chandelles éclairent mal
+FE(X) : fait pour éclairer
+
+Formule de Refutation :
+H1 ∧ H2 |= C
+H1 ∧ H2 ∧ -C |= ø
+
+=> Mise sous forme prenexe
+F = (∃x EM(x))∧(∀x FE(x)) ∧ −( ∃x (FE(x)∧EM(x)))
+<=>
+F = (∃x EM(x))∧(∀x FE(x)) ∧ (∀x -Fe(x) ∨ -EM(x))
+<=>
+changement de nom 
+(∃y EM(y)) ∧ (∀x FE(x)) ∧ (∀x -FE(x) ∨ -EM(x))
+<=>
+∃y EM(y) ∧ (∀x FE(x) ∧ (-FE(x) ∨ -EM(x))
+=> Mise sous forme de skolem
+Ho = {a}
+∀x EM(a) ∧ FE(x) ∧ (-FE(x) ∨ -EM(x))
+<=>
+clauses : {EM(a), FE(x1), -FE(x2), -EM(x3)}
+
+EM(a)	FE(x1)	-FE(x2) ∨ -EM(x3)
+	\	  | 		/
+	 \	  | 	   / substitution x2 par a
+	  \	  | 	  /
+	  	  |	-FE(a)
+		  \  /
+		   Ø Herbrant 
+
+
+Question 5 :
+************
+F est valide
+|= F
+-F |= ø
+
