@@ -1,5 +1,5 @@
 #include "tdi.hpp"
-
+#include <string.h>
 unsigned int Identificateur::num = 1 ;
 vector<Identificateur> tdi;
 
@@ -24,11 +24,15 @@ const char * Identificateur::getNom(){
 
 unsigned ajouterIdentificateur(const char *n){
 
+	for(vector<Identificateur>::iterator it = tdi.begin(); it < tdi.end(); it++){
+		if(strcmp(it->getNom(), n) == 0)
+			return it->getIdent();
+	}
 	tdi.push_back(Identificateur(n));
 	return tdi.back().getIdent();
 }
 
-void sauvegardeTable(const char * name){
+void sauvegarderTableIdent(const char * name){
 
 	FILE * fichier = NULL;
 
@@ -39,10 +43,10 @@ void sauvegardeTable(const char * name){
 	}
 }
 
-void afficherTable(void){
+void afficherTableIdent(void){
 	
 	for(vector<Identificateur>::iterator it = tdi.begin(); it!= tdi.end(); it++){
-			printf("nom : %s; numero : %d\n", it->getNom(), it->getIdent());
+			printf("Identificateur : %s; numero : %d\n", it->getNom(), it->getIdent());
 		}
 }
 

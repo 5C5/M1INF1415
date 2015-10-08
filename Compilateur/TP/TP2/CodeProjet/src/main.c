@@ -86,4 +86,6 @@ int main ( int argc, char** argv ){
     yyparse ();
 	/* traitements post analyse */
 	/* sauvegarde des resultats */
+	sauvegarderTableIdent("prefixe.ti");
+	afficherTableIdent();
 }

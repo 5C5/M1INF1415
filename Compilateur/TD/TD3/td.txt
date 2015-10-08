@@ -66,4 +66,93 @@ dec -> var ³ suite-ident
  suite-ident↓rang = 1
 
 
+______________________________________________________________________________
+Octobre 2015
+A -> A B
+	| B
+B -> 0
+	|1
 
+A -> B A
+	| B
+B -> 0
+	|1
+
+*Attribuer ces gramR pour calculer la valeur du nombre décimale du nombre binaire
+
+A↑v -> A1 B
+			A↑v = A1↑v * 2 + B↑v
+		| B
+			A↑v = B↑v
+
+
+B↑v-> 0 
+		B↑v = 0
+	|1
+	 	B↑v =1
+
+
+
+B↑v
+A↑v
+A↑l
+B -> 0		B↑v = 0
+B -> 1		B↑v = 1
+A -> B		A↑v = B↑v
+			A↑l = 1
+A -> B A2	A↑v = B↑v * 2^ A2↑l + A2↑v
+			A↑l = A2↑l + 1
+
+
+P -> B
+B -> { D; LI}
+D -> var L
+L -> Ident, L
+	|Ident
+LI -> LI; I
+	|I
+I -> opcode(LA)
+	|B
+LA -> LA, ident
+	| ident
+
+=> pour chaque déclaration d'identificateur, afficher :
+	-la profondeur du bloc ou il est déclaré
+	-son rang dans la ligne de déclaration
+=>pour chaque utilisation d'identificateur d'identificateur
+	-afficher les infos de déclaration
+
+B↓p
+LI↓p
+I↓p
+D↓p
+L↓p
+L↑r | L↓nb
+
+D -> var L		L↓nb = 0
+L -> id			le rang d'id = L↓nb + 1
+L -> ident, L3	le rang d'id = L↓nb + 1
+				L3↓nb = L↓nb + 1
+
+P -> B			B↓p = 0
+B -> LI			LI↓p = B↓p
+LI -> LI1, I	LI1↓p = LI↓p; I↓p = LI↓
+	| I			I↓p = LI↓p
+I -> B			B↓ = I↓p + 1
+
+B -> D			D↓p = B↓p
+
+une hiérarchie de table (TS)
+	-décriant les imbrications de bloc
+	-contenant les déclarations d'un bloc
+		id -> <rang, prof>
+on connait la table du bloc en cours d'analyse
+L -> ident			Tablecourante[ident] =<L↓p, 1>
+L -> L1, ident		Tablecourant[ident]= <L↓p, L1↑nb+1>
+
+B -> {D, LI}  => on ferme la table courante, on revient à la parente
+	 ↓
+	 On ouvre une nouvelle table courante, dont le parent est l'actuelle table courante
+
+LA -> LA, ident		rechercher ident dans la hiérarchie de table
+LA -> ident			rechercher ident dans la hiérarchie de table
