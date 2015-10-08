@@ -115,6 +115,21 @@ GROUP BY a.IDP;
     <!ATTLIST espece code CDATA #REQUIRED>
     ]>
 */
+SELECT XMLELEMENT(name "parcelle",
+  XMLATTRIBUTES(IDP AS "id"),
+    XMLELEMENT(name "nb", nb),
+  XMLAGG(
+    XMLELEMENT(name "espece", 
+    XMLATTRIBUTES(code AS "code"),
+    libelle)))
+FROM 
+  (SELECT IDP, COUNT(A) AS nb FROM ARBRES GROUP BY IDP) nbr
+  NATURAL JOIN
+  ((SELECT distinct IDP, ESPAR FROM ARBRES) a 
+  LEFT OUTER JOIN 
+(SELECT distinct libelle, code FROM DOCUMENTATION WHERE donnee = 'ESPAR') d ON a.espar = d.code)
+WHERE IDP <= 600200
+GROUP BY IDP, nb;
 
 /*7.
     Pour les espèces présentes dans entre 2 et 5 parcelles, donner leur code, leur nom et la liste des parcelles (IDP) contenant des arbres de cette espèce.
