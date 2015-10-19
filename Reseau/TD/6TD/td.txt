@@ -11,7 +11,14 @@ On module la fréquence du signal selon une valeur. On associe aux modulations p
 
 ## Exercice 3
 1. Le diagramme montre les valeurs associées aux décalages de phases et modulation d'amplitudes. On modifie la phase/l'amplitude en fonction de la valeur à transmettre. ce codage permet d'adapter le signal au support.
+L'interet du schéma est l'association de plusieurs bits à chaque état. Le débit binaire est multiplié
 2. 010001111000110111011
+
+
+------------------------
+baud : nombre de changement d'état par seconde
+-----------------------
+
 
 # Multiplexage
 ## Exercice 4
