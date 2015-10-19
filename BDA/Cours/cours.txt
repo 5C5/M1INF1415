@@ -43,3 +43,16 @@ Plsrs stratégies pour représenter une classe qui hérite d'une autre :
 -Association de type 1-1 (OneToOne) -> clé étrangère correspodant au champ indiquant l'objet associé
 
 
+
+--------------------------------------
+19/05/2015
+
+Composition des trois opérations :
+-Map : applique une fnct a une collection (Mapper -> noeud qui exécute une partie de Map)
+-Sort/Group/Shuffle : réorganisation automatique des résultats intermédiaires
+
+
+reduce (+) [n] = n
+reduce (+) [a::l] = a (+) (reduce (+) l)
+
+-Reduce
