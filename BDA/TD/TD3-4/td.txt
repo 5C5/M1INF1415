@@ -32,6 +32,18 @@ MAP(docid a, doc d)
 	end
 end MAP
 
+var map = function(){
+	var local = {};
+	var context = this.content.split(//);
+	for(var i = 0, n = content.length; i < n; i++){
+		if(local[content[i]])
+			local[content[i]]++;
+		else
+			local[content[i]]= 1;
+	}
+	for(var key in local){
+		emit(key, local[key]);
+}
 ## 4
 Le résultat envoyé eu niveau du reducer 2 est (fold, [1, 1, 2])
 
