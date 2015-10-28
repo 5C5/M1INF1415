@@ -1,6 +1,9 @@
 %{
 
 #include <cstddef>
+#include <stdlib.h>
+#include <stdio.h>
+#include "type.hpp"
 
 extern int yyerror ( char* );
 extern int yylex ();
@@ -9,10 +12,12 @@ extern int yylex ();
 
 %union{
 	int ident;
-	int valint;
-	float valreal;
-	char valchar;
-	char * valstring;
+	int intval;
+	int boolval;
+	float realval;
+	char charval;
+	char * stringval;
+	Type * typeval;
 }
 
 %token KW_PROGRAM
@@ -75,12 +80,18 @@ extern int yylex ();
 %token OP_EXP
 %token OP_AFFECT
 
-%token TOK_IDENT
-%token TOK_INTEGER
-%token TOK_REAL
-%token TOK_BOOLEAN
-%token TOK_CHAR
-%token TOK_STRING
+%token <ident> TOK_IDENT
+%token <intval> TOK_INTEGER
+%token <realval> TOK_REAL
+%token <boolval> TOK_BOOLEAN
+%token <charval> TOK_CHAR
+%token <stringval> TOK_STRING
+
+%type <ident> ProgramHeader
+%type <typeval> SimpleType
+%type <typeval> BaseType
+%type <typeval> UserType
+%type <typeval> Type
 
 %start Program
 
@@ -101,7 +112,11 @@ extern int yylex ();
 Program				:	ProgramHeader SEP_SCOL Block SEP_DOT
 					;
 
-ProgramHeader		:	KW_PROGRAM TOK_IDENT
+ProgramHeader		:	KW_PROGRAM TOK_IDENT	{
+			   				//Ajouter une table des symboles
+							//Gerer le premier context
+
+			   			}
 					;
 
 Block				:	BlockDeclConst BlockDeclType BlockDeclVar BlockDeclFunc BlockCode
@@ -110,7 +125,7 @@ Block				:	BlockDeclConst BlockDeclType BlockDeclVar BlockDeclFunc BlockCode
 BlockSimple			:	BlockDeclConst BlockDeclType BlockDeclVar BlockCode
 					;
 
-BlockDeclConst		:	KW_CONST ListDeclConst
+BlockDeclConst		:	KW_CONST ListDeclConst	
 			 		|
 			 		;
 
@@ -119,7 +134,10 @@ ListDeclConst		:	ListDeclConst DeclConst
 			 		;
 
 DeclConst			:	TOK_IDENT OP_EQ Expression SEP_SCOL
-					|	TOK_IDENT SEP_DOTS BaseType OP_EQ Expression SEP_SCOL
+					|	TOK_IDENT SEP_DOTS BaseType OP_EQ Expression SEP_SCOL	{
+							printf("Declaration de constante de type : %s\n",
+							$3->toString().c_str());
+							}
 			 		;
 
 BlockDeclType		:	KW_TYPE ListDeclType
@@ -130,28 +148,40 @@ ListDeclType		:	ListDeclType DeclType
 			 		|	DeclType
 			 		;
 
-DeclType			:	TOK_IDENT OP_EQ Type SEP_SCOL
+DeclType			:	TOK_IDENT OP_EQ Type SEP_SCOL	{printf("Type declaré : %s\n", $3->toString().c_str());}
 			 		;
 
-Type				:	UserType
-			 		|	SimpleType
+Type				:	UserType	{$$ = $1;}
+					|	SimpleType	{$$ = $1;}	
 			 		;
 
-UserType			:	EnumType
-			 		|	InterType
-			 		|	ArrayType
-			 		|	RecordType
+UserType			:	EnumType	{
+		   					printf("Enum n'a pas encore été géré\n"); 
+							$$ = new Type("Enum");
+							}
+			 		|	InterType	{
+							printf("Intervalle n'a pas encore été géré\n");
+							$$ = new Type("Intervalle");		
+							}
+			 		|	ArrayType	{
+							printf("Tableau n'a pas encore été géré\n");
+							$$ = new Type("Tableau");
+							}
+			 		|	RecordType	{
+							printf("Record n'a pas encore été géré\n");
+							$$ = new Type("Record");
+							}
 			 		;
 
-SimpleType			:	BaseType
-					|	TOK_IDENT
+SimpleType			:	BaseType	{$$ = $1;}
+					|	TOK_IDENT	{$$ = new Type("Identificateur");}
 					;
 
-BaseType			:	KW_INTEGER
-					|	KW_REAL
-					|	KW_BOOLEAN
-					|	KW_CHAR
-					|	KW_STRING
+BaseType			:	KW_INTEGER	{$$ = new Type("entier");}
+		   			|	KW_REAL		{$$ = new Type("reel");}
+					|	KW_BOOLEAN	{$$ = new Type("booleen");}
+					|	KW_CHAR		{$$ = new Type("caractère");}
+					|	KW_STRING	{$$ = new Type("chaine de caractere");}
 					;
 
 EnumType			:	SEP_PO ListEnumValue SEP_PF
@@ -166,7 +196,7 @@ InterType			:	InterBase SEP_DOTDOT InterBase
 
 InterBase			:	TOK_IDENT
 			 		|	TOK_INTEGER
-			 		|	TOK_CHAR
+					|	TOK_CHAR
 			 		;
 
 ArrayType			:	KW_ARRAY SEP_CO ArrayIndex SEP_CF KW_OF SimpleType
@@ -175,7 +205,6 @@ ArrayType			:	KW_ARRAY SEP_CO ArrayIndex SEP_CF KW_OF SimpleType
 ArrayIndex			:	TOK_IDENT
 			 		|	InterType
 			 		;
-
 RecordType			:	KW_RECORD RecordFields KW_END
 			 		;
 
@@ -194,7 +223,9 @@ ListDeclVar			:	ListDeclVar DeclVar
 			 		|	DeclVar
 			 		;
 
-DeclVar				:	ListIdent SEP_DOTS BaseType SEP_SCOL
+DeclVar				:	ListIdent SEP_DOTS BaseType SEP_SCOL	{
+		   					printf("Déclaration de %s\n", $3->toString().c_str());
+							}
 			 		;
 
 ListIdent			:	ListIdent SEP_COMMA TOK_IDENT
@@ -316,9 +347,10 @@ BoolExpr			:	Expression KW_AND Expression
 AtomExpr			:	SEP_PO Expression SEP_PF
 			 		|	TOK_INTEGER
 			 		|	TOK_REAL
-			 		|	TOK_BOOLEAN
+					|	TOK_BOOLEAN
 			 		|	TOK_CHAR
-			 		|	TOK_STRING
+			 		|	TOK_STRING 
+
 			 		;
 
 VarExpr				:	TOK_IDENT

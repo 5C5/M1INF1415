@@ -8,6 +8,7 @@
  
 #include <cstdio>
 #include <cmath>
+#include "type.hpp"
 #include "parser.h"
 #include "tdi.hpp"
 
@@ -101,12 +102,37 @@ CHIFFRES [0-9]+
 "*"								column += yyleng; return OP_MUL;
 "**"							column += yyleng; return OP_EXP;
 
-{T}{R}{U}{E}					column += yyleng; return TOK_BOOLEAN;
-{F}{A}{L}{S}{E}					column += yyleng; return TOK_BOOLEAN;
-[a-zA-Z]([a-zA-Z0-9])*			column += yyleng; yylval.ident = ajouterIdentificateur(yytext); return TOK_IDENT;
-'({NQUOTE}|'')+'				column += yyleng; if ( yyleng == 1 ) return TOK_CHAR; else return TOK_STRING;
--?{CHIFFRES}					column += yyleng; return TOK_INTEGER;
--?{CHIFFRES}"."{CHIFFRES}		column += yyleng; return TOK_REAL;
+{T}{R}{U}{E}					{
+									column += yyleng;
+									yylval.boolval = 1;
+									return TOK_BOOLEAN;
+								}
+
+{F}{A}{L}{S}{E}					{
+									column += yyleng;
+									yylval.boolval = 0;
+									return TOK_BOOLEAN;
+								}
+[a-zA-Z]([a-zA-Z0-9])*			{
+									column += yyleng; 
+									yylval.ident = ajouterIdentificateur(yytext); 
+									return TOK_IDENT;
+								}
+'({NQUOTE}|'')+'				{
+									column += yyleng; 
+									if ( yyleng == 1 ) return TOK_CHAR; 
+									else return TOK_STRING;
+								}
+-?{CHIFFRES}					{
+									column += yyleng;
+									yylval.intval = atoi(yytext);
+									return TOK_INTEGER;
+								}
+-?{CHIFFRES}"."{CHIFFRES}		{
+									column += yyleng;
+									yylval.realval = atof(yytext);
+									return TOK_REAL;
+								}
 
 ":"								column += yyleng; return SEP_DOTS;
 ";"								column += yyleng; return SEP_SCOL;
