@@ -4,9 +4,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "type.hpp"
+#include "symbole.hpp"
+#include "tds.hpp"
 
 extern int yyerror ( char* );
 extern int yylex ();
+
+extern TDS * courant;
+extern vector<TDS> listeTDS;
 
 %}
 
@@ -113,9 +118,7 @@ Program				:	ProgramHeader SEP_SCOL Block SEP_DOT
 					;
 
 ProgramHeader		:	KW_PROGRAM TOK_IDENT	{
-			   				//Ajouter une table des symboles
-							//Gerer le premier context
-
+			   				//courant = new TDS(0, NULL);
 			   			}
 					;
 
@@ -148,7 +151,10 @@ ListDeclType		:	ListDeclType DeclType
 			 		|	DeclType
 			 		;
 
-DeclType			:	TOK_IDENT OP_EQ Type SEP_SCOL	{printf("Type declaré : %s\n", $3->toString().c_str());}
+DeclType			:	TOK_IDENT OP_EQ Type SEP_SCOL	{
+		   					printf("Type declaré : %s\n", 
+							$3->toString().c_str());
+							}
 			 		;
 
 Type				:	UserType	{$$ = $1;}
@@ -224,7 +230,8 @@ ListDeclVar			:	ListDeclVar DeclVar
 			 		;
 
 DeclVar				:	ListIdent SEP_DOTS BaseType SEP_SCOL	{
-		   					printf("Déclaration de %s\n", $3->toString().c_str());
+		   					printf("Déclaration d'une variable de type : %s\n",
+							$3->toString().c_str());
 							}
 			 		;
 

@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <getopt.h>
 #include "tdi.hpp"
+#include "type.hpp"
 
 extern int yyparse ();
 extern FILE* yyin;
