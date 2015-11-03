@@ -6,12 +6,13 @@
 #include "type.hpp"
 #include "symbole.hpp"
 #include "tds.hpp"
+#include "tdi.hpp"
 
 extern int yyerror ( char* );
 extern int yylex ();
 
-extern TDS * courant;
-extern vector<TDS> listeTDS;
+TDS * courant;
+vector<TDS> listeTDS;
 
 %}
 
@@ -118,7 +119,9 @@ Program				:	ProgramHeader SEP_SCOL Block SEP_DOT
 					;
 
 ProgramHeader		:	KW_PROGRAM TOK_IDENT	{
-			   				//courant = new TDS(0, NULL);
+			   				TDS p = TDS(0, NULL, string(getNomFromIdent($2)));
+			   				courant = &p;
+							listeTDS.push_back(p);
 			   			}
 					;
 

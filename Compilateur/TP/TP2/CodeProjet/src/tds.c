@@ -4,12 +4,14 @@ TDS::TDS(){
 
 	this->contexte = -1;
 	this->parent = NULL;
+	this->id = "";
 }
 
-TDS::TDS(int c, TDS * pere){
+TDS::TDS(int c, TDS * pere, string s){
 
 	this->contexte = c;
 	this->parent = pere;
+	this->id = s;
 }
 
 int TDS::getContexte(){
@@ -18,6 +20,10 @@ int TDS::getContexte(){
 
 TDS * TDS::getParent(){
 	return this->parent;
+}
+
+string TDS::getId(){
+	return this->id;
 }
 
 vector<Symbole> TDS::getSymboles(){
@@ -30,6 +36,10 @@ void TDS::setContexte(int c){
 
 void TDS::setParent(TDS * pere){
 	this->parent = pere;
+}
+
+void TDS::setId(string s){
+	this->id = s;
 }
 
 void TDS::addSymbole(Symbole s){

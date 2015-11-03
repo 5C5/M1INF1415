@@ -35,5 +35,5 @@ extern vector<Identificateur> tdi;
 extern unsigned int ajouterIdentificateur(const char *);
 extern void sauvegarderTableIdent(const char *);
 extern void afficherTableIdent(void);
-extern char * getNom(const unsigned int);
+extern const char * getNomFromIdent(unsigned int);
 #endif

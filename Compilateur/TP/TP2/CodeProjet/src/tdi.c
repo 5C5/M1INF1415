@@ -50,3 +50,12 @@ void afficherTableIdent(void){
 		}
 }
 
+const char * getNomFromId(const unsigned int id){
+	for(vector<Identificateur>::iterator it = tdi.begin();
+			it!= tdi.end();
+			it++){
+		if(it->getIdent() == id)
+			return it->getNom();
+	}
+	return "";
+}
