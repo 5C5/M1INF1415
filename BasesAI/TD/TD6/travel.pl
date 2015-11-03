@@ -21,3 +21,9 @@ voyage(V, S, H, C):- cout(V, H, X), trajet(V, Y), C is X * S + Y.
 
 /* Définition du predicat voyage eco*/
 voyage_eco(V, S, H, C, Cmax):- voyage(V, S, H, C), C <= Cmax.
+
+
+/*
+* Version 2015-2106
+*/
+
