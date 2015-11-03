@@ -102,3 +102,64 @@ I(X, Y) = H(X) - H(X|Y)
 	lois de X
 	 = Max (H(X))
 	 =[1.76]
+
+
+# Exercice 6 :
+correction
+ | Nb | Hz  | Code
+A| 10 | 0.5 | 0
+B| 5  | 0.25| 10
+C| 3  | 0.15| 110
+D| 2  | 0.1	| 111
+
+*Determiner le code de Hoffman
+{A, B, C, D}1
+|
+|--0--> A
+|
+1
+|
+{B, C, D} 0.5
+|
+|
+|--0-->B
+1
+|
+{C, D} 0.25
+|
+|--0-->C
+|
+1
+|
+D
+*Longueur moyenne du code*
+m = 1/2 * 1 + 1/4 * 2 + 3/30 * 3 + 1/10 * 3 = 35/20 = 1.75
+
+*Calcul de l'entropie*
+  n
+- ∑ pi log_2 pi
+  i=1
+
+soit
+-( 0.5 log_2(0.5) + 0.25 log_2(0.25) + 0.15 log_2(0.15) + 0.1 log_2(0.1)) = 1.7427
+
+* Utilité du codage pour le message *
+Ce genre de codage est plus efficace pour des language naturel (on y gagne pas forcément)
+
+# Exercice 7
+Correction
+[3]
+Capacité du canal : Quantité maximale d'information possible à traverser sur le canalavec une probabilité d'erreur arbitrairement faible.
+Capacité de Canal = Max(I(X, Y))
+
+Optimum quand ts les symboles snt équiprobables : aucune compression possible.
+Symboles = 2 bitsa
+
+Rendement : Entropie/Capacité => H(X) / C
+*Rendement *
+1.76 / 2 = 0.88 = 88%a
+
+# Exercice 8
+1 : 
+_1010111
+
