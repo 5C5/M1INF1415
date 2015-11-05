@@ -26,7 +26,7 @@ string TDS::getId(){
 	return this->id;
 }
 
-vector<Symbole> TDS::getSymboles(){
+vector<Symbole *>TDS::getSymboles(){
 	return this->symboles;
 }
 
@@ -42,10 +42,33 @@ void TDS::setId(string s){
 	this->id = s;
 }
 
-void TDS::addSymbole(Symbole s){
+void TDS::addSymbole(Symbole *s){
 	symboles.push_back(s);
 }
 
 void TDS::addSymbole(int id, string s){
-	symboles.push_back(Symbole(id, s));
+	symboles.push_back(new Symbole(id, s));
+}
+
+void TDS::afficherTDS(){
+
+	for(vector<Symbole *>::iterator it = this->symboles.begin();
+			it != this->symboles.end();
+			it++){
+		cout << "Identificateur n° " << (*it)->getIdentifiant() << " correspondant à " << (*it)->getSignification() << endl;
+	}
+}
+
+void TDS::sauvegarderTDS(const char *name){
+
+	FILE * fichier = NULL;
+
+	if((fichier = fopen(name, "w")) != NULL){
+		for(vector<Symbole *>::iterator it = this->symboles.begin();
+			it != this->symboles.end();
+			it++){
+
+			fprintf(fichier, "Id : %d signification : %s\n", (*it)->getIdentifiant(), (*it)->getSignification().c_str());
+		}
+	}
 }

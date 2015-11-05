@@ -3,11 +3,10 @@
 #include <cstdio>
 #include <getopt.h>
 #include "tdi.hpp"
-#include "type.hpp"
 
 extern int yyparse ();
 extern FILE* yyin;
-
+extern void yyfinir();
 
 int main ( int argc, char** argv ){
 
@@ -87,6 +86,5 @@ int main ( int argc, char** argv ){
     yyparse ();
 	/* traitements post analyse */
 	/* sauvegarde des resultats */
-	sauvegarderTableIdent("prefixe.ti");
-	afficherTableIdent();
+	yyfinir();
 }

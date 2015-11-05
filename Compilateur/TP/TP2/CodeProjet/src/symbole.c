@@ -5,10 +5,10 @@ Symbole::Symbole(){
 	this->signification = "";
 }
 
-Symbole::Symbole(int id, string sign){
+Symbole::Symbole(int id, string s){
 	
 	this->identifiant = id;
-	this->signification = sign;
+	this->signification = s;
 }
 
 int Symbole::getIdentifiant(){

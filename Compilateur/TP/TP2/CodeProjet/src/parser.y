@@ -5,14 +5,19 @@
 #include <stdio.h>
 #include "type.hpp"
 #include "symbole.hpp"
+#include "programme.hpp"
 #include "tds.hpp"
 #include "tdi.hpp"
 
 extern int yyerror ( char* );
 extern int yylex ();
 
+extern void yyfinir();
+
+extern TDI * tdi;
+
 TDS * courant;
-vector<TDS> listeTDS;
+vector<TDS *> listeTDS;
 
 %}
 
@@ -119,9 +124,11 @@ Program				:	ProgramHeader SEP_SCOL Block SEP_DOT
 					;
 
 ProgramHeader		:	KW_PROGRAM TOK_IDENT	{
-			   				TDS p = TDS(0, NULL, string(getNomFromIdent($2)));
-			   				courant = &p;
-							listeTDS.push_back(p);
+			   				TDS *ts = new TDS(0, NULL, string(tdi->getNomFromId($2)));
+			   				courant = ts;
+							listeTDS.push_back(ts);
+							Programme *p = new Programme(string(tdi->getNomFromId($2)), $2);
+							courant->addSymbole(p);
 			   			}
 					;
 
@@ -373,3 +380,9 @@ ListeExpr			:	ListeExpr SEP_COMMA Expression
 					;
 
 %%
+
+void yyfinir(){
+	tdi->sauvegarderTableIdent("prefixe.ti");
+	tdi->afficherTableIdent();
+	listeTDS.front()->afficherTDS();
+}

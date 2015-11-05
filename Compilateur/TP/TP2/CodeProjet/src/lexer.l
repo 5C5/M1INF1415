@@ -11,7 +11,6 @@
 #include "type.hpp"
 #include "parser.h"
 #include "tdi.hpp"
-
 extern int row, column;
 
 extern int yyerror ( char* m );
@@ -20,6 +19,7 @@ extern int yylex ();
 
 extern void commenteof ();
 
+extern TDI * tdi;
 %}
 
 A [aA]
@@ -115,7 +115,7 @@ CHIFFRES [0-9]+
 								}
 [a-zA-Z]([a-zA-Z0-9])*			{
 									column += yyleng; 
-									yylval.ident = ajouterIdentificateur(yytext); 
+									yylval.ident = tdi->ajouterIdentificateur(yytext); 
 									return TOK_IDENT;
 								}
 '({NQUOTE}|'')+'				{
@@ -180,6 +180,7 @@ CHIFFRES [0-9]+
 %%
 
 int row = 1, column = 1;
+TDI * tdi = new TDI();
 
 int
 yyerror ( char* m )
@@ -194,3 +195,4 @@ commenteof ()
 	fprintf (stderr, "unexpected EOF inside comment at line %d, column %d\n", row, column );
 	exit (1);
 }
+

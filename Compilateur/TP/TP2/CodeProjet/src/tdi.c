@@ -1,58 +1,48 @@
 #include "tdi.hpp"
-#include <string.h>
-unsigned int Identificateur::num = 1 ;
-vector<Identificateur> tdi;
 
-Identificateur::Identificateur(const char * n){
-	
-	if(!this->num > 0){
-		this->num = 1;
-	}
-	this->name = string(n);
-	this->ident = num++;
-}
+TDI::TDI(){}
 
-unsigned int Identificateur::getIdent(){
+unsigned int TDI::ajouterIdentificateur(const char *n){
 
-	return this->ident;
-}
-
-const char * Identificateur::getNom(){
-
-	return this->name.c_str();
-}
-
-unsigned ajouterIdentificateur(const char *n){
-
-	for(vector<Identificateur>::iterator it = tdi.begin(); it < tdi.end(); it++){
+	for(vector<Identificateur>::iterator it = this->table.begin(); 
+			it < this->table.end(); 
+			it++){
 		if(strcmp(it->getNom(), n) == 0)
 			return it->getIdent();
 	}
-	tdi.push_back(Identificateur(n));
-	return tdi.back().getIdent();
+	table.push_back(Identificateur(n));
+	return table.back().getIdent();
 }
 
-void sauvegarderTableIdent(const char * name){
+unsigned int TDI::ajouterIdentificateur(Identificateur i){
+
+	this->table.push_back(i);
+	return i.getIdent();
+}
+
+void TDI::sauvegarderTableIdent(const char * name){
 
 	FILE * fichier = NULL;
 
 	if((fichier = fopen(name, "w"))!= NULL){
-		for(vector<Identificateur>::iterator it = tdi.begin(); it!= tdi.end(); it++){
+		for(vector<Identificateur>::iterator it = this->table.begin(); 
+				it!= this->table.end(); 
+				it++){
 			fprintf(fichier, "nom : %s; numero : %d\n", it->getNom(), it->getIdent());
 		}
 	}
 }
 
-void afficherTableIdent(void){
+void TDI::afficherTableIdent(void){
 	
-	for(vector<Identificateur>::iterator it = tdi.begin(); it!= tdi.end(); it++){
+	for(vector<Identificateur>::iterator it = this->table.begin(); it!= this->table.end(); it++){
 			printf("Identificateur : %s; numero : %d\n", it->getNom(), it->getIdent());
 		}
 }
 
-const char * getNomFromId(const unsigned int id){
-	for(vector<Identificateur>::iterator it = tdi.begin();
-			it!= tdi.end();
+const char * TDI::getNomFromId(unsigned int id){
+	for(vector<Identificateur>::iterator it = this->table.begin();
+			it!= this->table.end();
 			it++){
 		if(it->getIdent() == id)
 			return it->getNom();

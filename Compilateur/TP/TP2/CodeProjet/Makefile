@@ -5,7 +5,7 @@ BIND = bin
 
 EXEC = ppc
 
-OBJFILES = tdi.o parser.o lexer.o main.o type.o symbole.o tds.o
+OBJFILES = ident.o tdi.o parser.o lexer.o main.o type.o symbole.o tds.o programme.o
 OBJS = $(OBJFILES:%.o=$(OBJD)/%.o)
 
 default: $(BIND)/$(EXEC)
@@ -13,7 +13,7 @@ default: $(BIND)/$(EXEC)
 $(BIND)/$(EXEC): $(OBJS)
 	@g++ -o $@ $^ -ll
 
-$(OBJD)/%.o: $(SRCD)/%.c
+$(OBJD)/%.o: $(SRCD)/%.c 
 	@g++ -o $@ -c $< -I$(INCD) -I$(SRCD)
 
 $(SRCD)/parser.c: $(SRCD)/parser.y

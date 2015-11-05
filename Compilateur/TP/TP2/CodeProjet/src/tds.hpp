@@ -3,6 +3,8 @@
 
 #include "symbole.hpp"
 #include <vector>
+#include <stdio.h>
+#include <iostream>
 
 class TDS {
 
@@ -10,7 +12,7 @@ class TDS {
 		int contexte;
 		string id;
 		TDS * parent;
-		vector<Symbole> symboles;
+		vector<Symbole*> symboles;
 
 	public :
 		TDS();
@@ -18,14 +20,17 @@ class TDS {
 		
 		int getContexte();
 		TDS * getParent();
-		vector<Symbole> getSymboles();
+		vector<Symbole *> getSymboles();
 		string getId();
 		void setContexte(int);
 		void setParent(TDS *);
 		void setId(string);
 
-		void addSymbole(Symbole);
+		void addSymbole(Symbole *);
 		void addSymbole(int, string);
+
+		void afficherTDS();
+		void sauvegarderTDS(const char *);
 
 };
 

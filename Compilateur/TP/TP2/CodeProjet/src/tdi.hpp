@@ -1,39 +1,25 @@
 #ifndef TDI_HPP
 #define TDI_HPP
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
-#include <vector>
+#include "ident.hpp"
+#include <cstring>
 
 using namespace std;
 
-
-/*
- * Classe d'identificateur
- */
-class Identificateur {
+class TDI {
 
 	protected :
-		static unsigned int num;
-		unsigned int ident;
-		string name;
+		vector<Identificateur> table;
 
 	public :
-		Identificateur(const char * n);
-		unsigned int getIdent();
-		const char* getNom();
+		TDI();
+		unsigned int ajouterIdentificateur(const char *);
+		unsigned int ajouterIdentificateur(Identificateur);
+		const char * getNomFromId(unsigned int);
 
+		void afficherTableIdent();
+
+		void sauvegarderTableIdent(const char *);
 };
 
-/*
- * Déclaration de la table d'identificateur (variable globale)
- */
-extern vector<Identificateur> tdi;
-
-
-extern unsigned int ajouterIdentificateur(const char *);
-extern void sauvegarderTableIdent(const char *);
-extern void afficherTableIdent(void);
-extern const char * getNomFromIdent(unsigned int);
 #endif
