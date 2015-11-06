@@ -1,13 +1,32 @@
 #include "type.hpp"
 
+/*
+ * Constructeur
+ */
 Type::Type(){
-	type="indéfini";
+	this->type="indéfini";
+	this->signification = "type";
+	this->identifiant = -1;
 }
 
+/*
+ * Constructeurs avec argument
+ */
 Type::Type(string t){
-	type = t;
+	this->type = t;
+	this->signification = "type";
+	this->identifiant = -1;
 }
 
+Type::Type(string t, int id){
+	this->type = t;
+	this->signification = "type";
+	this->identifiant = id;
+}
+
+/*
+ * Accesseurs
+ */
 string Type::getType(){
 	return type;
 }

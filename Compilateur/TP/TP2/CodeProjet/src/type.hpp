@@ -2,10 +2,11 @@
 #define TYPE_H
 
 #include <string>
+#include "symbole.hpp"
 
 using namespace std;
 
-class Type {
+class Type : public Symbole {
 
 	protected :
 		string type;
@@ -13,6 +14,7 @@ class Type {
 	public :
 		Type();
 		Type(string);
+		Type(string, int);
 		string getType();
 		void setType(string);
 		string toString();

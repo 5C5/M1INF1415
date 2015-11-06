@@ -28,6 +28,7 @@ class TDS {
 
 		void addSymbole(Symbole *);
 		void addSymbole(int, string);
+		string getSignification(int);
 
 		void afficherTDS();
 		void sauvegarderTDS(const char *);

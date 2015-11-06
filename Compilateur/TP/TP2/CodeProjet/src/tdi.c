@@ -34,7 +34,8 @@ void TDI::sauvegarderTableIdent(const char * name){
 }
 
 void TDI::afficherTableIdent(void){
-	
+
+	printf("\nAffichage de la table des identificateurs : \n");
 	for(vector<Identificateur>::iterator it = this->table.begin(); it!= this->table.end(); it++){
 			printf("Identificateur : %s; numero : %d\n", it->getNom(), it->getIdent());
 		}

@@ -8,6 +8,7 @@
 #include "programme.hpp"
 #include "tds.hpp"
 #include "tdi.hpp"
+#include "variable.hpp"
 
 extern int yyerror ( char* );
 extern int yylex ();
@@ -18,6 +19,7 @@ extern TDI * tdi;
 
 TDS * courant;
 vector<TDS *> listeTDS;
+vector<int> listeVar;
 
 %}
 
@@ -28,7 +30,7 @@ vector<TDS *> listeTDS;
 	float realval;
 	char charval;
 	char * stringval;
-	Type * typeval;
+	Symbole * sval;
 }
 
 %token KW_PROGRAM
@@ -99,10 +101,10 @@ vector<TDS *> listeTDS;
 %token <stringval> TOK_STRING
 
 %type <ident> ProgramHeader
-%type <typeval> SimpleType
-%type <typeval> BaseType
-%type <typeval> UserType
-%type <typeval> Type
+%type <sval> SimpleType
+%type <sval> BaseType
+%type <sval> UserType
+%type <sval> Type
 
 %start Program
 
@@ -148,8 +150,6 @@ ListDeclConst		:	ListDeclConst DeclConst
 
 DeclConst			:	TOK_IDENT OP_EQ Expression SEP_SCOL
 					|	TOK_IDENT SEP_DOTS BaseType OP_EQ Expression SEP_SCOL	{
-							printf("Declaration de constante de type : %s\n",
-							$3->toString().c_str());
 							}
 			 		;
 
@@ -162,8 +162,8 @@ ListDeclType		:	ListDeclType DeclType
 			 		;
 
 DeclType			:	TOK_IDENT OP_EQ Type SEP_SCOL	{
-		   					printf("Type declaré : %s\n", 
-							$3->toString().c_str());
+		   					$3->setIdentifiant($1);
+		   					courant->addSymbole($3);
 							}
 			 		;
 
@@ -172,8 +172,7 @@ Type				:	UserType	{$$ = $1;}
 			 		;
 
 UserType			:	EnumType	{
-		   					printf("Enum n'a pas encore été géré\n"); 
-							$$ = new Type("Enum");
+							$$ = new Type("Enumeration");
 							}
 			 		|	InterType	{
 							printf("Intervalle n'a pas encore été géré\n");
@@ -190,7 +189,12 @@ UserType			:	EnumType	{
 			 		;
 
 SimpleType			:	BaseType	{$$ = $1;}
-					|	TOK_IDENT	{$$ = new Type("Identificateur");}
+					|	TOK_IDENT	{
+							/*
+							* Type utilisateurs pas encore gérés
+							*/
+							$$ = NULL;
+							}
 					;
 
 BaseType			:	KW_INTEGER	{$$ = new Type("entier");}
@@ -231,7 +235,7 @@ RecordFields		:	RecordFields SEP_SCOL RecordField
 RecordField			:	ListIdent SEP_DOTS SimpleType
 			 		;
 
-BlockDeclVar		:	KW_VAR ListDeclVar
+BlockDeclVar		:	KW_VAR ListDeclVar {printf("On rentre dans la déclaration de variables\n");}
 			 		|
 			 		;
 
@@ -240,13 +244,22 @@ ListDeclVar			:	ListDeclVar DeclVar
 			 		;
 
 DeclVar				:	ListIdent SEP_DOTS BaseType SEP_SCOL	{
-		   					printf("Déclaration d'une variable de type : %s\n",
-							$3->toString().c_str());
+		   					printf("Déclaration de variable avec %d variables : \n", listeVar.size());
+		   					for(unsigned int i = 0;
+								i < listeVar.size();
+								i++){
+									Variable * v = new Variable($3, listeVar[i]);
+									courant->addSymbole(v);
+								}
 							}
 			 		;
 
-ListIdent			:	ListIdent SEP_COMMA TOK_IDENT
-			 		|	TOK_IDENT
+ListIdent			:	ListIdent SEP_COMMA TOK_IDENT	{
+							listeVar.push_back($3);
+							}
+			 		|	TOK_IDENT	{
+							listeVar.push_back($1);
+							}
 			 		;
 
 BlockDeclFunc		:	ListDeclFunc SEP_SCOL
@@ -264,11 +277,16 @@ DeclFunc			:	ProcDecl
 ProcDecl			:	ProcHeader SEP_SCOL BlockSimple
 			 		;
 
-ProcHeader			:	ProcIdent
+ProcHeader			:	ProcIdent	{
+							}
 			 		|	ProcIdent FormalArgs
 			 		;
 
-ProcIdent			:	KW_PROC TOK_IDENT
+ProcIdent			:	KW_PROC TOK_IDENT {	
+			 				TDS * t = new TDS(courant->getContexte() + 1, courant, tdi->getNomFromId($2));
+							courant = t;
+							listeTDS.push_back(t);
+							}
 			 		;
 
 FormalArgs			:	SEP_PO ListFormalArgs SEP_PF
