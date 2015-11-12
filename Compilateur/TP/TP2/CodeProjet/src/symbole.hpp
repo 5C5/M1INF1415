@@ -2,6 +2,8 @@
 #define SYMBOLE_HPP
 
 #include <string>
+#include <stdio.h>
+#include <iostream>
 
 using namespace std;
 
@@ -18,6 +20,8 @@ class Symbole {
 		string getSignification();
 		void setIdentifiant(int);
 		void setSignification(string);
+		string toString();
+		void afficher();
 };
 
 #endif

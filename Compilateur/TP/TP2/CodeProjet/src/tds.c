@@ -67,7 +67,8 @@ void TDS::afficherTDS(){
 	for(vector<Symbole *>::iterator it = this->symboles.begin();
 			it != this->symboles.end();
 			it++){
-		cout << "Identificateur n° " << (*it)->getIdentifiant() << " correspondant à un(e) " << (*it)->getSignification() << endl;
+		(*it)->afficher();
+		printf("\n");
 	}
 }
 

@@ -26,3 +26,14 @@ void Symbole::setIdentifiant(int id){
 void Symbole::setSignification(string s){
 	this->signification = s;
 }
+
+string Symbole::toString(){
+	char c;
+	sprintf(&c, "%d", this->identifiant);
+	return "Identifiant n°" + string(&c) + " correspond à un(e) " + this->signification;
+}
+
+void Symbole::afficher(){
+
+	cout << "Identifiant n° " << this->identifiant << " correspondant à un(e) " + this->signification;
+}

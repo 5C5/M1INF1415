@@ -18,6 +18,7 @@ class Type : public Symbole {
 		string getType();
 		void setType(string);
 		string toString();
+		void afficher();
 };
 
 #endif

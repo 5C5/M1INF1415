@@ -5,7 +5,7 @@ BIND = bin
 
 EXEC = ppc
 
-OBJFILES = ident.o tdi.o parser.o lexer.o main.o type.o symbole.o tds.o programme.o variable.o
+OBJFILES = ident.o tdi.o parser.o lexer.o main.o type.o symbole.o tds.o programme.o variable.o procedure.o fonction.o
 OBJS = $(OBJFILES:%.o=$(OBJD)/%.o)
 
 default: $(BIND)/$(EXEC)

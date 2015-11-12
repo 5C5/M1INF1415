@@ -36,5 +36,17 @@ void Type::setType(string t){
 }
 
 string Type::toString(){
-	return type;
+	if(identifiant == -1)
+		return " de type " + type;
+	else
+		return Symbole::toString() + " de type " + type + " ";
+}
+
+void Type::afficher(){
+	if(this->identifiant ==-1)
+		cout << " de type " << type;
+	else{
+		Symbole::afficher();
+		cout << " de type " + type + " ";
+	}
 }

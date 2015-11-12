@@ -10,18 +10,25 @@
 #include "tds.hpp"
 #include "tdi.hpp"
 #include "variable.hpp"
-
+#include "procedure.hpp"
+#include "fonction.hpp"
 
 extern int yyerror ( char* );
 extern int yylex ();
 
 extern void yyfinir(char *);
 
+//Table des identificateurs
 extern TDI * tdi;
 
+//Table des Symboles courante
 TDS * courant;
+// Liste des tables des symbole
 vector<TDS *> listeTDS;
+//Liste des identificateurs lors des déclarations groupées
 vector<int> listeVar;
+//Arités des fonctions et procédures;
+int arite = 0;
 
 %}
 
@@ -104,6 +111,9 @@ vector<int> listeVar;
 
 %type <ident> ProgramHeader
 %type <sval> SimpleType
+%type <ident> ProcIdent
+%type <ident> FuncIdent
+%type <sval> FuncResult
 %type <sval> BaseType
 %type <sval> UserType
 %type <sval> Type
@@ -253,6 +263,7 @@ DeclVar				:	ListIdent SEP_DOTS SimpleType SEP_SCOL	{
 									Variable * v = new Variable($3, listeVar[i]);
 									courant->addSymbole(v);
 								}
+								listeVar.clear();
 							}
 			 		;
 
@@ -280,14 +291,23 @@ ProcDecl			:	ProcHeader SEP_SCOL BlockSimple
 			 		;
 
 ProcHeader			:	ProcIdent	{
+			 				Procedure * proc = new Procedure($1, arite);
+							arite = 0;
+							courant->addSymbole(proc);
+
 							}
-			 		|	ProcIdent FormalArgs
+			 		|	ProcIdent FormalArgs {
+							Procedure * proc = new Procedure($1, arite);
+							arite = 0;
+							courant->addSymbole(proc);
+							}
 			 		;
 
-ProcIdent			:	KW_PROC TOK_IDENT {	
-			 				TDS * t = new TDS(courant->getContexte() + 1, courant, tdi->getNomFromId($2));
+ProcIdent			:	KW_PROC TOK_IDENT {
+							TDS * t = new TDS(courant->getContexte() + 1, courant, tdi->getNomFromId($2));
 							courant = t;
 							listeTDS.push_back(t);
+							$$ = $2;
 							}
 			 		;
 
@@ -302,7 +322,12 @@ FormalArg			:	ValFormalArg
 			 		|	VarFormalArg
 			 		;
 
-ValFormalArg		:	ListIdent SEP_DOTS SimpleType
+ValFormalArg		:	ListIdent SEP_DOTS SimpleType {
+			  				for(unsigned int i = 0; i < listeVar.size();i++){
+								arite++;
+							}
+							listeVar.clear();
+			  				}
 				 	;
 
 VarFormalArg		:	KW_VAR ListIdent SEP_DOTS SimpleType
@@ -311,14 +336,27 @@ VarFormalArg		:	KW_VAR ListIdent SEP_DOTS SimpleType
 FuncDecl			:	FuncHeader SEP_SCOL BlockSimple
 			 		;
 
-FuncHeader			:	FuncIdent FuncResult
-			 		|	FuncIdent FormalArgs FuncResult
+FuncHeader			:	FuncIdent FuncResult {
+			 				Fonction * f = new Fonction(arite, $1, $2);
+							courant->addSymbole(f);
+							arite = 0;
+			 				}
+			 		|	FuncIdent FormalArgs FuncResult {
+							Fonction * f = new Fonction(arite, $1, $3);
+							courant->addSymbole(f);
+							arite = 0;
+							}
 			 		;
 
-FuncIdent			:	KW_FUNC TOK_IDENT
+FuncIdent			:	KW_FUNC TOK_IDENT {
+							TDS * t = new TDS(courant->getContexte() + 1, courant, tdi->getNomFromId($2));
+							courant = t;
+							listeTDS.push_back(t);
+							$$ = $2;
+							}
 			 		;
 
-FuncResult			:	SEP_DOTS SimpleType
+FuncResult			:	SEP_DOTS SimpleType {$$ = $2;}
 			 		;
 
 BlockCode			:	KW_BEGIN ListInstr KW_END
@@ -402,5 +440,37 @@ ListeExpr			:	ListeExpr SEP_COMMA Expression
 %%
 
 void yyfinir(char * file){
+
+	string nom(file);
+	size_t pos1 = nom.find("/");
+	size_t pos2 = nom.find(".");
+	string prefixe = nom.substr(pos1 + 1, pos2 - pos1 - 1);
+	prefixe = "intermediaire/" + prefixe;
+	nom = prefixe;
+	char * ti = (char *)malloc(sizeof(prefixe) + 3);
+	strcpy(ti, prefixe.c_str());
+	strcat(ti, ".ti");
+	free(ti);
+	
+	
+	tdi->sauvegarderTableIdent(ti);
+	tdi->afficherTableIdent();
+	
+	for(vector<TDS *>::iterator it = listeTDS.begin();
+		it != listeTDS.end();
+		it++){
+		char * ts = (char *)malloc(sizeof(prefixe) + 6);
+		prefixe += ".";
+		char tmp[4];
+		sprintf(tmp, "%d", (*it)->getContexte());
+		prefixe.append(tmp);
+		prefixe += ".ts";
+		strcpy(ts, prefixe.c_str());
+		(*it)->sauvegarderTDS(ts);
+		(*it)->afficherTDS();
+		prefixe = nom;
+		free(ts);
+				
+	}
 
 }
