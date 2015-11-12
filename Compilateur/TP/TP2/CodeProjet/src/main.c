@@ -6,7 +6,7 @@
 
 extern int yyparse ();
 extern FILE* yyin;
-extern void yyfinir();
+extern void yyfinir(char *);
 
 int main ( int argc, char** argv ){
 
@@ -86,5 +86,5 @@ int main ( int argc, char** argv ){
     yyparse ();
 	/* traitements post analyse */
 	/* sauvegarde des resultats */
-	yyfinir();
+	yyfinir(argv[2]);
 }

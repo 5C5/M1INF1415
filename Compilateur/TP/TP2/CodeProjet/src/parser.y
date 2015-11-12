@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
 #include "type.hpp"
 #include "symbole.hpp"
 #include "programme.hpp"
@@ -10,10 +11,11 @@
 #include "tdi.hpp"
 #include "variable.hpp"
 
+
 extern int yyerror ( char* );
 extern int yylex ();
 
-extern void yyfinir();
+extern void yyfinir(char *);
 
 extern TDI * tdi;
 
@@ -235,7 +237,7 @@ RecordFields		:	RecordFields SEP_SCOL RecordField
 RecordField			:	ListIdent SEP_DOTS SimpleType
 			 		;
 
-BlockDeclVar		:	KW_VAR ListDeclVar {printf("On rentre dans la déclaration de variables\n");}
+BlockDeclVar		:	KW_VAR ListDeclVar
 			 		|
 			 		;
 
@@ -243,9 +245,9 @@ ListDeclVar			:	ListDeclVar DeclVar
 			 		|	DeclVar
 			 		;
 
-DeclVar				:	ListIdent SEP_DOTS BaseType SEP_SCOL	{
-		   					printf("Déclaration de variable avec %d variables : \n", listeVar.size());
-		   					for(unsigned int i = 0;
+DeclVar				:	ListIdent SEP_DOTS SimpleType SEP_SCOL	{
+		   					
+							for(unsigned int i = 0;
 								i < listeVar.size();
 								i++){
 									Variable * v = new Variable($3, listeVar[i]);
@@ -399,8 +401,6 @@ ListeExpr			:	ListeExpr SEP_COMMA Expression
 
 %%
 
-void yyfinir(){
-	tdi->sauvegarderTableIdent("prefixe.ti");
-	tdi->afficherTableIdent();
-	listeTDS.front()->afficherTDS();
+void yyfinir(char * file){
+
 }
