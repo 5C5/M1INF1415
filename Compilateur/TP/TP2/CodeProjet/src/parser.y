@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <stack>
 #include "type.hpp"
 #include "symbole.hpp"
 #include "programme.hpp"
@@ -12,6 +13,8 @@
 #include "variable.hpp"
 #include "procedure.hpp"
 #include "fonction.hpp"
+#include "expression.hpp"
+#include "instruction.hpp"
 
 extern int yyerror ( char* );
 extern int yylex ();
@@ -29,6 +32,20 @@ vector<TDS *> listeTDS;
 vector<int> listeVar;
 //Arités des fonctions et procédures;
 int arite = 0;
+//Numéro du contexte
+int contexte = 0;
+//Numero de la variable temporaire pour le code 3ad
+int numTp = 0;
+//Liste des instructions
+vector<Instruction *> listeInstruction;
+//pile d'instruction temporaires
+stack<Instruction *> * listeCourante;
+
+//Etiquettes
+stack<pair<string, int> >  * etiquette;
+
+//Numero d'etiquette
+int numEti = 0;
 
 %}
 
@@ -40,6 +57,7 @@ int arite = 0;
 	char charval;
 	char * stringval;
 	Symbole * sval;
+	Expression * eval;
 }
 
 %token KW_PROGRAM
@@ -117,6 +135,12 @@ int arite = 0;
 %type <sval> BaseType
 %type <sval> UserType
 %type <sval> Type
+%type <eval> Expression
+%type <eval> AtomExpr
+%type <eval> MathExpr
+%type <eval> BoolExpr
+%type <eval> VarExpr
+%type <eval> CompExpr
 
 %start Program
 
@@ -138,11 +162,14 @@ Program				:	ProgramHeader SEP_SCOL Block SEP_DOT
 					;
 
 ProgramHeader		:	KW_PROGRAM TOK_IDENT	{
-			   				TDS *ts = new TDS(0, NULL, string(tdi->getNomFromId($2)));
+			   				TDS *ts = new TDS(contexte++, NULL, string(tdi->getNomFromId($2)));
 			   				courant = ts;
 							listeTDS.push_back(ts);
 							Programme *p = new Programme(string(tdi->getNomFromId($2)), $2);
 							courant->addSymbole(p);
+							Instruction * i = new Instruction(string(tdi->getNomFromId($2)));
+							//listeInstruction.push_back(i);
+							//listeCourante->push(i);
 			   			}
 					;
 
@@ -209,11 +236,11 @@ SimpleType			:	BaseType	{$$ = $1;}
 							}
 					;
 
-BaseType			:	KW_INTEGER	{$$ = new Type("entier");}
-		   			|	KW_REAL		{$$ = new Type("reel");}
-					|	KW_BOOLEAN	{$$ = new Type("booleen");}
-					|	KW_CHAR		{$$ = new Type("caractère");}
-					|	KW_STRING	{$$ = new Type("chaine de caractere");}
+BaseType			:	KW_INTEGER	{$$ = new Type("Entier");}
+		   			|	KW_REAL		{$$ = new Type("Reel");}
+					|	KW_BOOLEAN	{$$ = new Type("Booleen");}
+					|	KW_CHAR		{$$ = new Type("Caractere");}
+					|	KW_STRING	{$$ = new Type("Chaine");}
 					;
 
 EnumType			:	SEP_PO ListEnumValue SEP_PF
@@ -262,25 +289,29 @@ DeclVar				:	ListIdent SEP_DOTS SimpleType SEP_SCOL	{
 								i++){
 									Variable * v = new Variable($3, listeVar[i]);
 									courant->addSymbole(v);
-								}
-								listeVar.clear();
 							}
+							listeVar.clear();
+						}
 			 		;
 
 ListIdent			:	ListIdent SEP_COMMA TOK_IDENT	{
 							listeVar.push_back($3);
-							}
+						}
 			 		|	TOK_IDENT	{
 							listeVar.push_back($1);
-							}
+						}
 			 		;
 
 BlockDeclFunc		:	ListDeclFunc SEP_SCOL
 			 		|
 			 		;
 
-ListDeclFunc		:	ListDeclFunc SEP_SCOL DeclFunc
-			 		|	DeclFunc
+ListDeclFunc		:	ListDeclFunc SEP_SCOL DeclFunc {
+			  				courant = courant->getParent();
+						}
+			 		|	DeclFunc {
+							courant = courant->getParent();
+						}
 			 		;
 
 DeclFunc			:	ProcDecl
@@ -294,21 +325,23 @@ ProcHeader			:	ProcIdent	{
 			 				Procedure * proc = new Procedure($1, arite);
 							arite = 0;
 							courant->addSymbole(proc);
-
-							}
+							TDS * t = new TDS(contexte++, courant, tdi->getNomFromId($1));
+							courant = t;
+							listeTDS.push_back(t);
+						}
 			 		|	ProcIdent FormalArgs {
 							Procedure * proc = new Procedure($1, arite);
 							arite = 0;
 							courant->addSymbole(proc);
+							TDS * t = new TDS(contexte++, courant, tdi->getNomFromId($1));
+							courant = t;
+							listeTDS.push_back(t);
 							}
 			 		;
 
 ProcIdent			:	KW_PROC TOK_IDENT {
-							TDS * t = new TDS(courant->getContexte() + 1, courant, tdi->getNomFromId($2));
-							courant = t;
-							listeTDS.push_back(t);
 							$$ = $2;
-							}
+						}
 			 		;
 
 FormalArgs			:	SEP_PO ListFormalArgs SEP_PF
@@ -340,20 +373,24 @@ FuncHeader			:	FuncIdent FuncResult {
 			 				Fonction * f = new Fonction(arite, $1, $2);
 							courant->addSymbole(f);
 							arite = 0;
-			 				}
+
+							TDS * t = new TDS(contexte++, courant, tdi->getNomFromId($1));
+							courant = t;
+							listeTDS.push_back(t);
+			 			}
 			 		|	FuncIdent FormalArgs FuncResult {
 							Fonction * f = new Fonction(arite, $1, $3);
 							courant->addSymbole(f);
 							arite = 0;
-							}
+							TDS * t = new TDS(contexte++, courant, tdi->getNomFromId($1));
+							courant = t;
+							listeTDS.push_back(t);
+						}
 			 		;
 
 FuncIdent			:	KW_FUNC TOK_IDENT {
-							TDS * t = new TDS(courant->getContexte() + 1, courant, tdi->getNomFromId($2));
-							courant = t;
-							listeTDS.push_back(t);
 							$$ = $2;
-							}
+						}
 			 		;
 
 FuncResult			:	SEP_DOTS SimpleType {$$ = $2;}
@@ -368,7 +405,9 @@ ListInstr			:	ListInstr SEP_SCOL Instr
 			 		|	Instr
 			 		;
 
-Instr				:	KW_WHILE Expression KW_DO Instr
+Instr				:	KW_WHILE Expression KW_DO Instr	{
+		 					
+		 				}
 			 		|	KW_REPEAT ListInstr KW_UNTIL Expression
 			 		|	KW_FOR TOK_IDENT OP_AFFECT Expression ForDirection Expression KW_DO Instr
 			 		|	KW_IF Expression KW_THEN Instr %prec KW_IFX
@@ -386,49 +425,266 @@ ForDirection		:	KW_TO
 			 		|	KW_DOWNTO
 			 		;
 
-Expression			:	MathExpr
-			 		|	CompExpr
-			 		|	BoolExpr
-			 		|	AtomExpr
-			 		|	VarExpr
-					|	TOK_IDENT SEP_PO ListeExpr SEP_PF
+Expression			:	MathExpr	{$$ = $1;}
+			 		|	CompExpr	{$$ = $1;}
+			 		|	BoolExpr	{$$ = $1;}
+			 		|	AtomExpr	{$$ = $1;}
+			 		|	VarExpr		{$$ = $1;}
+					|	TOK_IDENT SEP_PO ListeExpr SEP_PF	{
+							Symbole * s = courant->getSymbole($1);
+							if(s->getSignification() == "fonction"){
+								//Appel à la fonction
+								Expression * e = new Expression(numTp++, "", new Type(((Type *)((Fonction *)s)->getType())->getType()), string(tdi->getNomFromId($1)), "", OPE_CLL);
+								listeCourante->top()->add(e);
+								//Sortie du résultat de la fonction
+								e = new Expression(-1, "", new Type(((Type *)((Fonction *)s)->getType())->getType()), e->newTmp(numTp++), "", OPE_POP);
+								$$ = e;
+							}
+							else if(s->getSignification() == "procedure"){
+								Expression * e = new Expression(-1, "", new Type(((Type *)((Fonction *)s)->getType())->getType()), string(tdi->getNomFromId($1)), string(""), OPE_CLL);
+								listeCourante->top()->add(e);
+								$$ = NULL;
+							}
+						}
 			 		;
 
-MathExpr			:	Expression OP_ADD Expression
-			 		|	Expression OP_SUB Expression
-			 		|	Expression OP_MUL Expression
-			 		|	Expression OP_SLASH Expression
-			 		|	Expression KW_DIV Expression
-			 		|	Expression KW_MOD Expression
-			 		|	Expression OP_EXP Expression
-			 		|	OP_SUB Expression %prec OP_NEG
-			 		|	OP_ADD Expression %prec OP_POS
+MathExpr			:	Expression OP_ADD Expression	{
+		   					printf("J'ai raison\n");
+		   					string t = $1->isMathCompatible($3, false);
+							if(t!= ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t), $1->getResultat(), $3->getResultat(), OPE_ADD);
+								//listeCourante->top()->add(e);
+								$$ = e;
+							}
+							else {
+								yyerror("Aille! Types incompatibles!\n");
+								$$ = NULL;
+							}
+		   				}
+			 		|	Expression OP_SUB Expression	{
+		   					string t = $1->isMathCompatible($3, false);
+							if(t!= ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t), $1->getResultat(), $3->getResultat(), OPE_SUB);
+								//listeCourante->top()->add(e);
+								$$ = e;
+							}
+							else {
+								yyerror("Aille! Types incompatibles!\n");
+								$$ = NULL;
+							}
+						}
+			 		|	Expression OP_MUL Expression	{
+							string t = $1->isMathCompatible($3, false);
+							if(t!= ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t), $1->getResultat(), $3->getResultat(), OPE_MUL);
+								//listeCourante->top()->add(e);
+								$$ = e;
+							}
+							else {
+								yyerror("Aille! Types incompatibles!\n");
+								$$ = NULL;
+							}	
+						}
+			 		|	Expression OP_SLASH Expression	{
+							string t = $1->isMathCompatible($3, false);
+							if(t!= ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t), $1->getResultat(), $3->getResultat(), OPE_DIV);
+								//listeCourante->top()->add(e);
+								$$ = e;
+							}
+							else {
+								yyerror("Aille! Types incompatibles!\n");
+								$$ = NULL;
+							}
+						}
+			 		|	Expression KW_DIV Expression	{
+		 					string t = $1->isMathCompatible($3, false);
+							if(t!= ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t), $1->getResultat(), $3->getResultat(), OPE_DIV);
+								//listeCourante->top()->add(e);
+								$$ = e;
+							}
+							else {
+								yyerror("Aille! Types incompatibles!\n");
+								$$ = NULL;
+							}
+						}
+			 		|	Expression KW_MOD Expression	{
+							printf("Oups... J'ai pas réussi. Faut gérer comment le modulo?\n");
+							$$ = NULL;	
+						}
+			 		|	Expression OP_EXP Expression	{
+							$$ = NULL;
+							yyerror("Je vois pas à quoi ça correspond\n");
+						}
+			 		|	OP_SUB Expression %prec OP_NEG	{}
+			 		|	OP_ADD Expression %prec OP_POS	{}
 			 		;
 
-CompExpr			:	Expression OP_EQ Expression
-				 	|	Expression OP_NEQ Expression
-				 	|	Expression OP_LT Expression
-				 	|	Expression OP_LTE Expression
-				 	|	Expression OP_GT Expression
-			 		|	Expression OP_GTE Expression
+CompExpr			:	Expression OP_EQ Expression		{
+		   					string t = $1->isTypeComparable($3);
+							if(t != ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t),$1->getResultat(),$3->getResultat(), OPE_EQ);
+								$$ = e;
+							}else{
+								yyerror("Erreur! types incomparables!\n");
+								$$ = NULL;
+							}
+		   				}
+				 	|	Expression OP_NEQ Expression	{
+							string t = $1->isTypeComparable($3);
+							if(t != ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t),$1->getResultat(),$3->getResultat(), OPE_NEQ);
+								$$ = e;
+							}else{
+								yyerror("Erreur! types incomparables!\n");
+								$$ = NULL;
+							}
+						}
+				 	|	Expression OP_LT Expression		{
+							string t = $1->isTypeComparable($3);
+							if(t != ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t),$1->getResultat(),$3->getResultat(), OPE_LT);
+								$$ = e;
+							}else{
+								yyerror("Erreur! types incomparables!\n");
+								$$ = NULL;
+							}
+						}
+				 	|	Expression OP_LTE Expression	{
+							string t = $1->isTypeComparable($3);
+							if(t != ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t),$1->getResultat(),$3->getResultat(), OPE_LE);
+								$$ = e;
+							}else{
+								yyerror("Erreur! types incomparables!\n");
+								$$ = NULL;
+							}
+						}
+				 	|	Expression OP_GT Expression		{
+							string t = $1->isTypeComparable($3);
+							if(t != ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t),$1->getResultat(),$3->getResultat(), OPE_GT);
+								$$ = e;
+							}else{
+								yyerror("Erreur! types incomparables!\n");
+								$$ = NULL;
+							}
+						}
+			 		|	Expression OP_GTE Expression	{
+							string t = $1->isTypeComparable($3);
+							if(t != ""){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type(t),$1->getResultat(),$3->getResultat(), OPE_GE);
+								$$ = e;
+							}else{
+								yyerror("Erreur! types incomparables!\n");
+								$$ = NULL;
+							}
+						}
 			 		;
 
-BoolExpr			:	Expression KW_AND Expression
-			 		|	Expression KW_OR Expression
-			 		|	Expression KW_XOR Expression
-			 		|	KW_NOT Expression
+BoolExpr			:	Expression KW_AND Expression	{
+		   					if($1->getType()->getType() == "Booleen" && $3->getType()->getType() == "Booleen"){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type("Booleen"), $1->getResultat(), $3->getResultat(), OPE_AND);
+								$$ = e;
+							}
+							else{
+								yyerror("Oups... Types non booleen\n");
+								$$ = NULL;
+							}
+		   				}
+			 		|	Expression KW_OR Expression {
+							if($1->getType()->getType() == "Booleen" && $3->getType()->getType() == "Booleen"){
+								listeCourante->top()->add($1);
+								listeCourante->top()->add($3);
+								Expression * e = new Expression(numTp++, "", new Type("Booleen"), $1->getResultat(), $3->getResultat(), OPE_OR);
+								$$ = e;
+							}
+							else{
+								yyerror("Oups... Types non booleen\n");
+								$$ = NULL;
+							}
+
+						}
+			 		|	Expression KW_XOR Expression {
+							yyerror("Ici, j'imagine qu'il faudrait vérifier que les deux expressions soient différentes\n");
+							$$ = NULL;
+
+						}
+			 		|	KW_NOT Expression {
+							if($2->getType()->getType() == "Booleen"){
+								listeCourante->top()->add($2);
+								Expression * e = new Expression(numTp++, "", new Type("Booleen"), $2->getResultat(), "", OPE_NOT);
+								$$ = e;
+							}
+							else{
+								yyerror("Aille! Ce n'est pas un booleen\n");
+								$$ = NULL;
+							}
+						}
 			 		;
 
-AtomExpr			:	SEP_PO Expression SEP_PF
-			 		|	TOK_INTEGER
-			 		|	TOK_REAL
-					|	TOK_BOOLEAN
-			 		|	TOK_CHAR
-			 		|	TOK_STRING 
+AtomExpr			:	SEP_PO Expression SEP_PF	{$$ = $2;}
+			 		|	TOK_INTEGER		{
+							char t[10];
+							sprintf(t, "%d", $1);
+							$$ = new Expression(numTp++, "", new Type("Entier"), string(t), "", OPE_CPY);
+						}
+			 		|	TOK_REAL		{
+							char t[10];
+							sprintf(t, "%f", $1);
+							$$ = new Expression(numTp++, "", new Type("Reel"), string(t), "", OPE_CPY);
+						}
+					|	TOK_BOOLEAN		{
+							char t[1];
+							sprintf(t, "%d", $1);
+							$$ = new Expression(numTp++, "", new Type("Booleen"), string(t), "", OPE_CPY);
+						}
+			 		|	TOK_CHAR		{
+							$$ = new Expression(numTp++, "", new Type("Caractere"), "", "", OPE_CPY);
+						}
+			 		|	TOK_STRING 		{
+							$$ = new Expression(numTp, "", new Type("Chaine"), $1, "", OPE_CPY);
+						}
 
 			 		;
 
-VarExpr				:	TOK_IDENT
+VarExpr				:	TOK_IDENT	{
+							Symbole * s = courant->getSymbole($1);
+							if(s->getSignification() == "variable"){
+								printf("ici\n");
+								Expression * e = new Expression(numTp++, "", new Type(((Type *)((Variable *)s)->getType())->getType()), string(tdi->getNomFromId($1)), "", OPE_CPY);
+								$$ = e;
+							}
+							else{
+								yyerror("Pas eu le temps de gérer les autres cas\n");
+								$$ = NULL;
+							}
+		   				}
 					|	VarExpr SEP_CO Expression SEP_CF
 					|	VarExpr SEP_DOT TOK_IDENT %prec OP_DOT
 					;

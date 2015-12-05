@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cmath>
 #include "type.hpp"
+#include "expression.hpp"
 #include "parser.h"
 #include "tdi.hpp"
 extern int row, column;

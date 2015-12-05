@@ -50,20 +50,24 @@ void TDS::addSymbole(int id, string s){
 	symboles.push_back(new Symbole(id, s));
 }
 
-string TDS::getSignification(int id){
+Symbole * TDS::getSymbole(int id){
 
 	for(vector<Symbole *>::iterator it = symboles.begin();
 			it != symboles.end();
 			it++){
 		if((*it)->getIdentifiant() == id)
-			return (*it)->getSignification();
+			return *it;
 	}
-	return "";
+	Symbole * result = NULL;
+	if(this->parent != NULL){
+		result = this->parent->getSymbole(id);
+	}
+	return result;
 }
 
 void TDS::afficherTDS(){
 
-	printf("\nAffichage de la table des Symboles du contexte %d\n", this->contexte);
+	cout << endl << "Affichage de la table des Symboles du contexte " << this->contexte << " de nom " << this->id << endl;
 	for(vector<Symbole *>::iterator it = this->symboles.begin();
 			it != this->symboles.end();
 			it++){
