@@ -1,11 +1,14 @@
 /*** EXO 4 : Q1 **************************************************************/
 
 var exo4q1map = function () {
-  /*TODO*/
+	if (this.pop > 100000)
+	{
+		emit(this._id, this.pop);
+	}
 }
 
 var exo4q1red = function (key, values) {
-  /*TODO*/
+	return values;
 }
 
 var exo4q1 = db.zips.mapReduce(exo4q1map,exo4q1red, {out : {inline:1}});
@@ -23,24 +26,35 @@ var exo4q1 = db.zips.mapReduce(exo4q1map,exo4q1red, {out : {inline:1}});
 /*** EXO 4 : Q2 **************************************************************/
 
 var exo4q2map = function () {
-  /*TODO*/
-}
+	emit(this._id, this.pop);
+};
 
-var exo4q2 = null /*TODO*/;
+var exo4q2red = function (key, values) {
+	return values;
+};
+
+var exo4q2 = db.zips.mapReduce(exo4q2map, exo4q2red, { out: {inline:1}, query: {pop : { $gt : 100000 }}});
 // ATTENDU : exactement le meme resultat que la question 1
 
 
 /*** EXO 4 : Q3 **************************************************************/
 
 var exo4q3map = function () {
-  /*TODO*/
+	emit(this.state, this.pop);
 }
 
 var exo4q3red = function (key, values) {
-  /*TODO*/
+	var somme = 0;
+	values.forEach(
+		function(value)
+		{
+			somme += value;
+		}
+	);
+	return somme;
 }
 
-var exo4q3 = db.zips.mapReduce(exo4q3map,exo4q3red, {out : {inline:1}});
+var exo4q3 = db.zips.mapReduce(exo4q3map,exo4q3red, {out : "states"});
 
 // ATTENDU : exo4q3 est un objet json dont le champs results contient 51 resultats
 //"results" : [
@@ -55,10 +69,10 @@ var exo4q3 = db.zips.mapReduce(exo4q3map,exo4q3red, {out : {inline:1}});
 
 
 var sort_state = function(a, b) {
-  /*TODO*/
-}
+	return b.value-a.value; //permet de trier selon le champ value du résultat dans l'ordre décroissant
+};
 
-var exo4q3sort = null /*TODO*/; 
+var exo4q3sort = db.zips.mapReduce(exo4q3map,exo4q3red, {out : {inline : 1}}).results.sort(sort_state).slice(0, 3); 
 // ATTENDU : exo4q3sort
 //[
 //	{
@@ -78,14 +92,14 @@ var exo4q3sort = null /*TODO*/;
 /*** EXO 4: Q4 ***************************************************************/
 
 var exo4q4map = function () {
-  /*TODO*/
+	emit({city : this.city, state : this.state}, 0);
 }
 
 var exo4q4red = function (key, values) {
-  return 0;
+	return 0;
 }
 
-var exo4q4 = db.zips.mapReduce(exo4q4map,exo4q4red, {out : {inline : 1}});
+var exo4q4 = db.zips.mapReduce(exo4q4map, exo4q4red, {out : {inline : 1}});
 
 // ATTENDU : exo4q4 est un objet json dont le champs results contient 25701 resultats (sans limite)
 //"results" : [
@@ -98,5 +112,3 @@ var exo4q4 = db.zips.mapReduce(exo4q4map,exo4q4red, {out : {inline : 1}});
 //		}
 //    ...
 //	]
-
-

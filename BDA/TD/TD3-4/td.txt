@@ -234,3 +234,34 @@ reduce(r, ts)
 		return null;
 
 
+#################
+Version 2015-2016
+*****************
+
+# Exercice 2
+var map = function(){
+	emi(this.key, this.value);
+}
+
+var reduce = function(key, values){
+	var sum = 0;
+	var count = 0;
+	values.foreach(function(v){
+		sum+= v;
+		count++;
+	});
+	return(v, sum/count);
+}
+
+# Exercice 3
+## 1
+var map = function(){
+	if(this.value.rel == 'R' && this.value.A < 1)
+		emit(this._id, this.value);
+}
+var reduce = function(key, value){
+	return values[0];
+}
+
+## 2
+

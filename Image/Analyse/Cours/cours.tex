@@ -13,8 +13,9 @@
 \section{Outils Fondamentaux}
 \subsection{définitions}
 L'image peut-être plongé dans le plan dscret $Z^2$
-
+Point discret : points de $Z^2$, correspondant au pixel centré en ce point.
 Distances spatiales utilisées :
+
 \begin{itemize}
 	\item $D_2 (P,Q) = ((x_P - x_Q)^2 + (y_P - y_Q)^2)^{1/2}$
 	\item $L_1 (P, Q) = |x_P - x_Q| + |y_P - y_Q|$
@@ -22,7 +23,10 @@ Distances spatiales utilisées :
 \end{itemize}
 
 Deux points discrets P et Q sont dits 4-adjacents ssi $L_1(P, Q) = 1$.\\
-Deux points discrets sont dit 8-adjacents ssi $L_\infty (P, Q) = 1$.
+$|x_p - x_q| + |y_p - y_q| = 1$\\
+
+Deux points discrets sont dit 8-adjacents ssi $L_\infty (P, Q) = 1$.\\
+$Max(|x_p - x_q|,|y_p - y_q|) = 1$
 
 Voisinage :
 \begin{itemize}
